@@ -1,0 +1,22 @@
+Package: floundeR
+Title: Toolkit For Nanopore Sequence Analysis
+Version: 0.0.1.9001
+Authors@R: 
+    person(given = "Stephen",
+           family = "Rudd",
+           role = c("aut", "cre"),
+           email = "stephen@mnemosyne.co.uk",
+           comment = c(ORCID = "0000-0002-0344-7487"))
+Description: FloundeR provides an update to the deprecated nanopoRe package. The
+    code has been updated to adhere to TidyVerse recommendations and the
+    functionality of the original code has been pared back for simpler usage.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
