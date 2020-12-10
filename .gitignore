@@ -4,3 +4,4 @@
 .Ruserdata
 floundeR.Rproj
 inst/doc
+.Rbuildignore
