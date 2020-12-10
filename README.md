@@ -8,6 +8,13 @@ The goal of floundeR is to ...
 
 ## Installation
 
+There are a couple of dependencies for the successful usage of the `floundeR`
+package.
+
+* https://github.com/nanoporetech/vbz_compression/ needs to be installed on your
+  computer if you are going to open FAST5 format files that have been compressed
+  using the `VBZ` compression algorithm.
+
 You can install the released version of floundeR from [github](https://github.com/sagrudd) with:
 
 ``` r
