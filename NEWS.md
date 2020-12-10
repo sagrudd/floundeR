@@ -1,5 +1,7 @@
 # floundeR (development version)
 
+# floundeR 0.0.2
+
 * starting to populate content
 
 # floundeR 0.0.1
