@@ -1,0 +1,38 @@
+---
+title: "fast5_review"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fast5_review}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### Set the working environment
+
+```{r setup}
+library(floundeR)
+```
+
+### Identify a couple of FAST5 files and check their validity
+
+```{r checkFast5}
+# using FAST5 included in package
+singleFast5 <- system.file("extdata", "single.fast5", package="floundeR")
+multiFast5 <- system.file("extdata", "multi.fast5", package="floundeR")
+
+# we can check if a file is a parseable FAST5 with floundeR::file.isFast5
+file.isFast5(singleFast5)
+file.isFast5(multiFast5)
+
+# we can also test if the files correspond to single of multi entry FAST5s
+file.isSingleFast5(multiFast5)
+file.isMultiFast5(multiFast5)
+file.isSingleFast5(singleFast5)
+```
