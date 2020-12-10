@@ -4,12 +4,14 @@
 \alias{file.isMultiFast5}
 \title{Check is a provided file corresponds to a multiple entry FAST5 file}
 \usage{
-file.isMultiFast5(path = NULL, f5content = NULL)
+file.isMultiFast5(path = NULL, f5content = NULL, silent = FALSE)
 }
 \arguments{
 \item{path}{The file.path to check}
 
 \item{f5content}{(optional) preparsed index from h5parser}
+
+\item{silent}{should messages be hidden? (FALSE)}
 }
 \value{
 boolean
@@ -24,4 +26,7 @@ file.isMultiFast5(singleFast5)
 multiFast5 <- system.file("extdata", "multi.fast5", package="floundeR")
 file.isMultiFast5(multiFast5)
 
+}
+\seealso{
+\code{\link{file.isSingleFast5} \link{file.isFast5}}
 }

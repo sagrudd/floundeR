@@ -4,12 +4,14 @@
 \alias{file.isSingleFast5}
 \title{Check is a provided file corresponds to a single entry FAST5 file}
 \usage{
-file.isSingleFast5(path = NULL, f5content = NULL)
+file.isSingleFast5(path = NULL, f5content = NULL, silent = FALSE)
 }
 \arguments{
 \item{path}{The file.path to check}
 
 \item{f5content}{(optional) preparsed index from h5parser}
+
+\item{silent}{should messages be hidden? (FALSE)}
 }
 \value{
 boolean

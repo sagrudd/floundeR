@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(floundeR)
+library(dplyr)
+library(kableExtra)
 ```
 
 ### Identify a couple of FAST5 files and check their validity
@@ -35,4 +37,68 @@ file.isFast5(multiFast5)
 file.isSingleFast5(multiFast5)
 file.isMultiFast5(multiFast5)
 file.isSingleFast5(singleFast5)
+```
+
+### Identify the sequencing platform defined in FAST5
+
+```{r get_platform}
+fast5.get_platform(multiFast5)
+
+# let's also have a look at a PromethION dataset here
+promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
+fast5.get_platform(promFast5)
+```
+
+### Identify the flowcell_id defined in FAST5
+
+```{r get_flowcell_id}
+# let's review the two different platforms that we have looked at above
+fast5.get_flowcell_id(multiFast5)
+
+fast5.get_flowcell_id(promFast5)
+```
+
+
+### Identify the experimental start time defined in FAST5
+
+This is the proxy for hold old a dataset is and can be used to make decisions
+on how the data may be discarded for purposes of resequencing or rebasecalling.
+
+```{r get_exp_start_time}
+fast5.get_exp_start_time(promFast5)
+```
+
+
+### Identify the number of sequence reads described in the FAST5
+
+```{r get_read_count}
+fast5.get_read_count(promFast5)
+fast5.get_read_count(singleFast5)
+```
+
+
+### Identify the flowcell_type defined in FAST5
+
+```{r get_flowcell_type}
+fast5.get_flowcell_type(promFast5)
+fast5.get_flowcell_type(multiFast5)
+```
+
+
+### Identify the sequencing kit defined in FAST5
+
+```{r get_sequencing_kit}
+fast5.get_sequencing_kit(promFast5)
+```
+
+
+### Pull out bulk information for the FAST5 file
+
+```{r get_info}
+bulk_info <- fast5.get_info(multiFast5)
+knitr::kable(bulk_info, 
+             caption="Table showing the summary information pulled from FAST5", 
+             booktabs=TRUE, table.envir='table*', linesep="") %>%
+  kable_styling(latex_options=c("hold_position", font_size=11)) %>%
+  add_footnote(c("These data are expected to be redundant"))
 ```
