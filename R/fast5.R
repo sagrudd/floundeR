@@ -18,11 +18,12 @@ file.isFast5 <- function(path) {
     if (is.logical(f5content)) {
         return(f5content)
     }
-    if (file.isSingleFast5(f5content=f5content)) {
+    if (file.isSingleFast5(f5content=f5content, silent=TRUE)) {
         return(TRUE)
-    } else if (file.isMultiFast5(f5content=f5content)) {
+    } else if (file.isMultiFast5(f5content=f5content, silent=TRUE)) {
         return(TRUE)
     }
+    message(paste0("path [",path,"] provides HDF but not nanopore FAST5"))
     return(FALSE)
 }
 
@@ -68,6 +69,7 @@ getH5list <- function(path=NULL, f5content=NULL) {
 #'
 #' @param path The file.path to check
 #' @param f5content (optional) preparsed index from h5parser
+#' @param silent should messages be hidden? (FALSE)
 #' @return boolean
 #'
 #' @importFrom dplyr filter
@@ -80,7 +82,7 @@ getH5list <- function(path=NULL, f5content=NULL) {
 #' file.isSingleFast5(multiFast5)
 #'
 #' @export
-file.isSingleFast5 <- function(path=NULL, f5content=NULL) {
+file.isSingleFast5 <- function(path=NULL, f5content=NULL, silent=FALSE) {
     f5content = getH5list(path, f5content)
     if (is.null(f5content)) {
         message("something has gone awry")
@@ -90,10 +92,9 @@ file.isSingleFast5 <- function(path=NULL, f5content=NULL) {
     if (all(
         c("Analyses", "Raw", "UniqueGlobalKey") %in%
         dplyr::filter(f5content, .data$group=="/")[["name"]])) {
-        message("This appears to be a single FAST5 file")
         return(TRUE)
     }
-    message("This appears to be HDF5 but not single FAST5")
+    if (!silent) message("This appears to be HDF5 but not single FAST5")
     return(FALSE)
 }
 
@@ -104,6 +105,7 @@ file.isSingleFast5 <- function(path=NULL, f5content=NULL) {
 #'
 #' @param path The file.path to check
 #' @param f5content (optional) preparsed index from h5parser
+#' @param silent should messages be hidden? (FALSE)
 #' @return boolean
 #'
 #' @importFrom dplyr filter
@@ -115,7 +117,7 @@ file.isSingleFast5 <- function(path=NULL, f5content=NULL) {
 #' file.isMultiFast5(multiFast5)
 #'
 #' @export
-file.isMultiFast5 <- function(path=NULL, f5content=NULL) {
+file.isMultiFast5 <- function(path=NULL, f5content=NULL, silent=FALSE) {
     f5content = getH5list(path, f5content)
     if (is.null(f5content)) {
         message("something has gone awry")
@@ -125,10 +127,9 @@ file.isMultiFast5 <- function(path=NULL, f5content=NULL) {
     if (all(
         c("Analyses", "Raw", "channel_id", "context_tags", "tracking_id") %in%
         dplyr::filter(f5content, .data$group==paste0("/",itemA))[["name"]])) {
-        message("This appears to be a multi FAST5 file")
         return(TRUE)
     }
-    message("This appears to be HDF5 but not multi FAST5")
+    if (!silent) message("This appears to be HDF5 but not multi FAST5")
     return(FALSE)
 
 }
