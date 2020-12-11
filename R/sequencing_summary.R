@@ -7,7 +7,6 @@
 #' information that can be used to assess the performance of a run.
 #'
 #' @import R6
-#' @importFrom utils file_test
 #'
 #' @export
 SequencingSummary <- R6::R6Class(
@@ -45,31 +44,13 @@ SequencingSummary <- R6::R6Class(
             barcoding_summary_file = NA) {
 
             # first pass QC - let's ensure that this is a single FILE
-            if (is.na(sequencing_summary_file)) {
-                stop("Sequencing_summary_file must be defined")
-            } else if (!is.character(sequencing_summary_file) ||
-                length(sequencing_summary_file) != 1) {
-                stop(paste0(
-                    "SequencingSummary requires a single [file.path] as input"))
-            } else if (!file.exists(sequencing_summary_file)) {
-        stop(paste0("path [",sequencing_summary_file,"] does not exist"))
-            } else if (!utils::file_test("-f", sequencing_summary_file)) {
-                stop(paste0("path [",sequencing_summary_file,
-                    "] is a directory - file reqd"))
-            }
+            .check_path(
+                "sequencing_summary_file", sequencing_summary_file)
             self$sequencing_summary_file = sequencing_summary_file
 
             if (!is.na(barcoding_summary_file)) {
-                if (!is.character(barcoding_summary_file) ||
-                    length(barcoding_summary_file) != 1) {
-                    stop(paste0(
-        "barcoding_summary_file requires a single [file.path] as input"))
-                } else if (!file.exists(barcoding_summary_file)) {
-        stop(paste0("path [",barcoding_summary_file,"] does not exist"))
-                } else if (!utils::file_test("-f", barcoding_summary_file)) {
-                    stop(paste0("path [",barcoding_summary_file,
-                                "] is a directory - file reqd"))
-                }
+                .check_path(
+                    "barcoding_summary_file", barcoding_summary_file)
                 self$barcoding_summary_file = barcoding_summary_file
             }
             # and import the TSV data (cleanly)

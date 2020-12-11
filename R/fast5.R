@@ -8,7 +8,6 @@
 #' files.
 #'
 #' @import R6
-#' @importFrom utils file_test
 #' @importFrom rhdf5 h5ls
 #' @importFrom dplyr filter
 #' @importFrom rlang .data
@@ -36,13 +35,7 @@ Fast5 <- R6::R6Class(
         #' @return A new `Fast5` object.
         initialize = function(fast5_file = NA) {
             # first pass QC - let's ensure that this is a single FILE
-            if (!is.character(fast5_file) || length(fast5_file) != 1) {
-                stop(paste0("FAST5 requires a single [file.path] as input"))
-            } else if (!file.exists(fast5_file)) {
-                stop(paste0("path [",fast5_file,"] does not exist"))
-            } else if (!utils::file_test("-f", fast5_file)) {
-                stop(paste0("path [",fast5_file,"] is a directory - file reqd"))
-            }
+            .check_path("fast5_file", fast5_file)
 
             # second pass QC- ensure file is actually a parseable FAST5 file
             private$f5content = tryCatch(
