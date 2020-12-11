@@ -18,7 +18,7 @@ sequencing_summary <- system.file("extdata",
     "sequencing_summary.txt.bz2", package="floundeR")
 barcodes_summary <- system.file("extdata",
     "barcoding_summary.txt.bz2", package="floundeR")
-promF5 <- SequencingSummary$new(
+seqsum <- SequencingSummary$new(
     sequencing_summary_file=sequencing_summary,
     barcoding_summary_file=barcodes_summary)
 }
@@ -72,7 +72,7 @@ A new \code{Fast5} object.
     "sequencing_summary.txt.bz2", package="floundeR")
 barcodes_summary <- system.file("extdata",
     "barcoding_summary.txt.bz2", package="floundeR")
-promF5 <- SequencingSummary$new(
+seqsum <- SequencingSummary$new(
     sequencing_summary_file=sequencing_summary,
     barcoding_summary_file=barcodes_summary)
 }
