@@ -82,8 +82,34 @@ SequencingSummary <- R6::R6Class(
     private = list(
 
         seqsum = NULL,
+        # read_id / c has been removed - this is a big character - ?value
+        select_columns = c(
+            "channel", "start_time", "duration",
+            "passes_filtering", "sequence_length_template",
+            "mean_qscore_template", "barcode_arrangement"),
+
+        select_column_types = c(
+            "i", "d", "d", "l", "d", "d", "c"
+        ),
 
         .parse_seqsum = function() {
+
+            mini_table = readr::read_tsv(
+                file=self$sequencing_summary_file, n_max=10, col_types = readr::cols())
+            import_cols <- names(mini_table)[
+                na.omit(match(private$select_columns, names(mini_table)))]
+            ctypes = private$select_column_types[
+                match(import_cols, private$select_columns)]
+            colt = paste0(
+                "readr::cols_only(",
+                paste(paste(
+                    import_cols, "=\"", ctypes, "\"",sep=""), collapse=", "),
+                ")")
+
+            private$seqsum <- readr::read_tsv(
+                file=self$sequencing_summary_file,
+                col_types=eval(parse(text=colt)))
+            print(private$seqsum)
             return(TRUE)
         }
 
