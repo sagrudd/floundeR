@@ -30,32 +30,33 @@ singleFast5 <- system.file("extdata", "single.fast5", package="floundeR")
 multiFast5 <- system.file("extdata", "multi.fast5", package="floundeR")
 
 # we can check if a file is a parseable FAST5 with floundeR::file.isFast5
-file.isFast5(singleFast5)
-file.isFast5(multiFast5)
+singleF5 <- Fast5$new(fast5_file=singleFast5)
+multiF5 <- Fast5$new(fast5_file=multiFast5)
 
 # we can also test if the files correspond to single of multi entry FAST5s
-file.isSingleFast5(multiFast5)
-file.isMultiFast5(multiFast5)
-file.isSingleFast5(singleFast5)
+singleF5$is_single_fast5()
+multiF5$is_multi_fast5()
+singleF5$is_multi_fast5()
 ```
 
 ### Identify the sequencing platform defined in FAST5
 
 ```{r get_platform}
-fast5.get_platform(multiFast5)
+multiF5$get_platform()
 
 # let's also have a look at a PromethION dataset here
 promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
-fast5.get_platform(promFast5)
+promF5 <- Fast5$new(fast5_file=promFast5)
+promF5$get_platform()
 ```
 
 ### Identify the flowcell_id defined in FAST5
 
 ```{r get_flowcell_id}
 # let's review the two different platforms that we have looked at above
-fast5.get_flowcell_id(multiFast5)
+multiF5$get_flowcell_id()
 
-fast5.get_flowcell_id(promFast5)
+promF5$get_flowcell_id()
 ```
 
 
@@ -65,40 +66,40 @@ This is the proxy for hold old a dataset is and can be used to make decisions
 on how the data may be discarded for purposes of resequencing or rebasecalling.
 
 ```{r get_exp_start_time}
-fast5.get_exp_start_time(promFast5)
+promF5$get_exp_start_time()
 ```
 
 
 ### Identify the number of sequence reads described in the FAST5
 
 ```{r get_read_count}
-fast5.get_read_count(promFast5)
-fast5.get_read_count(singleFast5)
+promF5$get_read_count()
+singleF5$get_read_count()
 ```
 
 
 ### Identify the flowcell_type defined in FAST5
 
 ```{r get_flowcell_type}
-fast5.get_flowcell_type(promFast5)
-fast5.get_flowcell_type(multiFast5)
+promF5$get_flowcell_type()
+multiF5$get_flowcell_type()
 ```
 
 
 ### Identify the sequencing kit defined in FAST5
 
 ```{r get_sequencing_kit}
-fast5.get_sequencing_kit(promFast5)
+promF5$get_sequencing_kit()
 ```
 
 
 ### Pull out bulk information for the FAST5 file
 
 ```{r get_info}
-bulk_info <- fast5.get_info(multiFast5)
+bulk_info <- multiF5$get_info(atomic=FALSE)
 knitr::kable(bulk_info, 
              caption="Table showing the summary information pulled from FAST5", 
              booktabs=TRUE, table.envir='table*', linesep="") %>%
-  kable_styling(latex_options=c("hold_position", font_size=11)) %>%
+  kable_styling(latex_options=c("hold_position", font_size=10)) %>%
   add_footnote(c("These data are expected to be redundant"))
 ```

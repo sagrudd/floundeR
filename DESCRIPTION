@@ -26,4 +26,5 @@ Imports:
     dplyr,
     rlang,
     purrr,
-    lubridate
+    lubridate,
+    R6

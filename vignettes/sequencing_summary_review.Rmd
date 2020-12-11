@@ -39,6 +39,5 @@ sequencing_summary <- system.file("extdata",
 barcodes_summary <- system.file("extdata",
                                 "barcoding_summary.txt.bz2", 
                                 package="floundeR")
-seqsum <- SequencingSummary(
-  sequ_sum=sequencing_summary, barc_sum=barcodes_summary)
+
 ```
