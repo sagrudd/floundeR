@@ -1,0 +1,44 @@
+---
+title: "sequencing_summary_review"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{sequencing_summary_review}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Preamble
+
+This `sequencing_summary_review` vignette re-introduces the `BasicQC`-type
+tutorial that was previously available through the https://github.com/nanoporetech
+website.
+
+The workflow provided is implemented through the R TidyVerse and is intended to
+provide a lightweight set of components that can be mixed and matched for the
+exploration of the sequencing_summary file that is produced during Guppy-based
+base-calling.
+
+```{r setup}
+library(floundeR)
+```
+
+
+## Define input files and create S4 object
+
+```{r create_ss}
+sequencing_summary <- system.file("extdata",
+                                  "sequencing_summary.txt.bz2", 
+                                  package="floundeR")
+barcodes_summary <- system.file("extdata",
+                                "barcoding_summary.txt.bz2", 
+                                package="floundeR")
+seqsum <- SequencingSummary(
+  sequ_sum=sequencing_summary, barc_sum=barcodes_summary)
+```

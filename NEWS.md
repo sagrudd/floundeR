@@ -1,8 +1,11 @@
 # floundeR (development version)
 
+* Sequencing summary push ...
+
 # floundeR 0.0.2
 
 * starting to populate content
+* inclusion of FAST5 parsing content, vignette and test data
 
 # floundeR 0.0.1
 
