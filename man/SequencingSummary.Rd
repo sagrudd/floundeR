@@ -8,6 +8,20 @@ This class aims to simplify the handling and exploration of
 sequencing_summary files and provides simple methods for accessing
 information that can be used to assess the performance of a run.
 }
+\examples{
+
+## ------------------------------------------------
+## Method `SequencingSummary$new`
+## ------------------------------------------------
+
+sequencing_summary <- system.file("extdata",
+    "sequencing_summary.txt.bz2", package="floundeR")
+barcodes_summary <- system.file("extdata",
+    "barcoding_summary.txt.bz2", package="floundeR")
+promF5 <- SequencingSummary$new(
+    sequencing_summary_file=sequencing_summary,
+    barcoding_summary_file=barcodes_summary)
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -35,10 +49,7 @@ initialisation method performs other sanity checking
 of the defined file(s) to ensure that it is indeed
 parseable and creates the required data structures.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$new(
-  sequencing_summary_file = NA,
-  barcoding_summary_file = NA
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$new(sequencing_summary_file, barcoding_summary_file = NA)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -55,6 +66,20 @@ barcoding_summary_file file.}
 \subsection{Returns}{
 A new \code{Fast5} object.
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{sequencing_summary <- system.file("extdata",
+    "sequencing_summary.txt.bz2", package="floundeR")
+barcodes_summary <- system.file("extdata",
+    "barcoding_summary.txt.bz2", package="floundeR")
+promF5 <- SequencingSummary$new(
+    sequencing_summary_file=sequencing_summary,
+    barcoding_summary_file=barcodes_summary)
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
