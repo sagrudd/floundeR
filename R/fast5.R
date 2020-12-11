@@ -83,7 +83,7 @@ Fast5 <- R6::R6Class(
         #' @examples
         #' promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
         #' promF5 <- Fast5$new(fast5_file=promFast5)
-        #' promF5$isSingleFast5()
+        #' promF5$is_single_fast5()
         is_single_fast5 = function() {
             return(private$singleF5)
         },
@@ -100,7 +100,7 @@ Fast5 <- R6::R6Class(
         #' @examples
         #' promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
         #' promF5 <- Fast5$new(fast5_file=promFast5)
-        #' promF5$isMultiFast5()
+        #' promF5$is_multi_fast5()
         is_multi_fast5 = function() {
             return(private$multiF5)
         },

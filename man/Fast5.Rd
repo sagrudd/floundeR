@@ -18,7 +18,7 @@ files.
 
 promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
 promF5 <- Fast5$new(fast5_file=promFast5)
-promF5$isSingleFast5()
+promF5$is_single_fast5()
 
 ## ------------------------------------------------
 ## Method `Fast5$is_multi_fast5`
@@ -26,7 +26,7 @@ promF5$isSingleFast5()
 
 promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
 promF5 <- Fast5$new(fast5_file=promFast5)
-promF5$isMultiFast5()
+promF5$is_multi_fast5()
 
 ## ------------------------------------------------
 ## Method `Fast5$get_platform`
@@ -151,7 +151,7 @@ boolean
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
 promF5 <- Fast5$new(fast5_file=promFast5)
-promF5$isSingleFast5()
+promF5$is_single_fast5()
 }
 \if{html}{\out{</div>}}
 
@@ -178,7 +178,7 @@ boolean
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
 promF5 <- Fast5$new(fast5_file=promFast5)
-promF5$isMultiFast5()
+promF5$is_multi_fast5()
 }
 \if{html}{\out{</div>}}
 
