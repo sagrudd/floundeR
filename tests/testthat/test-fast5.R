@@ -3,7 +3,7 @@ context("FAST5 file testing")
 
 
 test_that("single.fast5", {
-    singleFast5 <- system.file("extdata", "single.fast5", package="floundeR")
+    singleFast5 <- flnDr("single.fast5")
     singleF5 <- Fast5$new(fast5_file=singleFast5)
     expect_type(singleF5, "environment")
     expect_true(is.R6(singleF5))
@@ -20,12 +20,12 @@ test_that("single.fast5", {
 })
 
 test_that("not_fast5.fast5", {
-    notFast5 <- system.file("extdata", "not_fast5.fast5", package="floundeR")
+    notFast5 <- flnDr("not_fast5.fast5")
     expect_error(Fast5$new(fast5_file=notFast5))
 })
 
 test_that("multi.fast5", {
-    multiFast5 <- system.file("extdata", "multi.fast5", package="floundeR")
+    multiFast5 <- flnDr("multi.fast5")
     multiF5 <- Fast5$new(fast5_file=multiFast5)
     expect_type(multiF5, "environment")
     expect_true(is.R6(multiF5))
@@ -41,7 +41,7 @@ test_that("multi.fast5", {
 })
 
 test_that("prom.fast5", {
-    promFast5 <- system.file("extdata", "prom.fast5", package="floundeR")
+    promFast5 <- flnDr("prom.fast5")
     promF5 <- Fast5$new(fast5_file=promFast5)
     expect_type(promF5, "environment")
     expect_true(is.R6(promF5))

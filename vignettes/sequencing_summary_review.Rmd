@@ -30,7 +30,7 @@ library(floundeR)
 ```
 
 
-## Define input files and create S4 object
+## Define input files and create R6 object
 
 ```{r create_ss}
 sequencing_summary <- system.file("extdata",
@@ -39,5 +39,9 @@ sequencing_summary <- system.file("extdata",
 barcodes_summary <- system.file("extdata",
                                 "barcoding_summary.txt.bz2", 
                                 package="floundeR")
+
+seqsum <- SequencingSummary$new(
+  sequencing_summary_file=sequencing_summary, 
+  barcoding_summary_file=barcodes_summary)
 
 ```

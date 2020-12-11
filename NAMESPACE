@@ -2,6 +2,7 @@
 
 export(Fast5)
 export(SequencingSummary)
+export(flnDr)
 import(R6)
 importFrom(dplyr,filter)
 importFrom(lubridate,ymd_hms)

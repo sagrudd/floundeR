@@ -13,3 +13,22 @@
                     "] is a directory - file reqd"))
     }
 }
+
+
+#' extract a floundeR packaged file
+#'
+#' A collection of files are distributed with the floundeR package; this
+#' accessory method is aimed to abbreviate the technical code for the
+#' identification of these files and to clean the vignettes and code examples.
+#'
+#' @param file a known filename (or its prefix)
+#'
+#' @return a file
+#'
+#' @export
+flnDr = function(file) {
+    datadir = file.path(system.file(package="floundeR"), "extdata")
+    return(
+        file.path(datadir, list.files(datadir, pattern=file)[1])
+    )
+}

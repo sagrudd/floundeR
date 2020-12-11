@@ -14,13 +14,23 @@ information that can be used to assess the performance of a run.
 ## Method `SequencingSummary$new`
 ## ------------------------------------------------
 
-sequencing_summary <- system.file("extdata",
-    "sequencing_summary.txt.bz2", package="floundeR")
-barcodes_summary <- system.file("extdata",
-    "barcoding_summary.txt.bz2", package="floundeR")
-seqsum <- SequencingSummary$new(
-    sequencing_summary_file=sequencing_summary,
-    barcoding_summary_file=barcodes_summary)
+sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
+barcodes_summary <- flnDr("barcoding_summary.txt.bz2")
+seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
+
+## ------------------------------------------------
+## Method `SequencingSummary$get_flowcell_platform`
+## ------------------------------------------------
+
+seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
+seqsum.get_flowcell_platform()
+
+## ------------------------------------------------
+## Method `SequencingSummary$get_fc_density_data`
+## ------------------------------------------------
+
+seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
+seqsum.get_fc_density_data()
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -37,6 +47,8 @@ to the query FAST5 file}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SequencingSummary$new()}}
+\item \href{#method-get_flowcell_platform}{\code{SequencingSummary$get_flowcell_platform()}}
+\item \href{#method-get_fc_density_data}{\code{SequencingSummary$get_fc_density_data()}}
 \item \href{#method-clone}{\code{SequencingSummary$clone()}}
 }
 }
@@ -68,13 +80,63 @@ A new \code{Fast5} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{sequencing_summary <- system.file("extdata",
-    "sequencing_summary.txt.bz2", package="floundeR")
-barcodes_summary <- system.file("extdata",
-    "barcoding_summary.txt.bz2", package="floundeR")
-seqsum <- SequencingSummary$new(
-    sequencing_summary_file=sequencing_summary,
-    barcoding_summary_file=barcodes_summary)
+\preformatted{sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
+barcodes_summary <- flnDr("barcoding_summary.txt.bz2")
+seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_flowcell_platform"></a>}}
+\if{latex}{\out{\hypertarget{method-get_flowcell_platform}{}}}
+\subsection{Method \code{get_flowcell_platform()}}{
+Have a guess at the most likely flowcell platform used
+
+The sequencing summary file contains no information on the sequencing
+device or flowcell used. For the preparation of channel density maps
+it is worth considering which flowcell type is most likely to have
+been used - this can be guessed on the number of channels described
+within the data
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$get_flowcell_platform()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+character
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
+seqsum.get_flowcell_platform()
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_fc_density_data"></a>}}
+\if{latex}{\out{\hypertarget{method-get_fc_density_data}{}}}
+\subsection{Method \code{get_fc_density_data()}}{
+produce channelMap for the predicted flowcell type for spatial plots
+
+prepares a matrix of X, Y coordinates and
+the corresponding readcount information for the type of flowcell
+predicted by \code{get_flowcell_platform}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$get_fc_density_data()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+matrix with counts sorted by spatial rows and columns
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
+seqsum.get_fc_density_data()
 }
 \if{html}{\out{</div>}}
 
