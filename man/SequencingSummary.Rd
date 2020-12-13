@@ -17,20 +17,9 @@ information that can be used to assess the performance of a run.
 sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
 barcodes_summary <- flnDr("barcoding_summary.txt.bz2")
 seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
-
-## ------------------------------------------------
-## Method `SequencingSummary$get_flowcell_platform`
-## ------------------------------------------------
-
-seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
-seqsum.get_flowcell_platform()
-
-## ------------------------------------------------
-## Method `SequencingSummary$get_fc_density_data`
-## ------------------------------------------------
-
-seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
-seqsum.get_fc_density_data()
+}
+\section{Super class}{
+\code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{SequencingSummary}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -47,10 +36,16 @@ to the query FAST5 file}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SequencingSummary$new()}}
-\item \href{#method-get_flowcell_platform}{\code{SequencingSummary$get_flowcell_platform()}}
-\item \href{#method-get_fc_density_data}{\code{SequencingSummary$get_fc_density_data()}}
+\item \href{#method-tibble}{\code{SequencingSummary$tibble()}}
 \item \href{#method-clone}{\code{SequencingSummary$clone()}}
 }
+}
+\if{html}{
+\out{<details open ><summary>Inherited methods</summary>}
+\itemize{
+\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
+}
+\out{</details>}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
@@ -90,56 +85,11 @@ seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_flowcell_platform"></a>}}
-\if{latex}{\out{\hypertarget{method-get_flowcell_platform}{}}}
-\subsection{Method \code{get_flowcell_platform()}}{
-Have a guess at the most likely flowcell platform used
-
-The sequencing summary file contains no information on the sequencing
-device or flowcell used. For the preparation of channel density maps
-it is worth considering which flowcell type is most likely to have
-been used - this can be guessed on the number of channels described
-within the data
+\if{html}{\out{<a id="method-tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-tibble}{}}}
+\subsection{Method \code{tibble()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$get_flowcell_platform()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-character
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
-seqsum.get_flowcell_platform()
-}
-\if{html}{\out{</div>}}
-
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_fc_density_data"></a>}}
-\if{latex}{\out{\hypertarget{method-get_fc_density_data}{}}}
-\subsection{Method \code{get_fc_density_data()}}{
-produce channelMap for the predicted flowcell type for spatial plots
-
-prepares a matrix of X, Y coordinates and
-the corresponding readcount information for the type of flowcell
-predicted by \code{get_flowcell_platform}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$get_fc_density_data()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-matrix with counts sorted by spatial rows and columns
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
-seqsum.get_fc_density_data()
-}
-\if{html}{\out{</div>}}
-
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$tibble()}\if{html}{\out{</div>}}
 }
 
 }

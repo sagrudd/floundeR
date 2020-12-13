@@ -11,7 +11,8 @@ test_that("sequencing_summary", {
     # and check that the specified extant path is actually a file (not dir)
     expect_error(SequencingSummary$new(".."))
     expect_error(seqsum <- SequencingSummary$new(sequencing_summary), NA)
-    expect_equal(seqsum$get_flowcell_platform(), "MinION")
+    expect_equal(class(seqsum$flowcell)[1], "Flowcell")
+    # please note that Flowcell testing is continued in the Flowcell unit tests
 })
 
 
@@ -39,5 +40,6 @@ test_that("sequencing_summary + barcode", {
         seqsumBC <- SequencingSummary$new(
             sequencing_summary_file=sequencing_summary,
             barcoding_summary_file=barcodes_summary), NA)
-    expect_equal(seqsumBC$get_flowcell_platform(), "MinION")
+    expect_equal(class(seqsumBC$flowcell)[1], "Flowcell")
+    # please note that Flowcell testing is continued in the Flowcell unit tests
 })

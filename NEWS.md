@@ -1,5 +1,7 @@
 # floundeR (development version)
 
+* creation of angenieux prototype; code linking and POC
+* creation of the R6 object called FlowCell
 * Sequencing summary push ...
 * simplified FAST5.is_multi_F5 logic; there were some issues with different
   version of the hdf5 api - tested on Windows and macOS. 

@@ -8,10 +8,12 @@
 #'
 #' @import R6
 #' @importFrom reshape2 acast
+#' @importFrom dplyr count
 #'
 #' @export
 SequencingSummary <- R6::R6Class(
-    "SequencingSummary",
+    inherit = FloundeR,
+    classname = "SequencingSummary",
     public = list(
         #' @field sequencing_summary_file the file.path
         #' to the query FAST5 file
@@ -55,58 +57,35 @@ SequencingSummary <- R6::R6Class(
                 stop("Failed to import the summary files provided ...")
             }
         },
-
-        #' @description
-        #' Have a guess at the most likely flowcell platform used
-        #'
-        #' The sequencing summary file contains no information on the sequencing
-        #' device or flowcell used. For the preparation of channel density maps
-        #' it is worth considering which flowcell type is most likely to have
-        #' been used - this can be guessed on the number of channels described
-        #' within the data
-        #'
-        #' @return character
-        #'
-        #' @examples
-        #' seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
-        #' seqsum.get_flowcell_platform()
-        get_flowcell_platform = function() {
-            if (private$seqsum_channel_max < 130) {
-                return("Flongle")
-            } else if (private$seqsum_channel_max > 1000) {
-                return("PromethION")
-            }
-            return("MinION")
-
-        },
-
-
-        #' @description
-        #' produce channelMap for the predicted flowcell type for spatial plots
-        #'
-        #' prepares a matrix of X, Y coordinates and
-        #' the corresponding readcount information for the type of flowcell
-        #' predicted by `get_flowcell_platform`
-        #'
-        #' @return matrix with counts sorted by spatial rows and columns
-        #'
-        #' @examples
-        #' seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
-        #' seqsum.get_fc_density_data()
-        get_fc_density_data = function() {
-            channelMap <- private$.get_channel_counts()
-            channelMapMatrix <-
-                reshape2::acast(channelMap, col ~ row, value.var = "count")
-            return(XYDensity$new(channelMapMatrix))
-        }
+        
+        tibble = function() {
+            return(private$seqsum)
+        }   
 
 
     ),
+    
+    active = list (
+        
+        flowcell = function(fc) {
+            
+            if (is.null(private$flowcell_object)) {
+                private$flowcell_object <- Flowcell$new()
+                message("Preparing channel count information")
+                channel_counts <- dplyr::count(private$seqsum, channel)
+                private$flowcell_object$set_channel_counts(channel_counts)
+                
+                message("Preparing temporal channel count information")
+            }
+            return(private$flowcell_object)
+        }
+        
+    ),
+    
 
     private = list(
-
+        flowcell_object = NULL,
         seqsum = NULL,
-        seqsum_channel_max = NULL,
         # read_id / c has been removed - this is a big character - ?value
         select_columns = c(
             "channel", "start_time", "duration",
@@ -135,100 +114,11 @@ SequencingSummary <- R6::R6Class(
                 file=self$sequencing_summary_file,
                 col_types=eval(parse(text=colt)))
 
-            # set some key values
-            private$seqsum_channel_max = max(private$seqsum$channel)
             return(TRUE)
-        },
-
-        .get_minion_channel_map = function() {
-            # build the map for R9.4.1 flowcell, as a long-form dataframe
-            blockCalc <- function(i) {
-                m <- matrix(seq(i, i + 63, by = 1), ncol = 8, byrow = TRUE)
-                cbind(m[seq(5, 8, by = 1), ], m[seq(4), rev(seq(8))])
-            }
-            layout <- do.call(rbind, lapply(
-                c(1, 449, 385, 321, 257, 193, 129, 65), blockCalc))
-            # transpose the layout for cleaner presentation ...
-            layout <- t(layout)
-            channelMap <- as.data.frame(cbind(channel = as.vector(t(layout)), which(
-                layout == as.vector(layout), arr.ind = TRUE)))
-            return(channelMap)
-        },
-
-        .get_flongle_channel_map = function() {
-            layout <- matrix(c(seq(1, 12), 0, seq(13, 24), 0, seq(25, 114), 0,
-                               seq(115, 126), 0), ncol = 13, byrow = TRUE)
-            layout <- layout[rev(seq(10)), ]
-            channelMap <- as.data.frame(cbind(channel = as.vector(t(layout)),
-                                              which(layout == as.vector(layout), arr.ind = TRUE)))
-            return(channelMap)
-        },
-
-        .get_promethion_channel_map = function() {
-            chunk <- function(i) {
-                m <- matrix(seq_len(250), ncol=10, byrow=TRUE)
-                m + i
-            }
-            layout <- do.call(cbind, lapply(seq(from=0, to=2750, by=250), chunk))
-            channelMap <- as.data.frame(cbind(channel = as.vector(t(layout)),
-                                              which(layout == as.vector(layout), arr.ind = TRUE)))
-            return(channelMap)
-        },
-
-        .get_channel_map = function() {
-            platform = self$get_flowcell_platform()
-            if (platform == "MinION") {
-                return(private$.get_minion_channel_map())
-            } else if (platform == "Flongle") {
-                return(private$.get_flongle_channel_map())
-            } else if (platform == "PromethION") {
-                return(private$.get_promethion_channel_map())
-            }
-        },
-
-        .get_channel_counts = function() {
-            channelMap <- private$.get_channel_map()
-            channelCounts <-
-                as.data.frame(matrix(rep(0, max(channelMap$channel)), ncol = 1))
-            channelCountRaw <-
-                as.data.frame(
-                    table(unlist(private$seqsum[, "channel"])), row.names = 1)
-            channelCounts[row.names(channelCountRaw), ] <- channelCountRaw[, 1]
-            channelMap <- merge(channelMap, channelCounts, by.x = "channel", by.y = 0)
-            colnames(channelMap)[4] <- "count"
-            return(channelMap)
         }
-
     )
 )
 
 
-XYDensity <- R6::R6Class(
-    "XYDensity",
-    public = list(
-        matrix = NULL,
-
-        initialize = function(matrix) {
-            if (!is.matrix(matrix)) {
-                stop("this requires a matrix")
-            }
-            self$matrix <- matrix
-        },
-
-        print = function(...) {
-            cat(paste0("floundeR::XYDensity[",
-                       ncol(self$matrix),", ",nrow(self$matrix),"]"))
-        },
-
-        data = function() {
-            return(self$matrix)
-        },
-
-        plot = function() {
-            print("a plot")
-        }
-
-    )
-)
 
 
