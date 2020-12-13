@@ -7,6 +7,7 @@
 #' information that can be used to assess the performance of a run.
 #'
 #' @import R6
+#' @importFrom reshape2 acast
 #'
 #' @export
 SequencingSummary <- R6::R6Class(
@@ -133,7 +134,6 @@ SequencingSummary <- R6::R6Class(
             private$seqsum <- readr::read_tsv(
                 file=self$sequencing_summary_file,
                 col_types=eval(parse(text=colt)))
-            print(private$seqsum)
 
             # set some key values
             private$seqsum_channel_max = max(private$seqsum$channel)
