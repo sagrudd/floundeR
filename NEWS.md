@@ -1,6 +1,8 @@
 # floundeR (development version)
 
 * Sequencing summary push ...
+* simplified FAST5.is_multi_F5 logic; there were some issues with different
+  version of the hdf5 api - tested on Windows and macOS. 
 
 # floundeR 0.0.2
 

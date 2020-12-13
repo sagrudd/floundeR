@@ -39,9 +39,9 @@ Fast5 <- R6::R6Class(
 
             # second pass QC- ensure file is actually a parseable FAST5 file
             private$f5content = tryCatch(
-                rhdf5::h5ls(fast5_file),
+                suppressWarnings ( rhdf5::h5ls(fast5_file) ),
                 error=function(err){return(NULL)},
-                finally={}
+                finally={ rhdf5::h5closeAll() }
             )
             if (is.null(private$f5content)) {
                 stop(paste0("file [",fast5_file,
@@ -262,9 +262,9 @@ Fast5 <- R6::R6Class(
                 private$f5content, .data$group=="/")[["name"]]
             private$pick = private$lookup_key[
                 floor(runif(1, min=1, max=length(private$lookup_key)+1))]
-
+            
             return(all(
-                c("Raw", "channel_id", "context_tags", "tracking_id") %in%
+                c("Raw", "channel_id") %in%
                     dplyr::filter(
                         private$f5content,
                         .data$group==paste0("/",private$pick))[["name"]]))

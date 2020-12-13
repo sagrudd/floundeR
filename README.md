@@ -15,13 +15,23 @@ package.
   computer if you are going to open FAST5 format files that have been compressed
   using the `VBZ` compression algorithm.
 
-You can install the released version of floundeR from [github](https://github.com/sagrudd) with:
+You can install the released version of floundeR from [github](
+https://github.com/sagrudd) with:
 
 ``` r
 install.packages("devtools")
 devtools::install_github("sagrudd/floundeR")
 
+# devtools does not appear to pull in some of the bioconductor stuff ...
+install.packages("BiocManager")
+BiocMananger::install("rhdf5")
+# please see documents below - this requires the vbz plugin
 ```
+
+## FUBAR
+
+* some issues with HDF5 parsing on macOS
+
 
 ## Example
 
