@@ -22,5 +22,5 @@ test_that("sequencing_summary based flowcells", {
   expect_error(seqsum$flowcell$density_data, NA)
   expect_equal(class(seqsum$flowcell$density_data)[1], "Angenieux")
   
-  # SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))$flowcell$density_data$data
+  # library(floundeR); SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))$flowcell$density_data$data
 })

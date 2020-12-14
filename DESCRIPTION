@@ -27,4 +27,6 @@ Imports:
     rlang,
     purrr,
     lubridate,
-    R6
+    R6,
+    ggplot2,
+    RColorBrewer

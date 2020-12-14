@@ -70,9 +70,10 @@ Flowcell <- R6::R6Class(
     #' seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
     #' seqsum.get_fc_density_data()
     density_data = function() {
-      channelMap <- private$.get_channel_counts()
-      channelMapMatrix <-
-        reshape2::acast(channelMap, col ~ row, value.var = "count")
+      channelMapMatrix <- reshape2::acast(
+        private$.get_channel_counts(), 
+        col ~ row, 
+        value.var = "count")
       return(Angenieux$new("XYDensity", channelMapMatrix))
     }
   ),
