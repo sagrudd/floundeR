@@ -58,6 +58,15 @@ SequencingSummary <- R6::R6Class(
             }
         },
         
+        #' @description
+        #' Export the imported dataset(s) as a tibble
+        #' 
+        #' This object consumes a sequencing summary file (and optionally the
+        #' corresponding barcoding_summary file) and creates an object in
+        #' memory that can be explored, sliced and filtered. This method dumps
+        #' out the in-memory object for further exploration and development.
+        #'
+        #' @return A tibble representation of the starting dataset
         tibble = function() {
             return(private$seqsum)
         }   
@@ -67,6 +76,12 @@ SequencingSummary <- R6::R6Class(
     
     active = list (
         
+        #' @field flowcell
+        #' The sequencing summary file contains a collection of data that
+        #' includes channel data. The channel data can be overlaid on spatial
+        #' representations of flowcell layout to address spatial issues and to
+        #' visualise the overall flowcell characteristics. This method creates
+        #' a flowcell object that is suitable for these purposes.
         flowcell = function(fc) {
             
             if (is.null(private$flowcell_object)) {

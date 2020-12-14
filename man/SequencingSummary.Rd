@@ -32,6 +32,17 @@ to the query FAST5 file}
 }
 \if{html}{\out{</div>}}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{flowcell}}{The sequencing summary file contains a collection of data that
+includes channel data. The channel data can be overlaid on spatial
+representations of flowcell layout to address spatial issues and to
+visualise the overall flowcell characteristics. This method creates
+a flowcell object that is suitable for these purposes.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -88,10 +99,19 @@ seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
 \if{html}{\out{<a id="method-tibble"></a>}}
 \if{latex}{\out{\hypertarget{method-tibble}{}}}
 \subsection{Method \code{tibble()}}{
+Export the imported dataset(s) as a tibble
+
+This object consumes a sequencing summary file (and optionally the
+corresponding barcoding_summary file) and creates an object in
+memory that can be explored, sliced and filtered. This method dumps
+out the in-memory object for further exploration and development.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$tibble()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A tibble representation of the starting dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
