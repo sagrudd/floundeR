@@ -8,6 +8,7 @@
 #'
 #' @import R6
 #' @importFrom reshape2 acast
+#' @importFrom readr read_tsv cols_only
 #' @importFrom dplyr count
 #'
 #' @export
@@ -57,10 +58,10 @@ SequencingSummary <- R6::R6Class(
                 stop("Failed to import the summary files provided ...")
             }
         },
-        
+
         #' @description
         #' Export the imported dataset(s) as a tibble
-        #' 
+        #'
         #' This object consumes a sequencing summary file (and optionally the
         #' corresponding barcoding_summary file) and creates an object in
         #' memory that can be explored, sliced and filtered. This method dumps
@@ -69,13 +70,13 @@ SequencingSummary <- R6::R6Class(
         #' @return A tibble representation of the starting dataset
         tibble = function() {
             return(private$seqsum)
-        }   
+        }
 
 
     ),
-    
+
     active = list (
-        
+
         #' @field flowcell
         #' The sequencing summary file contains a collection of data that
         #' includes channel data. The channel data can be overlaid on spatial
@@ -83,20 +84,20 @@ SequencingSummary <- R6::R6Class(
         #' visualise the overall flowcell characteristics. This method creates
         #' a flowcell object that is suitable for these purposes.
         flowcell = function(fc) {
-            
+
             if (is.null(private$flowcell_object)) {
                 private$flowcell_object <- Flowcell$new()
                 message("Preparing channel count information")
                 channel_counts <- dplyr::count(private$seqsum, channel)
                 private$flowcell_object$set_channel_counts(channel_counts)
-                
+
                 message("Preparing temporal channel count information")
             }
             return(private$flowcell_object)
         }
-        
+
     ),
-    
+
 
     private = list(
         flowcell_object = NULL,
@@ -114,7 +115,8 @@ SequencingSummary <- R6::R6Class(
         .parse_seqsum = function() {
 
             mini_table = readr::read_tsv(
-                file=self$sequencing_summary_file, n_max=10, col_types = readr::cols())
+                file=self$sequencing_summary_file, n_max=10,
+                col_types = readr::cols())
             import_cols <- names(mini_table)[
                 na.omit(match(private$select_columns, names(mini_table)))]
             ctypes = private$select_column_types[

@@ -11,6 +11,25 @@ for assessing flowcell performance and metrics.
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Flowcell}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{platform}}{Have a guess at the most likely flowcell platform used
+
+The sequencing summary file contains no information on the sequencing
+device or flowcell used. For the preparation of channel density maps
+it is worth considering which flowcell type is most likely to have
+been used - this can be guessed on the number of channels described
+within the data}
+
+\item{\code{density_data}}{produce channelMap for spatial plots
+
+prepares a matrix of X, Y coordinates and
+the corresponding readcount information for the type of flowcell
+predicted by \code{get_flowcell_platform}}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -30,19 +49,37 @@ for assessing flowcell performance and metrics.
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Creates a new Flowcell object. This
+initialisation method performs other sanity checking of the defined
+file(s) and creates the required data structures.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Flowcell$new()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A new \code{Flowcell} object.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_channel_counts"></a>}}
 \if{latex}{\out{\hypertarget{method-set_channel_counts}{}}}
 \subsection{Method \code{set_channel_counts()}}{
+set channel count summary information
+
+This method is used to provide primitive channel count information for
+the number of total reads that have been observed per channel - this is
+used for the generation of spatial plots
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Flowcell$set_channel_counts(channel_counts)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{channel_counts}}{a tibble of count information}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

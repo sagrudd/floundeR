@@ -10,11 +10,21 @@ floundeR framework
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Angenieux}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{data}}{A method to dump out the stored data from an \code{Angenieux} object}
+
+\item{\code{plot}}{A method to plot the information stored in the \code{Angenieux} object - the
+plot itself is determined by the stored data and other parameters for
+a consistent rendering and per-project control}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{Angenieux$new()}}
-\item \href{#method-XYDensity}{\code{Angenieux$XYDensity()}}
 \item \href{#method-clone}{\code{Angenieux$clone()}}
 }
 }
@@ -29,19 +39,25 @@ floundeR framework
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Creates a new Angenieux object. This
+initialisation method performs other sanity checking of the defined
+file(s) and creates the required data structures.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Angenieux$new(key, value)}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-XYDensity"></a>}}
-\if{latex}{\out{\hypertarget{method-XYDensity}{}}}
-\subsection{Method \code{XYDensity()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Angenieux$XYDensity(matrix)}\if{html}{\out{</div>}}
-}
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{the datatype that is being passed to the object}
 
+\item{\code{value}}{the data that is being passed to the object}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{Angenieux} object.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

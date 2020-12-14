@@ -29,4 +29,6 @@ Imports:
     lubridate,
     R6,
     ggplot2,
-    RColorBrewer
+    RColorBrewer,
+    reshape2,
+    readr

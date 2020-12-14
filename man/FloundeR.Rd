@@ -19,19 +19,36 @@ inherit from.
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Creates a new FloundeR object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FloundeR$new()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A new \code{FloundeR} object.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-print"></a>}}
 \if{latex}{\out{\hypertarget{method-print}{}}}
 \subsection{Method \code{print()}}{
+this print method overrides the standard print function as included with
+R6 objects - this is to better define what is contained within an object
+and to provide better floundeR abstraction
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FloundeR$print(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{additional stuff passed on}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+nothing (at present) - output to stdout
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
