@@ -162,6 +162,7 @@ Angenieux <- R6::R6Class(
           ggplot2::labs(title = private$graph_title)
         return(plot)
       } else {
+        molten$bin <- factor(molten$bin, levels=sort(unique(molten$bin)))
         plot <- ggplot2::ggplot(
           molten,
           ggplot2::aes_string(x="bin", y="value", fill="passes_filtering")) +
