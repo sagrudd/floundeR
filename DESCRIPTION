@@ -31,4 +31,5 @@ Imports:
     ggplot2,
     RColorBrewer,
     reshape2,
-    readr
+    readr,
+    tidyr

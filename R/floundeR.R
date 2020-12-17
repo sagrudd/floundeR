@@ -30,6 +30,32 @@ FloundeR <- R6::R6Class(
     #' @return nothing (at present) - output to stdout
     print = function(...) {
       cat(paste0("<floundeR::", class(self)[1],">"))
+    },
+
+    bin_data = function(data, bins=20, outliers=0.025) {
+      qmax <- quantile(x=data, probs=c(1-outliers))
+      qmax <- private$roundUpNice(qmax)
+      break_interval = roundUpNice(qmax / bins)
+      breaks = seq(0, to = qmax, by = break_interval)
+      bin_assignments <- cut(
+        data, breaks, label=head(breaks, -1), include.lowest=TRUE, right=FALSE)
+      return(bin_assignments)
     }
+  ),
+
+  private = list(
+
+
+    # https://stackoverflow.com/questions/6461209/
+    # how-to-round-up-to-the-nearest-10-or-100-or-x
+    roundUpNice = function(x, nice = seq(from = 1, to = 10, by = 0.25)) {
+      if (length(x) != 1)
+        stop("'x' must be of length 1")
+      10^floor(log10(x)) * nice[[which(x <= 10^floor(log10(x)) * nice)[[1]]]]
+    }
+
   )
+
+
+
 )

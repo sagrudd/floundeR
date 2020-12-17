@@ -16,5 +16,5 @@ test_that("SequencingSet from SequencingSummary", {
     seqsum <- SequencingSummary$new(flnDr("sequencing_summary.txt.bz2"))
 
     expect_equal(class(seqsum$sequencingset)[1], "SequencingSet")
-    expect_error(seqsum$sequencingset$set_enumerate, NA)
+    expect_error(seqsum$sequencingset$enumerate, NA)
 })

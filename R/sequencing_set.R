@@ -2,6 +2,9 @@
 #' R6 Class for loading and analysing sequence sets
 #'
 #' @description
+#'
+#' @importFrom tidyr replace_na
+#'
 #' @export
 SequencingSet <- R6::R6Class(
     inherit = FloundeR,
@@ -30,12 +33,31 @@ SequencingSet <- R6::R6Class(
         #' @return A tibble representation of the starting dataset
         as_tibble = function() {
             return(private$seqsum)
+        },
+
+
+        read_length_bins = function(bins=20, outliers=0.025) {
+          bins <- self$bin_data(
+            private$seqsum$sequence_length_template, bins=bins,
+            outliers=outliers)
+          private$seqsum["bin"] <- bins
+          rls <- private$seqsum %>%
+            dplyr::group_by(.dots=c(private$keycol, "bin")) %>%
+            dplyr::summarize(count=dplyr::n(), .groups="drop")
+          rls$bin <- as.integer(levels(rls$bin)[as.integer(rls$bin)])
+          # na may creep into the data ...
+          if (NA %in% rls$bin) {
+            rls$bin <- tidyr::replace_na(
+              rls$bin,
+              max(rls$bin, na.rm=TRUE)+sort(rls$bin[rls$bin > 0])[1])
+          }
+          Angenieux$new("2D_count", rls)
         }
     ),
 
     active = list (
 
-      set_enumerate = function(value) {
+      enumerate = function(value) {
         if (missing(value)) {
           enumerated_counts <- private$seqsum %>%
             dplyr::group_by(.dots=private$keycol) %>%
