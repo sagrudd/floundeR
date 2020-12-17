@@ -36,7 +36,7 @@ SequencingSet <- R6::R6Class(
         },
 
 
-        read_length_bins = function(normalised=TRUE, bins=20, outliers=0.025) {
+        read_length_bins = function(normalised=TRUE, cumulative=FALSE, bins=20, outliers=0.025) {
           bins <- self$bin_data(
             private$seqsum$sequence_length_template, bins=bins,
             outliers=outliers)
@@ -58,6 +58,11 @@ SequencingSet <- R6::R6Class(
               rls$bin,
               max(rls$bin, na.rm=TRUE)+sort(rls$bin[rls$bin > 0])[1])
           }
+
+          if (cumulative) {
+            rls <- rls %>% group_by(passes_filtering) %>% arrange(desc(bin)) %>% mutate(count=cumsum(count))
+          }
+
           Angenieux$new("2D_count", rls)
         },
 
