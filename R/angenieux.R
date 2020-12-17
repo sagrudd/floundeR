@@ -34,7 +34,15 @@ Angenieux <- R6::R6Class(
         }
         private$graph_type = key
         private$graph_data <- value
-      } else {
+      } else if (key == "1D_count") {
+        if (!tibble::is_tibble(value)) {
+          stop("this requires a tibble")
+        }
+        private$graph_type = key
+        private$graph_data <- value
+      }
+
+      else {
         stop(paste0("Graph type [",key,"] not implemented"))
       }
     }
@@ -47,6 +55,8 @@ Angenieux <- R6::R6Class(
     data = function(value) {
       if (missing(value)) {
         if (private$graph_type == "XYDensity") {
+          return(private$graph_data)
+        } else if (private$graph_type == "1D_count") {
           return(private$graph_data)
         } else {
           stop(paste0("Graph type [",private$graph_type,"] not implemented"))

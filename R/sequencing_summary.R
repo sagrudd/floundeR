@@ -68,7 +68,7 @@ SequencingSummary <- R6::R6Class(
         #' out the in-memory object for further exploration and development.
         #'
         #' @return A tibble representation of the starting dataset
-        tibble = function() {
+        as_tibble = function() {
             return(private$seqsum)
         }
 
@@ -94,6 +94,15 @@ SequencingSummary <- R6::R6Class(
                 message("Preparing temporal channel count information")
             }
             return(private$flowcell_object)
+        },
+
+        sequencingset = function(column="passes_filtering", keys=NULL) {
+            if (is.null(private$sequencing_set)) {
+                private$sequencing_set <- SequencingSet$new(
+                    keycol=column,
+                    seqsum=private$seqsum)
+            }
+            return(private$sequencing_set)
         }
 
     ),
@@ -102,6 +111,7 @@ SequencingSummary <- R6::R6Class(
     private = list(
         flowcell_object = NULL,
         seqsum = NULL,
+        sequencing_set = NULL,
         # read_id / c has been removed - this is a big character - ?value
         select_columns = c(
             "channel", "start_time", "duration",

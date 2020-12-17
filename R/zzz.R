@@ -4,3 +4,9 @@
                                  utils::packageVersion("floundeR")))
     invisible()
 }
+
+
+.onLoad <- function(libname, pkgname){
+    library(magrittr)
+    invisible()
+}
