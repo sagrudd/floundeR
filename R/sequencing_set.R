@@ -36,16 +36,23 @@ SequencingSet <- R6::R6Class(
         },
 
 
-        read_length_bins = function(bins=20, outliers=0.025) {
+        read_length_bins = function(normalised=TRUE, bins=20, outliers=0.025) {
           bins <- self$bin_data(
             private$seqsum$sequence_length_template, bins=bins,
             outliers=outliers)
           private$seqsum["bin"] <- bins
-          rls <- private$seqsum %>%
-            dplyr::group_by(.dots=c(private$keycol, "bin")) %>%
-            dplyr::summarize(count=dplyr::n(), .groups="drop")
-          rls$bin <- as.integer(levels(rls$bin)[as.integer(rls$bin)])
+          rls <- NULL
+          if (normalised) {
+            rls <- private$seqsum %>%
+              dplyr::group_by(.dots=c(private$keycol, "bin")) %>%
+              dplyr::summarize(count=sum(sequence_length_template), .groups="drop")
+          } else {
+            rls <- private$seqsum %>%
+              dplyr::group_by(.dots=c(private$keycol, "bin")) %>%
+              dplyr::summarize(count=dplyr::n(), .groups="drop")
+          }
           # na may creep into the data ...
+          rls$bin <- as.integer(levels(rls$bin)[as.integer(rls$bin)])
           if (NA %in% rls$bin) {
             rls$bin <- tidyr::replace_na(
               rls$bin,
