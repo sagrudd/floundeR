@@ -32,4 +32,5 @@ Imports:
     RColorBrewer,
     reshape2,
     readr,
-    tidyr
+    tidyr,
+    emojifont
