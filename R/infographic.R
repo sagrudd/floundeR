@@ -72,9 +72,11 @@ Infographic <- R6::R6Class(
             save_x = (max(df$x)+panel.width+panel.spacer) * 0.6
             save_y = (max(df$y)+panel.height+panel.spacer)  * 0.6
 
-            ggplot2::ggsave("c:/Users/srudd/Downloads/readme.png", plot = plot, device =
+            display_file = tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".png")
+
+            ggplot2::ggsave(display_file, plot = plot, device =
                                 "png", units = "cm", width = save_x, height = save_y, dpi = 180)
-            plot(magick::image_read('c:/Users/srudd/Downloads/readme.png'))
+            plot(magick::image_read(display_file))
 
         }
     ),
