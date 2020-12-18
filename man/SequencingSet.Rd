@@ -4,9 +4,7 @@
 \alias{SequencingSet}
 \title{R6 Class for loading and analysing sequence sets}
 \description{
-R6 Class for loading and analysing sequence sets
 
-R6 Class for loading and analysing sequence sets
 }
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{SequencingSet}
@@ -15,13 +13,16 @@ R6 Class for loading and analysing sequence sets
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SequencingSet$new()}}
-\item \href{#method-add_set}{\code{SequencingSet$add_set()}}
+\item \href{#method-as_tibble}{\code{SequencingSet$as_tibble()}}
+\item \href{#method-read_length_bins}{\code{SequencingSet$read_length_bins()}}
+\item \href{#method-quality_bins}{\code{SequencingSet$quality_bins()}}
 \item \href{#method-clone}{\code{SequencingSet$clone()}}
 }
 }
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
 }
 \out{</details>}
@@ -31,16 +32,48 @@ R6 Class for loading and analysing sequence sets
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SequencingSet$new(key, value)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSet$new(keycol, seqsum = NA)}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_set"></a>}}
-\if{latex}{\out{\hypertarget{method-add_set}{}}}
-\subsection{Method \code{add_set()}}{
+\if{html}{\out{<a id="method-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\subsection{Method \code{as_tibble()}}{
+Export the imported dataset(s) as a tibble
+
+This object consumes a sequencing summary file (and optionally the
+corresponding barcoding_summary file) and creates an object in
+memory that can be explored, sliced and filtered. This method dumps
+out the in-memory object for further exploration and development.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SequencingSet$add_set(key, value)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSet$as_tibble()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A tibble representation of the starting dataset
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-read_length_bins"></a>}}
+\if{latex}{\out{\hypertarget{method-read_length_bins}{}}}
+\subsection{Method \code{read_length_bins()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSet$read_length_bins(
+  normalised = TRUE,
+  cumulative = FALSE,
+  bins = 20,
+  outliers = 0.025
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-quality_bins"></a>}}
+\if{latex}{\out{\hypertarget{method-quality_bins}{}}}
+\subsection{Method \code{quality_bins()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSet$quality_bins(bins = 20, outliers = 0)}\if{html}{\out{</div>}}
 }
 
 }

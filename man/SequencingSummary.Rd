@@ -47,13 +47,14 @@ a flowcell object that is suitable for these purposes.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{SequencingSummary$new()}}
-\item \href{#method-tibble}{\code{SequencingSummary$tibble()}}
+\item \href{#method-as_tibble}{\code{SequencingSummary$as_tibble()}}
 \item \href{#method-clone}{\code{SequencingSummary$clone()}}
 }
 }
 \if{html}{
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
 }
 \out{</details>}
@@ -96,9 +97,9 @@ seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-tibble}{}}}
-\subsection{Method \code{tibble()}}{
+\if{html}{\out{<a id="method-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\subsection{Method \code{as_tibble()}}{
 Export the imported dataset(s) as a tibble
 
 This object consumes a sequencing summary file (and optionally the
@@ -106,7 +107,7 @@ corresponding barcoding_summary file) and creates an object in
 memory that can be explored, sliced and filtered. This method dumps
 out the in-memory object for further exploration and development.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$tibble()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SequencingSummary$as_tibble()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

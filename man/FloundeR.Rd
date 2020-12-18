@@ -12,6 +12,7 @@ inherit from.
 \itemize{
 \item \href{#method-new}{\code{FloundeR$new()}}
 \item \href{#method-print}{\code{FloundeR$print()}}
+\item \href{#method-bin_data}{\code{FloundeR$bin_data()}}
 \item \href{#method-clone}{\code{FloundeR$clone()}}
 }
 }
@@ -49,6 +50,15 @@ and to provide better floundeR abstraction
 \subsection{Returns}{
 nothing (at present) - output to stdout
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-bin_data"></a>}}
+\if{latex}{\out{\hypertarget{method-bin_data}{}}}
+\subsection{Method \code{bin_data()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FloundeR$bin_data(data, bins = 20, outliers = 0.025, qmax = NA)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
