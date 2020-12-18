@@ -103,6 +103,14 @@ SequencingSummary <- R6::R6Class(
                     seqsum=private$seqsum)
             }
             return(private$sequencing_set)
+        },
+
+        temporalset = function() {
+            if (is.null(private$temporal_set)) {
+                private$temporal_set <- TemporalSet$new(
+                    seqsum=private$seqsum)
+            }
+            return(private$temporal_set)
         }
 
     ),
@@ -112,6 +120,8 @@ SequencingSummary <- R6::R6Class(
         flowcell_object = NULL,
         seqsum = NULL,
         sequencing_set = NULL,
+        temporal_set = NULL,
+
         # read_id / c has been removed - this is a big character - ?value
         select_columns = c(
             "channel", "start_time", "duration",
