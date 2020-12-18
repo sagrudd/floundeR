@@ -46,6 +46,12 @@ Angenieux <- R6::R6Class(
         }
         private$graph_type = key
         private$graph_data <- value
+      }  else if (key == "boxplot") {
+        if (!tibble::is_tibble(value)) {
+          stop("this requires a tibble")
+        }
+        private$graph_type = key
+        private$graph_data <- value
       }
 
       else {
@@ -60,6 +66,8 @@ Angenieux <- R6::R6Class(
         return(private$.plot_1d_count(...))
       } else if (private$graph_type == "2D_count") {
         return(private$.plot_2d_count(...))
+      } else if (private$graph_type == "boxplot") {
+        return(private$.plot_boxplot(...))
       } else {
         stop(paste0("Graph type [",private$graph_type,"] not implemented"))
       }
@@ -77,6 +85,8 @@ Angenieux <- R6::R6Class(
         } else if (private$graph_type == "1D_count") {
           return(private$graph_data)
         } else if (private$graph_type == "2D_count") {
+          return(private$graph_data)
+        } else if (private$graph_type == "boxplot") {
           return(private$graph_data)
         } else {
           stop(paste0("Graph type [",private$graph_type,"] not implemented"))
@@ -150,7 +160,7 @@ Angenieux <- R6::R6Class(
       }
     },
 
-    .plot_2d_count = function(style="stacked") {
+    .plot_2d_count = function(style="line") {
       key <- colnames(private$graph_data)[[1]]
       molten <- reshape2::melt(
         private$graph_data, id.vars=c("bin", key), measure.vars=c("count"))
@@ -170,6 +180,17 @@ Angenieux <- R6::R6Class(
           ggplot2::labs(title = private$graph_title)
         return(plot)
       }
+    },
+
+    .plot_boxplot = function() {
+      key <- colnames(private$graph_data)[[2]]
+      plot <- ggplot2::ggplot(
+        private$graph_data,
+        ggplot2::aes_string(x="bin", y=key, group="bin")) +
+        ggplot2::geom_boxplot(fill="steelblue", outlier.shape=NA) +
+        ggplot2::scale_x_continuous() +
+        ggplot2::labs(title = private$graph_title)
+      return(plot)
     }
   )
 )
