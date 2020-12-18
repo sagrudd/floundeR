@@ -3,7 +3,7 @@
 #'
 #' @description
 #'
-#' @importFrom tidyr replace_na
+#' @importFrom tidyr drop_na
 #'
 #' @export
 SequencingSet <- R6::R6Class(
@@ -40,7 +40,7 @@ SequencingSet <- R6::R6Class(
           bins <- self$bin_data(
             private$seqsum$sequence_length_template, bins=bins,
             outliers=outliers)
-          private$seqsum["bin"] <- bins
+          private$seqsum["bin"] <- as.numeric(levels(bins))[bins]
           rls <- NULL
           if (normalised) {
             rls <- private$seqsum %>%
@@ -52,12 +52,7 @@ SequencingSet <- R6::R6Class(
               dplyr::summarize(count=dplyr::n(), .groups="drop")
           }
           # na may creep into the data ...
-          rls$bin <- as.integer(levels(rls$bin)[as.integer(rls$bin)])
-          if (NA %in% rls$bin) {
-            rls$bin <- tidyr::replace_na(
-              rls$bin,
-              max(rls$bin, na.rm=TRUE)+sort(rls$bin[rls$bin > 0])[1])
-          }
+          rls <- tidyr::drop_na(rls)
 
           if (cumulative) {
             rls <- rls %>% group_by(passes_filtering) %>% arrange(desc(bin)) %>% mutate(count=cumsum(count))
@@ -71,17 +66,13 @@ SequencingSet <- R6::R6Class(
           bins <- self$bin_data(
             private$seqsum$mean_qscore_template, bins=bins,
             outliers=outliers)
-          private$seqsum["bin"] <- bins
+          private$seqsum["bin"] <- as.numeric(levels(bins))[bins]
           rls <- private$seqsum %>%
             dplyr::group_by(.dots=c(private$keycol, "bin")) %>%
             dplyr::summarize(count=dplyr::n(), .groups="drop")
-          rls$bin <- as.numeric(levels(rls$bin)[as.integer(rls$bin)])
           # na may creep into the data ...
-          if (NA %in% rls$bin) {
-            rls$bin <- tidyr::replace_na(
-              rls$bin,
-              max(rls$bin, na.rm=TRUE)+sort(rls$bin[rls$bin > 0])[1])
-          }
+          rls <- tidyr::drop_na(rls)
+
           Angenieux$new("2D_count", rls)
         }
     ),
