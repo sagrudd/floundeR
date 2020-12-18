@@ -72,8 +72,7 @@ TemporalSet <- R6::R6Class(
         },
 
 
-        t50 = function(passes=TRUE, t=0.5, resolution=15) {
-            private$.temporal_bins(resolution)
+        t50 = function(passes=TRUE, t=0.5) {
             # only uses the passed data here ...
             data.filt = private$seqsum %>%
                 dplyr::filter(passes_filtering == passes) %>%
