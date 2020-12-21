@@ -37,7 +37,7 @@ FloundeR <- R6::R6Class(
         qmax <- quantile(x=data, probs=c(1-outliers))
         qmax <- private$roundUpNice(qmax)
       }
-      break_interval = roundUpNice(qmax / bins)
+      break_interval = private$roundUpNice(qmax / bins)
       breaks = seq(0, to = qmax, by = break_interval)
       bin_assignments <- cut(
         data, breaks, label=head(breaks, -1), include.lowest=TRUE, right=FALSE)

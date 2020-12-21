@@ -44,6 +44,17 @@ MultiplexSet <- R6::R6Class(
 
     ),
 
+    active = list (
+
+        enumerate = function(value) {
+            if (missing(value)) {
+                enumerated_counts <- private$seqsum %>% dplyr::group_by(.dots=c("passes_filtering", "barcode_arrangement")) %>% dplyr::summarize(count=dplyr::n(), .groups="drop")
+                Angenieux$new("2D_count", enumerated_counts)
+            }
+        }
+
+    ),
+
     private = list(
       seqsum = NULL,
 

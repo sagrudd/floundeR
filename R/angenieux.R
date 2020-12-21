@@ -162,20 +162,23 @@ Angenieux <- R6::R6Class(
 
     .plot_2d_count = function(style="line") {
       key <- colnames(private$graph_data)[[1]]
+      level <- colnames(private$graph_data)[[2]]
       molten <- reshape2::melt(
-        private$graph_data, id.vars=c("bin", key), measure.vars=c("count"))
+        private$graph_data, id.vars=c(level, key), measure.vars=c("count"))
       if (style == "line") {
         plot <- ggplot2::ggplot(
           molten,
-          ggplot2::aes_string(x="bin", y="value", colour="passes_filtering")) +
+          ggplot2::aes_string(x=level, y="value", colour=key)) +
           ggplot2::geom_line() +
           ggplot2::labs(title = private$graph_title)
         return(plot)
       } else {
-        molten$bin <- factor(molten$bin, levels=sort(unique(molten$bin)))
+        molten[[level]] <- factor(
+          molten[[level]],
+          sort(unique(molten[[level]])))
         plot <- ggplot2::ggplot(
           molten,
-          ggplot2::aes_string(x="bin", y="value", fill="passes_filtering")) +
+          ggplot2::aes_string(x=level, y="value", fill=key)) +
           ggplot2::geom_col() +
           ggplot2::labs(title = private$graph_title)
         return(plot)
