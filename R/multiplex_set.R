@@ -86,15 +86,25 @@ MultiplexSet <- R6::R6Class(
 
 
       sequencingset = function(barcode) {
+          if (!barcode %in% private$seqsum$barcode_arrangement) {
+              stop(
+                  paste0(
+                      "barcode [",barcode,"] not present in sequencingsummary"))
+          }
           return(SequencingSet$new(
               keycol = "passes_filtering",
-              seqsum = seqsum %>%
+              seqsum = private$seqsum %>%
                   dplyr::filter(.data[["barcode_arrangement"]]==barcode)))
       },
 
       temporalset = function(barcode) {
+          if (!barcode %in% private$seqsum$barcode_arrangement) {
+              stop(
+                  paste0(
+                      "barcode [",barcode,"] not present in sequencingsummary"))
+          }
           return(TemporalSet$new(
-              seqsum = seqsum %>%
+              seqsum = private$seqsum %>%
                   dplyr::filter(.data[["barcode_arrangement"]]==barcode)))
       }
 
