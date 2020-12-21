@@ -54,7 +54,7 @@ Infographic <- R6::R6Class(
             return(df)
         },
 
-        plot = function() {
+        plot = function(display_file = tempfile(pattern="file", tmpdir=tempdir(), fileext=".png")) {
 
             df <- self$as_tibble()
 
@@ -72,11 +72,30 @@ Infographic <- R6::R6Class(
             save_x = (max(df$x)+panel.width+panel.spacer) * 0.6
             save_y = (max(df$y)+panel.height+panel.spacer)  * 0.6
 
-            display_file = tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".png")
-
             ggplot2::ggsave(display_file, plot = plot, device =
                                 "png", units = "cm", width = save_x, height = save_y, dpi = 180)
             plot(magick::image_read(display_file))
+
+        },
+
+        display_fa = function(file, offset=0, rows=10, columns=6) {
+            fonts <- emojifont::search_fontawesome("")
+            if (offset >= length(fonts)) {
+                stop(
+                    paste0(
+                        "There are only [",length(fonts),
+                        "] fonts = nonsense"))
+            }
+            fmax = min(length(fonts), (rows * columns) + offset)
+            print_fonts <- fonts[seq.int(from=(offset+1), to=fmax)]
+
+            ig <- Infographic$new()
+            ig$columns <- columns
+            for (ff in print_fonts) {
+                igi <- InfographicItem$new(ff, " ", ff)
+                ig$add(igi)
+            }
+            ig$plot(file)
 
         }
     ),
