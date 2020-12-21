@@ -92,7 +92,7 @@ Infographic <- R6::R6Class(
             ig <- Infographic$new()
             ig$columns <- columns
             for (ff in print_fonts) {
-                igi <- InfographicItem$new(ff, " ", ff)
+                igi <- InfographicItem$new(ff, which(fonts==ff), ff)
                 ig$add(igi)
             }
             ig$plot(file)
