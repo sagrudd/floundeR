@@ -21,7 +21,7 @@ SequencingSummary <- R6::R6Class(
         sequencing_summary_file = NULL,
         #' @field barcoding_summary_file the file.path
         #' to the query FAST5 file
-        barcoding_summary_file = NULL,
+        barcoding_summary_file = NA,
 
         #' @description
         #' Creates a new SequencingSummary object. This
@@ -141,9 +141,13 @@ SequencingSummary <- R6::R6Class(
 
         .parse_seqsum = function() {
 
-            mini_table = readr::read_tsv(
+            mini_table <- readr::read_tsv(
                 file=self$sequencing_summary_file, n_max=10,
                 col_types = readr::cols())
+            # if barcoding summary not provided, clip req. for `read_id`
+            if (is.na(self$barcoding_summary_file)) {
+                mini_table <- mini_table %>% dplyr::select(-read_id)
+            }
             import_cols <- names(mini_table)[
                 na.omit(match(private$select_columns, names(mini_table)))]
             ctypes = private$select_column_types[
