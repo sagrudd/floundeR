@@ -59,7 +59,7 @@
       <a href="articles/fast5_review.html">fast5_review</a>
     </li>
     <li>
-      <a href="articles/sequencing_summary_review.html">sequencing_summary_review</a>
+      <a href="articles/sequencing_summary_review.html">Using the Nanopore `sequencing_summary` file for BasicQC</a>
     </li>
   </ul>
 </li>
@@ -87,6 +87,7 @@
 <p><a href="https://img.shields.io/github/languages/code-size/sagrudd/floundeR"><img src="https://img.shields.io/github/languages/code-size/sagrudd/floundeR" alt="Build Status"></a> <a href="https://img.shields.io/github/downloads/sagrudd/floundeR/total"><img src="https://img.shields.io/github/downloads/sagrudd/floundeR/total" alt="Releases"></a> <!-- badges: end --></p>
 <p>The goal of floundeR is to provide a robust and Tidyverse compliant toolbox that can be used to explore Nanopore sequence data. The analytical R code contained within has been forked from earlier projects such as nanopoRe. The R code has been deduplicated and reimplemented as R6 objects.</p>
 <p>The project goals diverge from earlier versions of nanopoRe and the ambition is now to enable abbreviated and simplified data exploration.</p>
+<p>The documentation for the floundeR package can be found at <a href="https://sagrudd.github.io/floundeR/">https://sagrudd.github.io/floundeR/</a></p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -105,13 +106,21 @@
 <span class="fu">BiocMananger</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"rhdf5"</span><span class="op">)</span>
 <span class="co"># please see documents below - this requires the vbz plugin</span></code></pre></div>
 </div>
-<div id="example" class="section level2">
+<div id="flounder-and-a-basicqc-analysis-to-assess-a-flowcell-run" class="section level2">
 <h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<a href="#flounder-and-a-basicqc-analysis-to-assess-a-flowcell-run" class="anchor"></a><code>floundeR</code> and a BasicQC analysis to assess a flowcell run</h2>
+<p>BasicQC was the name of the original Nanopore tutorial that introduced an R workflow to question a flowcell’s performance on the basis of the <code>sequencing_summary</code> file produced by MinKNOW or Guppy (Albacore in the past). With the transition to (Python based) <a href="https://labs.epi2me.io">EPI2ME Labs</a> and the deprecation of the original tutorial this workflow is being maintained to support the requirements of R-aficionados.</p>
+<p>Instead of using the packaged and toy dataset, let’s use a slightly more robust dataset to show what the tool can really do.</p>
+<pre><code><a href="https://rdrr.io/pkg/aws.s3/man/get_object.html">aws.s3::save_object(
+   "/gm24385_2020.11/flowcells/20201026_1645_6B_PAG07165_d42912aa/sequencing_summary_PAG07165_2dfda515.txt", 
+   bucket = "s3://ont-open-data/", 
+   region="eu-west-1")</a></code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">floundeR</span><span class="op">)</span>
-<span class="co">## basic example code</span></code></pre></div>
+<span class="va">sequencing_summary</span> <span class="op">&lt;-</span> <span class="st">"sequencing_summary_PAG07165_2dfda515.txt"</span>
+<span class="va">seqsum</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/SequencingSummary.html">SequencingSummary</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">sequencing_summary</span><span class="op">)</span>
+<span class="va">seqsum</span><span class="op">$</span><span class="va">flowcell</span><span class="op">$</span><span class="va">density_data</span><span class="op">$</span><span class="va">plot</span></code></pre></div>
+<p><img src="https://github.com/sagrudd/floundeR/blob/master/docs/articles/figure1.png" width="50%/"></p>
 </div>
 </div>
   </div>

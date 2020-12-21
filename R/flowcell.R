@@ -34,6 +34,20 @@ Flowcell <- R6::R6Class(
     #' @param channel_counts a tibble of count information
     set_channel_counts = function(channel_counts) {
       private$channel_counts <- channel_counts
+    },
+
+
+    #' @description
+    #' Export the imported dataset(s) as a tibble
+    #'
+    #' This object consumes a sequencing summary file (and optionally the
+    #' corresponding barcoding_summary file) and creates an object in
+    #' memory that can be explored, sliced and filtered. This method dumps
+    #' out the in-memory object for further exploration and development.
+    #'
+    #' @return A tibble representation of the starting dataset
+    as_tibble = function() {
+      return(private$channel_counts)
     }
   ),
 
@@ -55,8 +69,9 @@ Flowcell <- R6::R6Class(
             private$platform_name <- "Flongle"
           } else if (max(private$channel_counts$channel) > 1000) {
             private$platform_name <- "PromethION"
+          } else {
+            private$platform_name <- "MinION"
           }
-          private$platform_name <- "MinION"
         }
         return(private$platform_name)
       } else {

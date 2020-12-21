@@ -28,6 +28,10 @@ Angenieux <- R6::R6Class(
     #'
     #' @return A new `Angenieux` object.
     initialize = function(key, value) {
+
+      private$hm.palette = grDevices::colorRampPalette(
+        RColorBrewer::brewer.pal(9, "Blues"), space = "Lab")
+
       if (key == "XYDensity") {
         if (!is.matrix(value)) {
           stop("this requires a matrix")
@@ -117,32 +121,34 @@ Angenieux <- R6::R6Class(
     graph_type = NULL,
     graph_data = NULL,
     graph_title = "angenieux plot",
-    hm.palette = grDevices::colorRampPalette(
-      RColorBrewer::brewer.pal(9, "Blues"), space = "Lab"),
+    hm.palette = NULL,
 
-    .plot_xy_density = function() {
+    .plot_xy_density = function(count=FALSE) {
 
       molten_matrix <- reshape2::melt(
         private$graph_data, value.name = "Count", varnames=c('X', 'Y'))
 
       plot <- ggplot2::ggplot(
         molten_matrix,
-        ggplot2::aes_string(x = "X", y = "Y", fill = "Count")
-      ) + ggplot2::geom_tile() + ggplot2::scale_x_discrete(breaks = NULL) +
+        ggplot2::aes_string(x = "X", y = "Y", fill = "Count")) +
+        ggplot2::geom_tile() +
+        ggplot2::scale_x_discrete(breaks = NULL) +
         ggplot2::scale_y_discrete(breaks = NULL) +
         ggplot2::coord_equal() +
         ggplot2::scale_fill_gradientn(colours = private$hm.palette(100)) +
-        ggplot2::scale_color_gradient2(low = private$hm.palette(100), high = private$hm.palette(1)) +
+        ggplot2::scale_color_gradient2(low = private$hm.palette(100)[100], high = private$hm.palette(100)[1]) +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
         ggplot2::labs(title = private$graph_title) +
         ggplot2::theme(panel.border = element_blank(), panel.grid.major=element_blank(),
               panel.grid.minor = element_blank(), axis.title.x = element_blank(),
               axis.title.y = element_blank(), legend.position = "bottom",
-              legend.key.width = unit(5.6, "cm")) +
-        ggplot2::geom_text(
+              legend.key.width = unit(5.6, "cm"))
+      if (count) {
+        plot <- plot + ggplot2::geom_text(
           data = molten_matrix,
           ggplot2::aes_string(x = "X", y = "Y", label = "Count", color = "Count"),
           show.legend = FALSE, size = 2.5)
+      }
       return(plot)
     },
 

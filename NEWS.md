@@ -1,5 +1,6 @@
 # floundeR (development version)
 
+* pkgdown documentation for the github pages
 * creation of angenieux prototype; code linking and POC
 * creation of the R6 object called FlowCell
 * Sequencing summary push ...

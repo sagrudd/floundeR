@@ -3,7 +3,9 @@
 #'
 #' @description
 #' This is an overarching class which other flounder classes are expected to
-#' inherit from.
+#' inherit from. The `floundeR` object contains methods and variables that are
+#' maintained for other objects - there is probably not a sensible usecase for
+#' actually creating a `floundeR` instance on its own.
 #'
 #' @import R6
 #'

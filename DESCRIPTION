@@ -35,4 +35,5 @@ Imports:
     tidyr,
     emojifont,
     magrittr,
-    tibble
+    tibble,
+    aws.s3

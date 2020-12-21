@@ -42,12 +42,32 @@ BiocMananger::install("rhdf5")
 ```
 
 
-## Example
+## `floundeR` and a BasicQC analysis to assess a flowcell run
 
-This is a basic example which shows you how to solve a common problem:
+BasicQC was the name of the original Nanopore tutorial that introduced an R
+workflow to question a flowcell's performance on the basis of the 
+`sequencing_summary` file produced by MinKNOW or Guppy (Albacore in the past).
+With the transition to (Python based) [EPI2ME Labs](https://labs.epi2me.io) and
+the deprecation of the original tutorial this workflow is being maintained to
+support the requirements of R-aficionados.
+
+Instead of using the packaged and toy dataset, let's use a slightly more
+robust dataset to show what the tool can really do.
+
+```
+aws.s3::save_object(
+   "/gm24385_2020.11/flowcells/20201026_1645_6B_PAG07165_d42912aa/sequencing_summary_PAG07165_2dfda515.txt", 
+   bucket = "s3://ont-open-data/", 
+   region="eu-west-1")
+```
+
 
 ``` r
 library(floundeR)
-## basic example code
+sequencing_summary <- "sequencing_summary_PAG07165_2dfda515.txt"
+seqsum <- SequencingSummary$new(sequencing_summary)
+seqsum$flowcell$density_data$plot
 ```
+
+<img src=https://github.com/sagrudd/floundeR/blob/master/docs/articles/figure1.png width=50%/>
 
