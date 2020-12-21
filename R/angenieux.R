@@ -59,6 +59,13 @@ Angenieux <- R6::R6Class(
       }
     },
 
+
+    #' @description
+    #' Prepare and present an Angenieux plot
+    #'
+    #' @param ... parameters passed on to downstream methods - please see
+    #' examples for further examples as to how Angenieux plots can be customised
+    #' using this approach.
     .plot = function(...) {
       if (private$graph_type == "XYDensity") {
         return(private$.plot_xy_density(...))

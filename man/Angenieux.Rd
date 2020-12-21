@@ -65,10 +65,20 @@ A new \code{Angenieux} object.
 \if{html}{\out{<a id="method-.plot"></a>}}
 \if{latex}{\out{\hypertarget{method-.plot}{}}}
 \subsection{Method \code{.plot()}}{
+Prepare and present an Angenieux plot
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Angenieux$.plot(...)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{parameters passed on to downstream methods - please see
+examples for further examples as to how Angenieux plots can be customised
+using this approach.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
