@@ -69,5 +69,5 @@ seqsum <- SequencingSummary$new(sequencing_summary)
 seqsum$flowcell$density_data$plot
 ```
 
-<img src=https://github.com/sagrudd/floundeR/blob/master/docs/articles/figure1.png width=50%/>
+<img src="https://raw.githubusercontent.com/sagrudd/floundeR/main/docs/articles/figure_1.png" />
 
