@@ -9,6 +9,14 @@
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{SequencingSet}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{enumerate}}{prepares a simple \verb{1D Angenieux} enumeration of the provided dataset
+for quick visualisation of the dataset.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -31,10 +39,21 @@
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Initialise a new instance of the R6 Class <SequencingSet>
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SequencingSet$new(keycol, seqsum = NA)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{keycol}}{a pointer to the column of interest in the \code{seqsum} to
+direct parsing and exploration of the file.}
+
+\item{\code{seqsum}}{a tibble of sequencing summary information}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_tibble"></a>}}
@@ -58,6 +77,13 @@ A tibble representation of the starting dataset
 \if{html}{\out{<a id="method-read_length_bins"></a>}}
 \if{latex}{\out{\hypertarget{method-read_length_bins}{}}}
 \subsection{Method \code{read_length_bins()}}{
+bin the sequences in \code{seqsum} content into bins of sequence length
+
+The nanopore sequencing run is expected to return a collection of
+sequences that vary in their length distributions; this variance is a
+function of the sequencing library prepared, the starting DNA etc. This
+method is used to bin reads into uniform bins to assess the distribution
+of sequence lengths.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SequencingSet$read_length_bins(
   normalised = TRUE,
@@ -67,15 +93,60 @@ A tibble representation of the starting dataset
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{normalised}}{\itemize{
+\item should the sequence collection be reported to
+normalise for the number of sequence bases sequenced or the number of
+sequence reads - TRUE by default to normalise for sequenced bases.
+}}
+
+\item{\code{cumulative}}{defines whether cumulative sequence bases (reads) are
+reported per bin (FALSE by default).}
+
+\item{\code{bins}}{the number of sequence bins that should be prepared (20 by
+default)}
+
+\item{\code{outliers}}{defines the number of outliers (0.025 = 2.5\%) that are
+excluded from the longest reads to prepare a richer distribution
+visulation - the plots can be bothered by the long tail of mini-whales.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Angenieux 2D graph object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-quality_bins"></a>}}
 \if{latex}{\out{\hypertarget{method-quality_bins}{}}}
 \subsection{Method \code{quality_bins()}}{
+bin the sequences in \code{seqsum} content into bins of quality
+
+The nanopore sequencing run is expected to return a collection of
+sequences that vary in their quality distributions; this variance is a
+function of the sequencing library prepared, the starting DNA etc. This
+method is used to bin reads into uniform quality bins to assess the
+overall quality of the run and to identify potential issues
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SequencingSet$quality_bins(bins = 20, outliers = 0)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{bins}}{the number of sequence bins that should be prepared (20 by
+default)}
+
+\item{\code{outliers}}{defines the number of outliers (0 = 0\%) that are
+excluded from the reads - should probably be deprecated for simplicity??}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Angenieux 2D graph object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
