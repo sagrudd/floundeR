@@ -6,6 +6,7 @@ analysis of Nanopore sequence data.
 
 <!-- badges: start -->
 [![Build Status](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)
+[![Releases](https://img.shields.io/github/downloads/sagrudd/floundeR/total)](https://img.shields.io/github/downloads/sagrudd/floundeR/total)
 <!-- badges: end -->
 
 The goal of floundeR is to provide a robust and Tidyverse compliant toolbox
