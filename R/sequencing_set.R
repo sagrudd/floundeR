@@ -55,7 +55,10 @@ SequencingSet <- R6::R6Class(
           rls <- tidyr::drop_na(rls)
 
           if (cumulative) {
-            rls <- rls %>% group_by(passes_filtering) %>% arrange(desc(bin)) %>% mutate(count=cumsum(count))
+            rls <- rls %>%
+              dplyr::group_by(passes_filtering) %>%
+              dplyr::arrange(desc(bin)) %>%
+              dplyr::mutate(count=cumsum(count))
           }
 
           Angenieux$new("2D_count", rls)
