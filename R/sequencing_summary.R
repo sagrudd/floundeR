@@ -94,6 +94,10 @@ SequencingSummary <- R6::R6Class(
             return(private$flowcell_object)
         },
 
+        #' @field sequencingset
+        #' The `sequencingset` active binding returns a sequencingset object
+        #' that is canonically structured around the `passes_filtering` logical
+        #' field to allow assessment of sequencing characteristics.
         sequencingset = function(column="passes_filtering", keys=NULL) {
             if (is.null(private$sequencing_set)) {
                 private$sequencing_set <- SequencingSet$new(
@@ -103,6 +107,10 @@ SequencingSummary <- R6::R6Class(
             return(private$sequencing_set)
         },
 
+        #' @field temporalset
+        #' The `temporalset` active binding prepares a temporalset object that
+        #' is suitable for the temporal analysis of information within the
+        #' sequencing summary file.
         temporalset = function() {
             if (is.null(private$temporal_set)) {
                 private$temporal_set <- TemporalSet$new(
@@ -111,6 +119,12 @@ SequencingSummary <- R6::R6Class(
             return(private$temporal_set)
         },
 
+
+        #' @field demultiplex
+        #' The `demultiplex` active binding prepared a multiplexset object that
+        #' can be used to explore the barcoded content contained within the
+        #' sequencing summary file and to access attributes that are related to
+        #' these information.
         demultiplex = function() {
             if (is.null(private$multiplex_set)) {
                 private$multiplex_set <- MultiplexSet$new(

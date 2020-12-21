@@ -40,6 +40,19 @@ includes channel data. The channel data can be overlaid on spatial
 representations of flowcell layout to address spatial issues and to
 visualise the overall flowcell characteristics. This method creates
 a flowcell object that is suitable for these purposes.}
+
+\item{\code{sequencingset}}{The \code{sequencingset} active binding returns a sequencingset object
+that is canonically structured around the \code{passes_filtering} logical
+field to allow assessment of sequencing characteristics.}
+
+\item{\code{temporalset}}{The \code{temporalset} active binding prepares a temporalset object that
+is suitable for the temporal analysis of information within the
+sequencing summary file.}
+
+\item{\code{demultiplex}}{The \code{demultiplex} active binding prepared a multiplexset object that
+can be used to explore the barcoded content contained within the
+sequencing summary file and to access attributes that are related to
+these information.}
 }
 \if{html}{\out{</div>}}
 }
