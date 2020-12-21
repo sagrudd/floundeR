@@ -4,7 +4,9 @@
 \alias{Infographic}
 \title{R6 Class for loading and analysing sequence sets}
 \description{
+R6 Class for loading and analysing sequence sets
 
+R6 Class for loading and analysing sequence sets
 }
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Infographic}

@@ -7,6 +7,5 @@
 
 
 .onLoad <- function(libname, pkgname){
-    library(magrittr)
     invisible()
 }

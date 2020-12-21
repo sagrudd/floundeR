@@ -33,4 +33,6 @@ Imports:
     reshape2,
     readr,
     tidyr,
-    emojifont
+    emojifont,
+    magrittr,
+    tibble

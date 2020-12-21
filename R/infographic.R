@@ -1,8 +1,6 @@
 
 #' R6 Class for loading and analysing sequence sets
 #'
-#' @description
-#'
 #' @importFrom tidyr drop_na
 #' @import emojifont
 #' @importFrom RColorBrewer brewer.pal
@@ -52,23 +50,33 @@ Infographic <- R6::R6Class(
         as_tibble = function() {
             figures <- length(private$.plot_elements)
             figure_x <- seq(figures)
-            suppressWarnings(length(figure_x) <- prod(dim(matrix(figure_x, ncol = self$columns))))
+            suppressWarnings(
+                length(figure_x) <- prod(
+                    dim(matrix(figure_x, ncol = self$columns))))
             pmat <- matrix(figure_x, ncol = self$columns, byrow = TRUE)
 
             extracts_coords <- function(x) {
                 where <- which(pmat==x, arr.ind=TRUE)
-                x= self$panel.x.offset + ((where[2]-1) * (self$panel.width + self$panel.spacer))
-                y= self$panel.y.offset + ((where[1]-1) * (self$panel.height + self$panel.spacer))
+                x = self$panel.x.offset +
+                    ((where[2]-1) * (self$panel.width + self$panel.spacer))
+                y = self$panel.y.offset +
+                    ((where[1]-1) * (self$panel.height + self$panel.spacer))
                 y <- y * -1
                 return(c(x=x, y=y, h=self$panel.height, w=self$panel.width))
             }
 
-            df <- tibble::as_tibble(do.call(rbind, lapply(seq(figures), extracts_coords)), .name_repair="universal")
+            df <- tibble::as_tibble(
+                do.call(rbind,
+                        lapply(seq(figures), extracts_coords)),
+                .name_repair="universal")
             df$y <- df$y + (min(df$y) * -1 + self$panel.y.offset)
 
-            df$key <- unlist(lapply(private$.plot_elements, function(x){return(x$.key)}))
-            df$value <- unlist(lapply(private$.plot_elements, function(x){return(x$.value)}))
-            df$icon <- unlist(lapply(private$.plot_elements, function(x){return(x$.icon)}))
+            df$key <- unlist(
+                lapply(private$.plot_elements, function(x){return(x$.key)}))
+            df$value <- unlist(
+                lapply(private$.plot_elements, function(x){return(x$.value)}))
+            df$icon <- unlist(
+                lapply(private$.plot_elements, function(x){return(x$.icon)}))
             df$colour <- rep("steelblue", figures)
             return(df)
         },
@@ -86,11 +94,21 @@ Infographic <- R6::R6Class(
 
             plot <- ggplot(
                 df,
-                aes_string("x", "y", height="h", width="w", label="key", fill="colour")) +
+                aes_string(
+                    "x", "y", height="h", width="w",
+                    label="key", fill="colour")) +
                 geom_tile(fill = private$.tile_bg) +
-                geom_text(color = private$.txt_key_colour, hjust="left", nudge_y=-1.5, nudge_x=-2.6, size=5) +
-                geom_text(label = df$icon, family = "fontawesome-webfont", colour = private$.icon_colour, size = 23, hjust = "right", nudge_x = 2.85,nudge_y = 0.8) +
-                geom_text(label = df$value, size = 10, color = private$.txt_value_colour, fontface = "bold", nudge_x = -2.6, hjust = "left")  +
+                geom_text(
+                    color = private$.txt_key_colour, hjust="left",
+                    nudge_y=-1.5, nudge_x=-2.6, size=5) +
+                geom_text(
+                    label = df$icon, family = "fontawesome-webfont",
+                    colour = private$.icon_colour, size = 23, hjust = "right",
+                    nudge_x = 2.85,nudge_y = 0.8) +
+                geom_text(
+                    label = df$value, size = 10,
+                    color = private$.txt_value_colour, fontface = "bold",
+                    nudge_x = -2.6, hjust = "left")  +
                 coord_fixed() +
                 scale_fill_brewer(type = "qual", palette =  "Dark2") +
                 theme_void() + guides(fill = FALSE)
@@ -98,8 +116,9 @@ Infographic <- R6::R6Class(
             save_x = (max(df$x)+panel.width+panel.spacer) * 0.6
             save_y = (max(df$y)+panel.height+panel.spacer)  * 0.6
 
-            ggplot2::ggsave(display_file, plot = plot, device =
-                                "png", units = "cm", width = save_x, height = save_y, dpi = 180)
+            ggplot2::ggsave(
+                display_file, plot = plot, device = "png", units = "cm",
+                width = save_x, height = save_y, dpi = 180)
             plot(magick::image_read(display_file))
 
         },
@@ -167,8 +186,6 @@ Infographic <- R6::R6Class(
 
 
 #' R6 Class for loading and analysing sequence sets
-#'
-#' @description
 #'
 #' @importFrom tidyr drop_na
 #' @importFrom emojifont fontawesome

@@ -1,9 +1,8 @@
 
 #' R6 Class for loading and analysing sequence sets
 #'
-#' @description
-#'
 #' @importFrom tidyr drop_na
+#' @importFrom magrittr %>%
 #'
 #' @export
 SequencingSet <- R6::R6Class(

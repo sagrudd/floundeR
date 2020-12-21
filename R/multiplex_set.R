@@ -1,7 +1,7 @@
 
 #' R6 Class for loading, visualising and analysing barcode information
 #'
-#' @description
+#' @importFrom magrittr %>%
 #'
 #'
 #' @export

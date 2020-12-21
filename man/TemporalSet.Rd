@@ -4,7 +4,9 @@
 \alias{TemporalSet}
 \title{R6 Class for analysing sequence sets with accompanying temporal data}
 \description{
+R6 Class for analysing sequence sets with accompanying temporal data
 
+R6 Class for analysing sequence sets with accompanying temporal data
 }
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{TemporalSet}

@@ -4,7 +4,9 @@
 \alias{MultiplexSet}
 \title{R6 Class for loading, visualising and analysing barcode information}
 \description{
+R6 Class for loading, visualising and analysing barcode information
 
+R6 Class for loading, visualising and analysing barcode information
 }
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{MultiplexSet}

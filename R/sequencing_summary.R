@@ -10,6 +10,7 @@
 #' @importFrom reshape2 acast
 #' @importFrom readr read_tsv cols_only
 #' @importFrom dplyr count
+#' @importFrom magrittr %>%
 #'
 #' @export
 SequencingSummary <- R6::R6Class(

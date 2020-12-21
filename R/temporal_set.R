@@ -1,9 +1,9 @@
 
+
 #' R6 Class for analysing sequence sets with accompanying temporal data
 #'
-#' @description
-#'
 #' @importFrom tidyr drop_na
+#' @importFrom magrittr %>%
 #'
 #' @export
 TemporalSet <- R6::R6Class(
