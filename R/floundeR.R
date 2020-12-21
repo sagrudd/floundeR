@@ -32,6 +32,18 @@ FloundeR <- R6::R6Class(
       cat(paste0("<floundeR::", class(self)[1],">"))
     },
 
+
+    #' @description
+    #' general method for binning continuous data into sensible bins - used by
+    #' various methods within the broader floundeR framework.
+    #'
+    #' @param data - the dataset (series) to be binned
+    #' @param bins - the number of bins to prepare
+    #' @param outliers - the fraction of longest outlying features that should
+    #' be excluded to simplify the plot.
+    #' @param qmax - a manual upper limit to use
+    #'
+    #' @return bin assignments for `data` elements
     bin_data = function(data, bins=20, outliers=0.025, qmax=NA) {
       if (is.na(qmax)) {
         qmax <- quantile(x=data, probs=c(1-outliers))

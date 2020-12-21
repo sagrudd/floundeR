@@ -55,10 +55,37 @@ nothing (at present) - output to stdout
 \if{html}{\out{<a id="method-bin_data"></a>}}
 \if{latex}{\out{\hypertarget{method-bin_data}{}}}
 \subsection{Method \code{bin_data()}}{
+general method for binning continuous data into sensible bins - used by
+various methods within the broader floundeR framework.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{FloundeR$bin_data(data, bins = 20, outliers = 0.025, qmax = NA)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{data}}{\itemize{
+\item the dataset (series) to be binned
+}}
+
+\item{\code{bins}}{\itemize{
+\item the number of bins to prepare
+}}
+
+\item{\code{outliers}}{\itemize{
+\item the fraction of longest outlying features that should
+be excluded to simplify the plot.
+}}
+
+\item{\code{qmax}}{\itemize{
+\item a manual upper limit to use
+}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+bin assignments for \code{data} elements
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
