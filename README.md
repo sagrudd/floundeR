@@ -16,6 +16,9 @@ R code has been deduplicated and reimplemented as R6 objects.
 The project goals diverge from earlier versions of nanopoRe and the ambition is
 now to enable abbreviated and simplified data exploration.
 
+The documentation for the floundeR package can be found at
+[https://sagrudd.github.io/floundeR/](https://sagrudd.github.io/floundeR/)
+
 ## Installation
 
 There are a couple of dependencies for the successful usage of the `floundeR`
