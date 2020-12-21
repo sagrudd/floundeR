@@ -90,8 +90,6 @@ SequencingSummary <- R6::R6Class(
                 message("Preparing channel count information")
                 channel_counts <- dplyr::count(private$seqsum, channel)
                 private$flowcell_object$set_channel_counts(channel_counts)
-
-                message("Preparing temporal channel count information")
             }
             return(private$flowcell_object)
         },
@@ -111,6 +109,15 @@ SequencingSummary <- R6::R6Class(
                     seqsum=private$seqsum)
             }
             return(private$temporal_set)
+        },
+        
+        demultiplex = function() {
+            if (is.null(private$multiplex_set)) {
+                private$multiplex_set <- MultiplexSet$new(
+                    seqsum=private$seqsum,
+                    barcoding_summary_file=self$barcoding_summary_file)
+            }
+            return(private$multiplex_set)
         }
 
     ),
@@ -121,6 +128,7 @@ SequencingSummary <- R6::R6Class(
         seqsum = NULL,
         sequencing_set = NULL,
         temporal_set = NULL,
+        multiplex_set = NULL,
 
         # read_id / c has been removed - this is a big character - ?value
         select_columns = c(
