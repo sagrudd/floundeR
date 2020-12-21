@@ -110,7 +110,7 @@ SequencingSummary <- R6::R6Class(
             }
             return(private$temporal_set)
         },
-        
+
         demultiplex = function() {
             if (is.null(private$multiplex_set)) {
                 private$multiplex_set <- MultiplexSet$new(
@@ -130,14 +130,13 @@ SequencingSummary <- R6::R6Class(
         temporal_set = NULL,
         multiplex_set = NULL,
 
-        # read_id / c has been removed - this is a big character - ?value
         select_columns = c(
-            "channel", "start_time", "duration",
+            "read_id", "channel", "start_time", "duration",
             "passes_filtering", "sequence_length_template",
             "mean_qscore_template", "barcode_arrangement"),
 
         select_column_types = c(
-            "i", "d", "d", "l", "d", "d", "c"
+            "c", "i", "d", "d", "l", "d", "d", "c"
         ),
 
         .parse_seqsum = function() {
