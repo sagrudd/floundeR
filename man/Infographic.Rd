@@ -9,12 +9,40 @@
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Infographic}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{panel.width}}{defines width of an infographic block}
+
+\item{\code{panel.height}}{defines height of an infographic block}
+
+\item{\code{panel.spacer}}{defines spacing around an infographic block}
+
+\item{\code{panel.x.offset}}{defines x offset spacing for whole graphic}
+
+\item{\code{panel.y.offset}}{defines y offset spacing for whole graphic}
+
+\item{\code{columns}}{defines the number of columns to use in infographic
+plot}
+}
+\if{html}{\out{</div>}}
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{items}}{return an integer describing the number of items that is contained
+within the \code{Infographic}.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{Infographic$new()}}
 \item \href{#method-add}{\code{Infographic$add()}}
+\item \href{#method-as_tibble}{\code{Infographic$as_tibble()}}
 \item \href{#method-plot}{\code{Infographic$plot()}}
+\item \href{#method-display_fa}{\code{Infographic$display_fa()}}
 \item \href{#method-clone}{\code{Infographic$clone()}}
 }
 }
@@ -30,6 +58,7 @@
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Initialise a new instance of the R6 Class \code{Infographic}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Infographic$new()}\if{html}{\out{</div>}}
 }
@@ -39,19 +68,91 @@
 \if{html}{\out{<a id="method-add"></a>}}
 \if{latex}{\out{\hypertarget{method-add}{}}}
 \subsection{Method \code{add()}}{
+add an \code{InfographicItem} to the Infographic plot.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Infographic$add(item)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{item}}{an \code{InfographicItem}}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\subsection{Method \code{as_tibble()}}{
+Export the contained \code{Infographic} dataset(s) as a tibble
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Infographic$as_tibble()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A tibble representation for all the data
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-plot}{}}}
 \subsection{Method \code{plot()}}{
+Plot the infographic to file (and display it immediately)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Infographic$plot()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Infographic$plot(
+  display_file = tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".png")
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{display_file}}{the file to write to the infographic to (a temp
+file will be created and used by default).}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-display_fa"></a>}}
+\if{latex}{\out{\hypertarget{method-display_fa}{}}}
+\subsection{Method \code{display_fa()}}{
+Display a collection of fontawesome based infographics for picking.
+
+The \code{fontawesome} collection of icons contains over 700 icons of
+which some are more useful / desirable than others. This accessory
+method is used to render an Infographic report that summarised the
+available icons within a predefined range - the intention here is to
+make the selection of fonts to use in infographics a little simpler
+and easier. This replaces a dodgy notebook approach that was used
+previously.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Infographic$display_fa(file, offset = 0, rows = 10, columns = 6)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file}}{\itemize{
+\item a file.path to use to write the infographic to
+}}
+
+\item{\code{offset}}{\itemize{
+\item an integer offset defining where we should start
+rendering from in a broad sequence.
+}}
+
+\item{\code{rows}}{\itemize{
+\item the number of rows to fill with sequential data.
+}}
+
+\item{\code{columns}}{\itemize{
+\item the corresponding number of columns.
+}}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

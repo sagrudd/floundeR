@@ -12,17 +12,32 @@ Infographic <- R6::R6Class(
     inherit = FloundeR,
     classname = "Infographic",
     public = list(
+        #' @field panel.width defines width of an infographic block
         panel.width = 6,
+        #' @field panel.height defines height of an infographic block
         panel.height = 4,
+        #' @field panel.spacer defines spacing around an infographic block
         panel.spacer = 0.5,
+        #' @field panel.x.offset defines x offset spacing for whole graphic
         panel.x.offset = 2,
+        #' @field panel.y.offset defines y offset spacing for whole graphic
         panel.y.offset = 2,
+        #' @field columns defines the number of columns to use in infographic
+        #' plot
         columns = 4,
 
+
+        #' @description
+        #' Initialise a new instance of the R6 Class `Infographic`
         initialize = function() {
             private$.plot_elements <- list()
         },
 
+
+        #' @description
+        #' add an `InfographicItem` to the Infographic plot.
+        #'
+        #' @param item an `InfographicItem`
         add = function(item) {
             if (!class(item)[1] == "InfographicItem") {
                 stop("Can only add [InfographicItem] elements")
@@ -30,6 +45,10 @@ Infographic <- R6::R6Class(
             private$.plot_elements <- append(private$.plot_elements, item)
         },
 
+        #' @description
+        #' Export the contained `Infographic` dataset(s) as a tibble
+        #'
+        #' @return A tibble representation for all the data
         as_tibble = function() {
             figures <- length(private$.plot_elements)
             figure_x <- seq(figures)
@@ -54,7 +73,14 @@ Infographic <- R6::R6Class(
             return(df)
         },
 
-        plot = function(display_file = tempfile(pattern="file", tmpdir=tempdir(), fileext=".png")) {
+        #' @description
+        #' Plot the infographic to file (and display it immediately)
+        #'
+        #' @param display_file the file to write to the infographic to (a temp
+        #' file will be created and used by default).
+        plot = function(
+            display_file = tempfile(
+                pattern="file", tmpdir=tempdir(), fileext=".png")) {
 
             df <- self$as_tibble()
 
@@ -78,6 +104,23 @@ Infographic <- R6::R6Class(
 
         },
 
+
+        #' @description
+        #' Display a collection of fontawesome based infographics for picking.
+        #'
+        #' The `fontawesome` collection of icons contains over 700 icons of
+        #' which some are more useful / desirable than others. This accessory
+        #' method is used to render an Infographic report that summarised the
+        #' available icons within a predefined range - the intention here is to
+        #' make the selection of fonts to use in infographics a little simpler
+        #' and easier. This replaces a dodgy notebook approach that was used
+        #' previously.
+        #'
+        #' @param file - a file.path to use to write the infographic to
+        #' @param offset - an integer offset defining where we should start
+        #' rendering from in a broad sequence.
+        #' @param rows - the number of rows to fill with sequential data.
+        #' @param columns - the corresponding number of columns.
         display_fa = function(file, offset=0, rows=10, columns=6) {
             fonts <- emojifont::search_fontawesome("")
             if (offset >= length(fonts)) {
@@ -100,7 +143,11 @@ Infographic <- R6::R6Class(
         }
     ),
 
+
     active = list(
+        #' @field items
+        #' return an integer describing the number of items that is contained
+        #' within the `Infographic`.
         items = function() {
             return(length(private$.plot_elements))
         }
@@ -131,13 +178,28 @@ InfographicItem <- R6::R6Class(
     inherit = FloundeR,
     classname = "InfographicItem",
     public = list(
+        #' @field .key the infographic key e.g. ReadCount
         .key = NULL,
+        #' @field .value the element's value e.g. 42
         .value = NULL,
+        #' @field .icon  the fa-awesome code to use for the cartoon display
         .icon = NULL,
 
+        #' @description
+        #' Initialise a new instance of the R6 Class `InfographicItem`
+        #'
+        #' This class is used to contain the information that is subsequently
+        #' rendered by the `Infographic` class.
+        #'
+        #' @param key the infographic key e.g. ReadCount
+        #' @param value the element's value e.g. 42
+        #' @param icon the fa-awesome code to use for the cartoon display
         initialize = function(key=NA, value=NA, icon=NA) {
+            fonts <- emojifont::search_fontawesome("")
             if (any(c(is.na(key), is.na(value), is.na(icon)))) {
                 stop("InfographicItem requires key, value, icon")
+            } else if (!icon %in% fonts) {
+                stop(paste0("Specified FontAwesomeIcon [",icon,"] not found"))
             }
             self$.key <- key
             self$.value <- value

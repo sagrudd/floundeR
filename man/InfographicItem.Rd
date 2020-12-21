@@ -9,6 +9,17 @@
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{InfographicItem}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{.key}}{the infographic key e.g. ReadCount}
+
+\item{\code{.value}}{the element's value e.g. 42}
+
+\item{\code{.icon}}{the fa-awesome code to use for the cartoon display}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -28,10 +39,25 @@
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Initialise a new instance of the R6 Class \code{InfographicItem}
+
+This class is used to contain the information that is subsequently
+rendered by the \code{Infographic} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{InfographicItem$new(key = NA, value = NA, icon = NA)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{key}}{the infographic key e.g. ReadCount}
+
+\item{\code{value}}{the element's value e.g. 42}
+
+\item{\code{icon}}{the fa-awesome code to use for the cartoon display}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
