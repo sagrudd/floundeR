@@ -33,42 +33,93 @@
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
+Initialise a new instance of the R6 Class <TemporalSet>
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$new(seqsum = NA)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{seqsum}}{a tibble of sequencing summary information}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-as_tibble"></a>}}
 \if{latex}{\out{\hypertarget{method-as_tibble}{}}}
 \subsection{Method \code{as_tibble()}}{
+Export the imported dataset(s) as a tibble
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$as_tibble()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+A tibble representation of the starting dataset
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-runtime"></a>}}
 \if{latex}{\out{\hypertarget{method-runtime}{}}}
 \subsection{Method \code{runtime()}}{
+get a rounded runtime from temporal information in sequencing summary
+
+The sequencing summary file contains information on pore dwell time
+and start time for given sequencing reads. An analysis of the start
+time information can be used to calculate a canonical sequencing
+run time that is rounded to key temporal breaks.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$runtime()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+a numeric describing the rounded runtime in hours
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-run_yield"></a>}}
 \if{latex}{\out{\hypertarget{method-run_yield}{}}}
 \subsection{Method \code{run_yield()}}{
+Prepare summary statistics that describe a flowcell run's yield
+
+A flowcell can yield both sequence bases and sequence reads and the
+acquisition of these data has a temporal element. This method is
+used to summarise run performance through assessment of yield per
+unit time.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$run_yield(resolution = 15, bases = TRUE, cumulative = TRUE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{resolution}}{describes the temporal resolution (in minutes) by
+which yield will be summarised.}
+
+\item{\code{bases}}{a logical that describes whether the method will
+summarise sequence reads or sequence bases - (TRUE) for bases by
+default}
+
+\item{\code{cumulative}}{defines whether the number of reads(bases) per bin
+is described as actual number or as a temporally cumulative number}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Angenieux object prepared for rendering in reports
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-feature_over_time"></a>}}
 \if{latex}{\out{\hypertarget{method-feature_over_time}{}}}
 \subsection{Method \code{feature_over_time()}}{
+Report a binned temporal data facet (such as speed, quality, length)
+
+The temporal sequencing information can be used to summarise other
+data facets in a time dependent manner to address questions such as
+whether there is a change in sequencing speed, length or quality
+over time.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$feature_over_time(
   resolution = 60,
@@ -77,15 +128,55 @@
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{resolution}}{describes the temporal resolution (in minutes) by
+which yield will be summarised (60 minutes by default).}
+
+\item{\code{passes}}{is a logical that defines whether the plot should
+present data that has passed or failed QC - (TRUE) by default to
+select for only the QC passed sequence reads.}
+
+\item{\code{feature}}{defines the feature to summarise (speed by default)
+but could include e.g. \code{sequence_length_template} or
+\code{mean_qscore_template}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Angenieux object prepared for rendering in reports
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-t50"></a>}}
 \if{latex}{\out{\hypertarget{method-t50}{}}}
 \subsection{Method \code{t50()}}{
+calculate T50 timepoint at which 50\% of sequence reads are obtained
+
+Temporal data and yield data can be used to identify timepoints at
+which a given fraction of the data has been obtained.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$t50(passes = TRUE, t = 0.5)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{passes}}{is a logical that defines that we should focus only
+on the passed QC reads (TRUE by default) - should probably be
+deprecated since asking for T50 of failed reads is just silly?}
+
+\item{\code{t}}{is the fractional timepoint (0.5 by default) where we are
+interested in knowing the time at which this fraction of reads was
+obtained.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+numeric describing timepoint in hours at which fractional
+data was obtained.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
