@@ -1,8 +1,7 @@
 
 # floundeR
 
-R package including accessory methods and toy datasets demonstrating the
-analysis of Nanopore sequence data.
+An R package to simplify the tidy analysis of Nanopore sequence data.
 
 <!-- badges: start -->
 [![Build Status](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)
@@ -12,9 +11,10 @@ analysis of Nanopore sequence data.
 The goal of floundeR is to provide a robust and Tidyverse compliant toolbox
 that can be used to explore Nanopore sequence data. The analytical R code
 contained within has been forked from earlier projects such as nanopoRe. The 
-R code has been deduplicated and reimplemented as R6 objects. This diverges
-from earlier versions of the code where there was a didactic emphasis - the
-goal is now abbreviated and simplified data exploration.
+R code has been deduplicated and reimplemented as R6 objects. 
+
+The project goals diverge from earlier versions of nanopoRe and the ambition is
+now to enable abbreviated and simplified data exploration.
 
 ## Installation
 
