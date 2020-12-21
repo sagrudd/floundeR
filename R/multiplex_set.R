@@ -17,7 +17,6 @@ MultiplexSet <- R6::R6Class(
           } else {
             imported <- private$.import_barcoding_summary(
                 seqsum, barcoding_summary_file)
-            print(imported)
             if (imported < 100) {
             stop(paste0(
                 "MultiplexSet failed trying to import barcoding file - ",
@@ -68,6 +67,35 @@ MultiplexSet <- R6::R6Class(
 
           Angenieux$new("2D_count", rls)
 
+      },
+
+
+      quality_bins = function(bins=20, outliers=0) {
+          bins <- self$bin_data(
+              private$seqsum$mean_qscore_template, bins=bins,
+              outliers=outliers)
+          private$seqsum["bin"] <- as.numeric(levels(bins))[bins]
+          rls <- private$seqsum %>%
+              dplyr::group_by(.dots=c("barcode_arrangement", "bin")) %>%
+              dplyr::summarize(count=dplyr::n(), .groups="drop")
+          # na may creep into the data ...
+          rls <- tidyr::drop_na(rls)
+
+          Angenieux$new("2D_count", rls)
+      },
+
+
+      sequencingset = function(barcode) {
+          return(SequencingSet$new(
+              keycol = "passes_filtering",
+              seqsum = seqsum %>%
+                  dplyr::filter(.data[["barcode_arrangement"]]==barcode)))
+      },
+
+      temporalset = function(barcode) {
+          return(TemporalSet$new(
+              seqsum = seqsum %>%
+                  dplyr::filter(.data[["barcode_arrangement"]]==barcode)))
       }
 
     ),
