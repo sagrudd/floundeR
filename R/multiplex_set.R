@@ -11,7 +11,7 @@ MultiplexSet <- R6::R6Class(
   public = list(
 
     #' @description
-    #' Initialise a new instance of the R6 Class <MultiplexSet>
+    #' Initialise a new instance of the R6 Class `MultiplexSet`
     #'
     #' @param seqsum a tibble of sequencing summary information
     #' @param barcoding_summary_file is a file.path to the corresponding

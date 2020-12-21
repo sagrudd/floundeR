@@ -33,7 +33,7 @@
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initialise a new instance of the R6 Class <TemporalSet>
+Initialise a new instance of the R6 Class \code{TemporalSet}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TemporalSet$new(seqsum = NA)}\if{html}{\out{</div>}}
 }

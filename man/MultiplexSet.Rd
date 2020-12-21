@@ -41,7 +41,7 @@ for quick visualisation of the dataset.}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initialise a new instance of the R6 Class <MultiplexSet>
+Initialise a new instance of the R6 Class \code{MultiplexSet}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{MultiplexSet$new(seqsum = NA, barcoding_summary_file = NA)}\if{html}{\out{</div>}}
 }

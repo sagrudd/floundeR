@@ -11,7 +11,7 @@ TemporalSet <- R6::R6Class(
     classname = "TemporalSet",
     public = list(
         #' @description
-        #' Initialise a new instance of the R6 Class <TemporalSet>
+        #' Initialise a new instance of the R6 Class `TemporalSet`
         #'
         #' @param seqsum a tibble of sequencing summary information
         initialize = function(seqsum=NA) {

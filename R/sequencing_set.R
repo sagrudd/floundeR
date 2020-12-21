@@ -12,7 +12,7 @@ SequencingSet <- R6::R6Class(
   public = list(
 
     #' @description
-    #' Initialise a new instance of the R6 Class <SequencingSet>
+    #' Initialise a new instance of the R6 Class `SequencingSet`
     #'
     #' @param keycol a pointer to the column of interest in the `seqsum` to
     #' direct parsing and exploration of the file.

@@ -39,7 +39,7 @@ for quick visualisation of the dataset.}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Initialise a new instance of the R6 Class <SequencingSet>
+Initialise a new instance of the R6 Class \code{SequencingSet}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SequencingSet$new(keycol, seqsum = NA)}\if{html}{\out{</div>}}
 }
