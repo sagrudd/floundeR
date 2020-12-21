@@ -40,6 +40,34 @@ MultiplexSet <- R6::R6Class(
       #' @return A tibble representation of the starting dataset
       as_tibble = function() {
           return(private$seqsum)
+      },
+
+      read_length_bins = function(qfilt=TRUE, normalised=TRUE, cumulative=FALSE, bins=20, outliers=0.025) {
+          bins <- self$bin_data(
+              private$seqsum$sequence_length_template, bins=bins,
+              outliers=outliers)
+          private$seqsum["bin"] <- as.numeric(levels(bins))[bins]
+
+          rls <- NULL
+          if (normalised) {
+              rls <- private$seqsum %>%
+                  dplyr::filter(.data[["passes_filtering"]]==qfilt) %>%
+                  dplyr::group_by(.dots=c("barcode_arrangement", "bin")) %>%
+                  dplyr::summarize(count=sum(sequence_length_template), .groups="drop")
+          } else {
+              rls <- private$seqsum %>%
+                  dplyr::filter(.data[["passes_filtering"]]==qfilt) %>%
+                  dplyr::group_by(.dots=c("barcode_arrangement", "bin")) %>%
+                  dplyr::summarize(count=dplyr::n(), .groups="drop")
+          }
+          rls <- tidyr::drop_na(rls)
+
+          if (cumulative) {
+              rls <- rls %>% dplyr::group_by(.data[["barcode_arrangement"]]) %>% dplyr::arrange(desc(bin)) %>% dplyr::mutate(count=cumsum(count))
+          }
+
+          Angenieux$new("2D_count", rls)
+
       }
 
     ),
