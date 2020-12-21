@@ -1,10 +1,19 @@
 
 # floundeR
 
+R package including accessory methods and toy datasets demonstrating the
+analysis of Nanopore sequence data.
+
 <!-- badges: start -->
+[![Build Status](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)
 <!-- badges: end -->
 
-The goal of floundeR is to ...
+The goal of floundeR is to provide a robust and Tidyverse compliant toolbox
+that can be used to explore Nanopore sequence data. The analytical R code
+contained within has been forked from earlier projects such as nanopoRe. The 
+R code has been deduplicated and reimplemented as R6 objects. This diverges
+from earlier versions of the code where there was a didactic emphasis - the
+goal is now abbreviated and simplified data exploration.
 
 ## Installation
 
@@ -27,10 +36,6 @@ install.packages("BiocManager")
 BiocMananger::install("rhdf5")
 # please see documents below - this requires the vbz plugin
 ```
-
-## FUBAR
-
-* some issues with HDF5 parsing on macOS
 
 
 ## Example
