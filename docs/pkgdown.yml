@@ -1,0 +1,8 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  fast5_review: fast5_review.html
+  sequencing_summary_review: sequencing_summary_review.html
+last_built: 2020-12-21T15:21Z
+
