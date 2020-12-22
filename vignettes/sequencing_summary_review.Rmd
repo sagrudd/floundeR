@@ -105,9 +105,8 @@ structure and visualise the data. The first that we'll have a look at is the
 `$enumerate` method that returns an `Angenieux` object for data visualisation.
 
 ```{r sequencingset_enumerate, out.width="65%"}
-figure_2 <- seqsum$sequencingset$enumerate$plot
-ggplot2::ggsave("figure_2.png", plot = figure_2, device = "png")
-knitr::include_graphics("figure_2.png")
+knitr::include_graphics(
+  seqsum$sequencingset$enumerate$to_file("figure_2.png")$plot())
 ```
 
 There are a plethora of ways through which the `Angenieux` object can be used
@@ -116,8 +115,7 @@ documentation.
 
 ## Plot flowcell spatial density
 
-```{r, spatial_density}
-figure_1 <- seqsum$flowcell$density_data$plot
-ggplot2::ggsave("figure_1.png", plot = figure_1, device = "png")
-knitr::include_graphics("figure_1.png")
+```{r, spatial_density, out.width="100%"}
+knitr::include_graphics(
+  seqsum$flowcell$density_data$to_file("figure_1.png")$plot())
 ```

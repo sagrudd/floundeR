@@ -14,10 +14,6 @@ floundeR framework
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{data}}{A method to dump out the stored data from an \code{Angenieux} object}
-
-\item{\code{plot}}{A method to plot the information stored in the \code{Angenieux} object - the
-plot itself is determined by the stored data and other parameters for
-a consistent rendering and per-project control}
 }
 \if{html}{\out{</div>}}
 }
@@ -25,7 +21,9 @@ a consistent rendering and per-project control}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{Angenieux$new()}}
-\item \href{#method-.plot}{\code{Angenieux$.plot()}}
+\item \href{#method-plot}{\code{Angenieux$plot()}}
+\item \href{#method-to_file}{\code{Angenieux$to_file()}}
+\item \href{#method-set_title}{\code{Angenieux$set_title()}}
 \item \href{#method-clone}{\code{Angenieux$clone()}}
 }
 }
@@ -62,12 +60,12 @@ A new \code{Angenieux} object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.plot"></a>}}
-\if{latex}{\out{\hypertarget{method-.plot}{}}}
-\subsection{Method \code{.plot()}}{
+\if{html}{\out{<a id="method-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-plot}{}}}
+\subsection{Method \code{plot()}}{
 Prepare and present an Angenieux plot
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Angenieux$.plot(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Angenieux$plot(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -78,6 +76,68 @@ examples for further examples as to how Angenieux plots can be customised
 using this approach.}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-to_file"></a>}}
+\if{latex}{\out{\hypertarget{method-to_file}{}}}
+\subsection{Method \code{to_file()}}{
+Specify that Angenieux plot should be saved to file
+
+When working at the console an Angenieux plot may be plotted directly
+to the console. When preparing reports through Rmarkdown or Pkgdown a
+more logical saving of plots to a discrete file location may make more
+sense. The method is used to instruct Angenieux that the plot should be
+saved to a given location and with a given file format.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Angenieux$to_file(
+  target_file,
+  width = 12,
+  height = 7.5,
+  units = "cm",
+  dpi = "print"
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{target_file}}{the file with extension e.g. \code{figure1.png}}
+
+\item{\code{width}}{the width of figure to save (12 by default)}
+
+\item{\code{height}}{the height of figure to save (7.5 by default)}
+
+\item{\code{units}}{the unit to use for height and width (cm by default)}
+
+\item{\code{dpi}}{the plot resolution (print/300 by default)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+the original Angenieux object (self)
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_title"></a>}}
+\if{latex}{\out{\hypertarget{method-set_title}{}}}
+\subsection{Method \code{set_title()}}{
+Set the title used in the given Angenieux plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Angenieux$set_title(title)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{title}}{\itemize{
+\item the title to use on the plot
+}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+the original Angenieux object (self)
 }
 }
 \if{html}{\out{<hr>}}

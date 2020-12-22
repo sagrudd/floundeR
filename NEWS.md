@@ -1,5 +1,7 @@
 # floundeR (development version)
 
+* integrating Angenieux with ggsave for cleaner Rmarkdown usage
+
 # floundeR 0.0.3
 
 * pkgdown documentation for the github pages

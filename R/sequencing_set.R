@@ -132,7 +132,8 @@ SequencingSet <- R6::R6Class(
         enumerated_counts <- private$seqsum %>%
           dplyr::group_by(.dots=private$keycol) %>%
           dplyr::summarize(count=dplyr::n())
-        Angenieux$new("1D_count", enumerated_counts)
+        Angenieux$new("1D_count", enumerated_counts)$
+          set_title(paste0("Plot showing distribution of [",private$keycol,"]"))
       }
     }
 

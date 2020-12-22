@@ -11,6 +11,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom tools file_ext
 #'
 #' @export
 Angenieux <- R6::R6Class(
@@ -70,7 +71,7 @@ Angenieux <- R6::R6Class(
     #' @param ... parameters passed on to downstream methods - please see
     #' examples for further examples as to how Angenieux plots can be customised
     #' using this approach.
-    .plot = function(...) {
+    plot = function(...) {
       if (private$graph_type == "XYDensity") {
         return(private$.plot_xy_density(...))
       } else if (private$graph_type == "1D_count") {
@@ -82,6 +83,43 @@ Angenieux <- R6::R6Class(
       } else {
         stop(paste0("Graph type [",private$graph_type,"] not implemented"))
       }
+    },
+
+    #' @description
+    #' Specify that Angenieux plot should be saved to file
+    #'
+    #' When working at the console an Angenieux plot may be plotted directly
+    #' to the console. When preparing reports through Rmarkdown or Pkgdown a
+    #' more logical saving of plots to a discrete file location may make more
+    #' sense. The method is used to instruct Angenieux that the plot should be
+    #' saved to a given location and with a given file format.
+    #'
+    #' @param target_file the file with extension e.g. `figure1.png`
+    #' @param width the width of figure to save (12 by default)
+    #' @param height the height of figure to save (7.5 by default)
+    #' @param units the unit to use for height and width (cm by default)
+    #' @param dpi the plot resolution (print/300 by default)
+    #'
+    #' @return the original Angenieux object (self)
+    to_file = function(target_file, width=12, height=7.5, units="cm", dpi="print") {
+      private$target_type <- tolower(tools::file_ext(target_file))
+      private$target_file <- target_file
+      private$target_file_width = width
+      private$target_file_height = height
+      private$target_file_units = units
+      private$target_file_dpi = dpi
+      invisible(self)
+    },
+
+    #' @description
+    #' Set the title used in the given Angenieux plot
+    #'
+    #' @param title - the title to use on the plot
+    #'
+    #' @return the original Angenieux object (self)
+    set_title = function(title) {
+      private$graph_title <- title
+      invisible(self)
     }
 
   ),
@@ -103,16 +141,6 @@ Angenieux <- R6::R6Class(
           stop(paste0("Graph type [",private$graph_type,"] not implemented"))
         }
       }
-    },
-
-    #' @field plot
-    #' A method to plot the information stored in the `Angenieux` object - the
-    #' plot itself is determined by the stored data and other parameters for
-    #' a consistent rendering and per-project control
-    plot = function(value) {
-      if (missing(value)) {
-        self$.plot()
-      }
     }
   ),
 
@@ -122,6 +150,12 @@ Angenieux <- R6::R6Class(
     graph_data = NULL,
     graph_title = "angenieux plot",
     hm.palette = NULL,
+    target_type = NA,
+    target_file = NA,
+    target_file_width = NA,
+    target_file_height = NA,
+    target_file_units = NA,
+    target_file_dpi = NA,
 
     .plot_xy_density = function(count=FALSE) {
 
@@ -138,18 +172,16 @@ Angenieux <- R6::R6Class(
         ggplot2::scale_fill_gradientn(colours = private$hm.palette(100)) +
         ggplot2::scale_color_gradient2(low = private$hm.palette(100)[100], high = private$hm.palette(100)[1]) +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1)) +
-        ggplot2::labs(title = private$graph_title) +
         ggplot2::theme(panel.border = element_blank(), panel.grid.major=element_blank(),
               panel.grid.minor = element_blank(), axis.title.x = element_blank(),
-              axis.title.y = element_blank(), legend.position = "bottom",
-              legend.key.width = unit(5.6, "cm"))
+              axis.title.y = element_blank(), legend.position = "bottom")
       if (count) {
         plot <- plot + ggplot2::geom_text(
           data = molten_matrix,
           ggplot2::aes_string(x = "X", y = "Y", label = "Count", color = "Count"),
           show.legend = FALSE, size = 2.5)
       }
-      return(plot)
+      return(private$.decorate_plot(plot))
     },
 
 
@@ -160,16 +192,14 @@ Angenieux <- R6::R6Class(
           private$graph_data,
           aes_string(x=as.factor(" "), y="count", fill=key)) +
           ggplot2::geom_col(width=0.2) +
-          ggplot2::coord_flip() +
-          ggplot2::labs(title = private$graph_title)
-        return(plot)
+          ggplot2::coord_flip()
+        return(private$.decorate_plot(plot))
       } else {
         plot <- ggplot2::ggplot(
           private$graph_data,
           ggplot2::aes_string(key, "count")) +
-          ggplot2::geom_bar(stat = "identity", width = 0.5) +
-          ggplot2::labs(title = private$graph_title)
-        return(plot)
+          ggplot2::geom_bar(stat = "identity", width = 0.5)
+        return(private$.decorate_plot(plot))
       }
     },
 
@@ -182,9 +212,8 @@ Angenieux <- R6::R6Class(
         plot <- ggplot2::ggplot(
           molten,
           ggplot2::aes_string(x=level, y="value", colour=key)) +
-          ggplot2::geom_line() +
-          ggplot2::labs(title = private$graph_title)
-        return(plot)
+          ggplot2::geom_line()
+        return(private$.decorate_plot(plot))
       } else {
         molten[[level]] <- factor(
           molten[[level]],
@@ -192,9 +221,8 @@ Angenieux <- R6::R6Class(
         plot <- ggplot2::ggplot(
           molten,
           ggplot2::aes_string(x=level, y="value", fill=key)) +
-          ggplot2::geom_col() +
-          ggplot2::labs(title = private$graph_title)
-        return(plot)
+          ggplot2::geom_col()
+        return(private$.decorate_plot(plot))
       }
     },
 
@@ -204,8 +232,31 @@ Angenieux <- R6::R6Class(
         private$graph_data,
         ggplot2::aes_string(x="bin", y=key, group="bin")) +
         ggplot2::geom_boxplot(fill="steelblue", outlier.shape=NA) +
-        ggplot2::scale_x_continuous() +
+        ggplot2::scale_x_continuous()
+      return(private$.decorate_plot(plot))
+    },
+
+
+    .decorate_plot = function(plot) {
+      plot <- plot +
         ggplot2::labs(title = private$graph_title)
+      return(private$.handle_plot_logistsics(plot))
+    },
+
+
+    .handle_plot_logistsics = function(plot) {
+      if (private$target_type == "png") {
+        message("saving plot as [png]")
+        ggplot2::ggsave(
+          private$target_file,
+          plot = plot,
+          device = private$target_type,
+          width = private$target_file_width,
+          height = private$target_file_height,
+          units = private$ target_file_units,
+          dpi = private$target_file_dpi)
+        return(private$target_file)
+      }
       return(plot)
     }
   )
