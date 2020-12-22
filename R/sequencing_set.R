@@ -147,7 +147,7 @@ SequencingSet <- R6::R6Class(
         dplyr::summarize(count=dplyr::n(), .groups="drop")
       # na may creep into the data ...
       rls <- tidyr::drop_na(rls)
-
+      rls$bin <-  factor(rls$bin, sort(unique(rls$bin)))
       Angenieux$new("2D_count", rls)
     }
   ),

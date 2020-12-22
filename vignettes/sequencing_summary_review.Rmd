@@ -165,7 +165,7 @@ reviewed in the previous section.
 knitr::include_graphics(
   seqsum$sequencingset$quality_bins(bins=100)$
     to_file("figure_4.png")$
-    plot())
+    plot(style="stacked"))
 
 ```
 
