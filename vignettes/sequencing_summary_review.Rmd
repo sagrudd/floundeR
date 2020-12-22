@@ -1,6 +1,8 @@
 ---
 title: "Using the Nanopore `sequencing_summary` file for BasicQC"
 output: rmarkdown::html_vignette
+fig_width: 6 
+fig_height: 4 
 vignette: >
   %\VignetteIndexEntry{Using the Nanopore `sequencing_summary` file for BasicQC}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,8 +24,13 @@ website.
 
 The workflow provided is implemented through the R TidyVerse and is intended to
 provide a lightweight set of components that can be mixed and matched for the
-exploration of the sequencing_summary file that is produced during Guppy-based
+exploration of the `sequencing_summary` file that is produced during Guppy-based
 base-calling.
+
+This report is feature-complete with the earlier `BasicQC` tutorial but has been
+implemented with a different set of rules and expectations. Feedback is
+welcomed.
+
 
 ```{r setup}
 library(floundeR)
@@ -44,10 +51,8 @@ sequenced on a PromethION and deposited at the registry [read the blog post](htt
 download the dataset to demonstrate what can be done.
 
 ```{r downloadGM24385}
-# let's just log where the file is being downloaded
-print(getwd())
-
 sequencing_summary <- "sequencing_summary_PAG07165_2dfda515.txt"
+
 # don't perform the AWS download if the file has already been grabbed ...
 if (!file.exists(sequencing_summary)) {
 aws.s3::save_object(
@@ -60,15 +65,54 @@ aws.s3::save_object(
 
 
 
-## Define input files and create R6 object
+## Define input files and create the `SequencingSummary` R6 object
+
+The `floundeR` package has been implemented largely as object oriented R through
+the usage of `R6 objects`. This means that instead of passing tables of data
+between methods that filter and visualise data facets we will be processing
+objects that contain their own methods and filters.
+
+The first step in the process is to create out very first object; this is
+a `SequencingSummary` object and it is instantiated by calling its `initialize`
+constructor with the `SequencingSummary$new()` call. We will pass the
+`file.path` to our sequencing summary file.
+
+Let's also check that the object creation has worked by asking about the
+flowcell platform - this should return the expected sequencing platform.
+
 
 ```{r create_ss}
+sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
 seqsum <- SequencingSummary$new(sequencing_summary)
 
 # check the flowcell platform - ensures that something valid has been created
 seqsum$flowcell$platform
 ```
 
+
+## The `SequencingSet` and primitive QC measures
+
+In the previous section we created our `SequencingSummary` object. We can
+obtain a `SequencingSet` from the `SequencingSummary` object by calling its
+`$sequencingset` active binding. 
+
+```{r sequencingset}
+seqsum$sequencingset
+```
+
+The `SequencingSet` in turn has a collection of methods that can be used to
+structure and visualise the data. The first that we'll have a look at is the
+`$enumerate` method that returns an `Angenieux` object for data visualisation.
+
+```{r sequencingset_enumerate, out.width="65%"}
+figure_2 <- seqsum$sequencingset$enumerate$plot
+ggplot2::ggsave("figure_2.png", plot = figure_2, device = "png")
+knitr::include_graphics("figure_2.png")
+```
+
+There are a plethora of ways through which the `Angenieux` object can be used
+to style, colour and manipulate the graph - please do have a look at the methods
+documentation.
 
 ## Plot flowcell spatial density
 

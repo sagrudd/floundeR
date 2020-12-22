@@ -35,6 +35,7 @@ predicted by \code{get_flowcell_platform}}
 \itemize{
 \item \href{#method-new}{\code{Flowcell$new()}}
 \item \href{#method-set_channel_counts}{\code{Flowcell$set_channel_counts()}}
+\item \href{#method-as_tibble}{\code{Flowcell$as_tibble()}}
 \item \href{#method-clone}{\code{Flowcell$clone()}}
 }
 }
@@ -80,6 +81,24 @@ used for the generation of spatial plots
 \item{\code{channel_counts}}{a tibble of count information}
 }
 \if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\subsection{Method \code{as_tibble()}}{
+Export the imported dataset(s) as a tibble
+
+This object consumes a sequencing summary file (and optionally the
+corresponding barcoding_summary file) and creates an object in
+memory that can be explored, sliced and filtered. This method dumps
+out the in-memory object for further exploration and development.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Flowcell$as_tibble()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}

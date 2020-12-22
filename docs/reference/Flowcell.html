@@ -161,6 +161,7 @@ predicted by <code>get_flowcell_platform</code></p></dd>
 <ul>
 <li><p><a href='#method-new'><code>Flowcell$new()</code></a></p></li>
 <li><p><a href='#method-set_channel_counts'><code>Flowcell$set_channel_counts()</code></a></p></li>
+<li><p><a href='#method-as_tibble'><code>Flowcell$as_tibble()</code></a></p></li>
 <li><p><a href='#method-clone'><code>Flowcell$clone()</code></a></p></li>
 </ul>
 <p><details open ><summary>Inherited methods</summary>
@@ -192,6 +193,17 @@ used for the generation of spatial plots</p><h4 class='hasAnchor' id='arguments'
 <dt><code>channel_counts</code></dt><dd><p>a tibble of count information</p></dd>
 
 </dl><p></div></p>
+<p><hr>
+<a id="method-as_tibble"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>as_tibble()</code></h3>
+<p>Export the imported dataset(s) as a tibble</p>
+<p>This object consumes a sequencing summary file (and optionally the
+corresponding barcoding_summary file) and creates an object in
+memory that can be explored, sliced and filtered. This method dumps
+out the in-memory object for further exploration and development.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>Flowcell</span><span class='op'>$</span><span class='fu'>as_tibble</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A tibble representation of the starting dataset</p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>

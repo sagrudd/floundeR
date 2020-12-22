@@ -5,7 +5,9 @@
 \title{R6 Class for floundeR based analyses}
 \description{
 This is an overarching class which other flounder classes are expected to
-inherit from.
+inherit from. The \code{floundeR} object contains methods and variables that are
+maintained for other objects - there is probably not a sensible usecase for
+actually creating a \code{floundeR} instance on its own.
 }
 \section{Methods}{
 \subsection{Public methods}{
