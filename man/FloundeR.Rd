@@ -15,6 +15,8 @@ actually creating a \code{floundeR} instance on its own.
 \item \href{#method-new}{\code{FloundeR$new()}}
 \item \href{#method-print}{\code{FloundeR$print()}}
 \item \href{#method-bin_data}{\code{FloundeR$bin_data()}}
+\item \href{#method-num_scale}{\code{FloundeR$num_scale()}}
+\item \href{#method-nums_scale}{\code{FloundeR$nums_scale()}}
 \item \href{#method-clone}{\code{FloundeR$clone()}}
 }
 }
@@ -87,6 +89,44 @@ be excluded to simplify the plot.
 }
 \subsection{Returns}{
 bin assignments for \code{data} elements
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-num_scale"></a>}}
+\if{latex}{\out{\hypertarget{method-num_scale}{}}}
+\subsection{Method \code{num_scale()}}{
+scale numerics in bases into kilo/mega/giga etc measurements for e.g.
+plots and other graphic visualisations
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FloundeR$num_scale(val)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{val}}{a numeric (raw)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+character representation scaled accordingly
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-nums_scale"></a>}}
+\if{latex}{\out{\hypertarget{method-nums_scale}{}}}
+\subsection{Method \code{nums_scale()}}{
+Apply the \code{num_scale} method across a multi-member vector of numerics
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{FloundeR$nums_scale(vals)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{vals}}{the vector of numerics}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

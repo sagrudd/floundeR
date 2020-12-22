@@ -89,7 +89,37 @@ SequencingSet <- R6::R6Class(
           dplyr::mutate(count=cumsum(count))
       }
 
-      Angenieux$new("2D_count", rls)
+      plot <- Angenieux$new("2D_count", rls)
+      plot$add(AngenieuxDecoration$new("ggplot2",facet= xlab("Length of sequence bin (bases)")))
+      plot$add(AngenieuxDecoration$new("ggplot2",facet= scale_x_continuous(labels = self$nums_scale)))
+      plot$add(AngenieuxDecoration$new("vline", xintercept=self$N50, colour=plot$colourMap[4]))
+      plot$add(AngenieuxDecoration$new("vlegend", xintercept=self$N50, legend=" N50 ", size=3, colour=plot$colourMap[4]))
+      plot$add(AngenieuxDecoration$new("vline", xintercept=self$mean, colour=plot$colourMap[3]))
+      plot$add(AngenieuxDecoration$new("vlegend", xintercept=self$mean, legend=" mean ", colour=plot$colourMap[3], hjust=1, size=3))
+      plot$add(AngenieuxDecoration$new("ggplot2", facet=guides(shape = guide_legend(override.aes = list(size = 0.3)))))
+      plot$add(AngenieuxDecoration$new("ggplot2", facet=guides(color = guide_legend(override.aes = list(size = 0.3)))))
+      plot$add(AngenieuxDecoration$new("ggplot2", facet=theme(legend.title = element_text(size = 6),
+                                                           legend.text = element_text(size = 6))))
+      plot$add(AngenieuxDecoration$new("ggplot2", facet=scale_fill_manual("QC PASS", values = c("FALSE" = plot$colourMap[1], "TRUE" = plot$colourMap[2]))))
+
+      if (normalised & cumulative) {
+        plot$set_title("Plot showing normalised cumulative distribution of \nread lengths across SequencingSummary")
+      } else if (normalised & !cumulative) {
+        plot$set_title("Plot showing normalised distribution of read lengths\nacross SequencingSummary")
+      } else if (!normalised & cumulative) {
+        plot$set_title("Plot showing cumulative distribution of sequenced\nreads by read length")
+      } else if (!normalised & !cumulative) {
+        plot$set_title("Plot showing distribution of sequenced reads by\nread length")
+      }
+
+      if (normalised) {
+        plot$add(AngenieuxDecoration$new("ggplot2",facet= scale_y_continuous(labels = seqsum$nums_scale)))
+        plot$add(AngenieuxDecoration$new("ggplot2",facet= ylab("Sequence bases")))
+      } else {
+        plot$add(AngenieuxDecoration$new("ggplot2",facet= ylab("Sequence reads")))
+      }
+
+      return(plot)
     },
 
     #' @description

@@ -35,6 +35,8 @@ for quick visualisation of the dataset.}
 \out{<details open ><summary>Inherited methods</summary>}
 \itemize{
 \item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
 }
 \out{</details>}

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">floundeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3.9000</span>
       </span>
     </div>
 
@@ -75,7 +75,8 @@
 
       
 
-      </header><div class="row">
+      </header><script src="sequencing_summary_review_files/kePrint-0.0.1/kePrint.js"></script><link href="sequencing_summary_review_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using the Nanopore <code>sequencing_summary</code> file for BasicQC</h1>
@@ -92,11 +93,14 @@
 <h2 class="hasAnchor">
 <a href="#preamble" class="anchor"></a>Preamble</h2>
 <p>This <code>sequencing_summary_review</code> vignette re-introduces the <code>BasicQC</code>-type tutorial that was previously available through the <a href="https://github.com/nanoporetech" class="uri">https://github.com/nanoporetech</a> website.</p>
-<p>The workflow provided is implemented through the R TidyVerse and is intended to provide a lightweight set of components that can be mixed and matched for the exploration of the sequencing_summary file that is produced during Guppy-based base-calling.</p>
+<p>The workflow provided is implemented through the R TidyVerse and is intended to provide a lightweight set of components that can be mixed and matched for the exploration of the <code>sequencing_summary</code> file that is produced during Guppy-based base-calling.</p>
+<p>This report is largely feature-complete with the earlier <code>BasicQC</code> tutorial but has been implemented with a different set of rules and expectations. A couple of figures previously reported have been deprecated for aesthetic reasons. Feedback is welcomed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">floundeR</span><span class="op">)</span>
-<span class="co">#&gt; floundeR v0.0.2.9001</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></code></pre></div>
+<span class="co">#&gt; floundeR v0.0.3.9000</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">magrittr</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div id="using-a-real-world-sequencing_summary-file-" class="section level2">
 <h2 class="hasAnchor">
@@ -104,11 +108,8 @@
 <p>The <code>floundeR</code> R package provides an example <em>sequencing_summary</em> file. This is 10,000 sequence reads long and provides insight into what is possible with the software. For this demonstration we’ll have a look at something a little more impressive and illustrative of what the software is intended to do.</p>
 <p><a href="https://registry.opendata.aws/ont-open-data/">s3://ont-open-data</a> is a data repository hosted by Amazon. The human genome, GM24385 / HG002, has been sequenced on a PromethION and deposited at the registry <a href="https://nanoporetech.github.io/ont-open-datasets/gm24385_2020.11/">read the blog post</a>. We will download the dataset to demonstrate what can be done.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># let's just log where the file is being downloaded</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "D:/Documents/Development/floundeR/vignettes"</span>
+<code class="sourceCode R"><span class="va">sequencing_summary</span> <span class="op">&lt;-</span> <span class="st">"sequencing_summary_PAG07165_2dfda515.txt"</span>
 
-<span class="va">sequencing_summary</span> <span class="op">&lt;-</span> <span class="st">"sequencing_summary_PAG07165_2dfda515.txt"</span>
 <span class="co"># don't perform the AWS download if the file has already been grabbed ...</span>
 <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">sequencing_summary</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
 <span class="fu">aws.s3</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/aws.s3/man/get_object.html">save_object</a></span><span class="op">(</span>
@@ -118,26 +119,215 @@
   overwrite<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="define-input-files-and-create-r6-object" class="section level2">
+<div id="define-input-files-and-create-the-sequencingsummary-r6-object" class="section level2">
 <h2 class="hasAnchor">
-<a href="#define-input-files-and-create-r6-object" class="anchor"></a>Define input files and create R6 object</h2>
+<a href="#define-input-files-and-create-the-sequencingsummary-r6-object" class="anchor"></a>Define input files and create the <code>SequencingSummary</code> R6 object</h2>
+<p>The <code>floundeR</code> package has been implemented largely as object oriented R through the usage of <code>R6 objects</code>. This means that instead of passing tables of data between methods that filter and visualise data facets we will be processing objects that contain their own methods and filters.</p>
+<p>The first step in the process is to create out very first object; this is a <code>SequencingSummary</code> object and it is instantiated by calling its <code>initialize</code> constructor with the <code>SequencingSummary$new()</code> call. We will pass the <code>file.path</code> to our sequencing summary file.</p>
+<p>Let’s also check that the object creation has worked by asking about the flowcell platform - this should return the expected sequencing platform.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seqsum</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/SequencingSummary.html">SequencingSummary</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">sequencing_summary</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co"># sequencing_summary &lt;- flnDr("sequencing_summary.txt.bz2")</span>
+<span class="va">seqsum</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/SequencingSummary.html">SequencingSummary</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">sequencing_summary</span><span class="op">)</span>
 
 <span class="co"># check the flowcell platform - ensures that something valid has been created</span>
 <span class="va">seqsum</span><span class="op">$</span><span class="va">flowcell</span><span class="op">$</span><span class="va">platform</span>
 <span class="co">#&gt; Preparing channel count information</span>
 <span class="co">#&gt; [1] "PromethION"</span></code></pre></div>
+<p>The majority of <code>floundeR</code> classes provide a simple <code>$as_tibble()</code> method that returns a <code>tibble</code> of data that the class operates on. For the <code>SequencingSummary</code> object this is the whole imported file - we can have a check of the imported data using the following command</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">seqsum</span><span class="op">$</span><span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, 
+             caption<span class="op">=</span><span class="st">"An excerpt of imported data as prepared by $as_tibble"</span>, 
+             booktabs<span class="op">=</span><span class="cn">TRUE</span>, table.envir<span class="op">=</span><span class="st">'table*'</span>, linesep<span class="op">=</span><span class="st">""</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>latex_options<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hold_position"</span>, font_size<span class="op">=</span><span class="fl">8</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<table class="table table">
+<caption>
+An excerpt of imported data as prepared by $as_tibble
+</caption>
+<thead><tr>
+<th style="text-align:right;">
+channel
+</th>
+<th style="text-align:right;">
+start_time
+</th>
+<th style="text-align:right;">
+duration
+</th>
+<th style="text-align:left;">
+passes_filtering
+</th>
+<th style="text-align:right;">
+sequence_length_template
+</th>
+<th style="text-align:right;">
+mean_qscore_template
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2269
+</td>
+<td style="text-align:right;">
+63.87225
+</td>
+<td style="text-align:right;">
+0.89850
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+383
+</td>
+<td style="text-align:right;">
+13.339876
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2757
+</td>
+<td style="text-align:right;">
+63.62725
+</td>
+<td style="text-align:right;">
+0.98925
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+267
+</td>
+<td style="text-align:right;">
+3.216377
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1818
+</td>
+<td style="text-align:right;">
+63.63175
+</td>
+<td style="text-align:right;">
+2.67975
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1373
+</td>
+<td style="text-align:right;">
+13.076194
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1846
+</td>
+<td style="text-align:right;">
+65.79525
+</td>
+<td style="text-align:right;">
+1.08700
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+422
+</td>
+<td style="text-align:right;">
+9.036358
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1565
+</td>
+<td style="text-align:right;">
+63.73250
+</td>
+<td style="text-align:right;">
+3.51100
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1701
+</td>
+<td style="text-align:right;">
+12.828937
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+998
+</td>
+<td style="text-align:right;">
+63.80150
+</td>
+<td style="text-align:right;">
+2.95275
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1283
+</td>
+<td style="text-align:right;">
+11.641397
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="the-sequencingset-and-primitive-qc-measures" class="section level2">
+<h2 class="hasAnchor">
+<a href="#the-sequencingset-and-primitive-qc-measures" class="anchor"></a>The <code>SequencingSet</code> and primitive QC measures</h2>
+<p>In the previous section we created our <code>SequencingSummary</code> object. We can obtain a <code>SequencingSet</code> from the <code>SequencingSummary</code> object by calling its <code>$sequencingset</code> active binding.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span>
+<span class="co">#&gt; &lt;floundeR::SequencingSet&gt;</span></code></pre></div>
+<p>The <code>SequencingSet</code> in turn has a collection of methods that can be used to structure and visualise the data. The first that we’ll have a look at is the <code>$enumerate</code> method that returns an <code>Angenieux</code> object for data visualisation.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">enumerate</span><span class="op">$</span><span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_2.png"</span><span class="op">)</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_2.png" width="75%"></p>
+<p>There are a plethora of ways through which the <code>Angenieux</code> object can be used to style, colour and manipulate the graph - please do have a look at the methods documentation.</p>
+<p>The <code>SequencingSet</code> object can also be used to access simple but primitive summary statistics such as <strong><code>mean</code></strong> sequence length, <strong><code>N50</code></strong> length etc</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">N50</span>
+<span class="co">#&gt; [1] 29925</span>
+<span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">mean</span>
+<span class="co">#&gt; [1] 21933.22</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="fu">read_length_bins</span><span class="op">(</span>bins<span class="op">=</span><span class="fl">35</span>, outliers<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_3.png"</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">plot</span><span class="op">(</span>style<span class="op">=</span><span class="st">"stacked"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_3.png" width="75%"></p>
+<div id="review-sequence-length-distributions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#review-sequence-length-distributions" class="anchor"></a>Review sequence length distributions</h3>
+<p>The distribution of sequence lengths is an important metric that is impacted by choice of library preparation, starting DNA isolation etc. A plot of length distributions is prepared from the same <code>SequencingSet</code> object that we reviewed in the previous section.</p>
+</div>
 </div>
 <div id="plot-flowcell-spatial-density" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-flowcell-spatial-density" class="anchor"></a>Plot flowcell spatial density</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">figure_1</span> <span class="op">&lt;-</span> <span class="va">seqsum</span><span class="op">$</span><span class="va">flowcell</span><span class="op">$</span><span class="va">density_data</span><span class="op">$</span><span class="va">plot</span>
-<span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="st">"figure_1.png"</span>, plot <span class="op">=</span> <span class="va">figure_1</span>, device <span class="op">=</span> <span class="st">"png"</span><span class="op">)</span>
-<span class="co">#&gt; Saving 7.29 x 4.51 in image</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span><span class="st">"figure_1.png"</span><span class="op">)</span></code></pre></div>
-<p><img src="figure_1.png" width="1094"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">seqsum</span><span class="op">$</span><span class="va">flowcell</span><span class="op">$</span><span class="va">density_data</span><span class="op">$</span><span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_1.png"</span><span class="op">)</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_1.png" width="100%"></p>
 </div>
   </div>
 

@@ -1,5 +1,6 @@
 # floundeR (development version)
 
+* robust Angenieux decorations and demonstration of more comprehensive plots
 * integrating Angenieux with ggsave for cleaner Rmarkdown usage
 
 # floundeR 0.0.3

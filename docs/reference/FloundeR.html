@@ -75,7 +75,7 @@ actually creating a floundeR instance on its own." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">floundeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3.9000</span>
       </span>
     </div>
 
@@ -147,6 +147,8 @@ actually creating a <code>floundeR</code> instance on its own.</p>
 <li><p><a href='#method-new'><code>FloundeR$new()</code></a></p></li>
 <li><p><a href='#method-print'><code>FloundeR$print()</code></a></p></li>
 <li><p><a href='#method-bin_data'><code>FloundeR$bin_data()</code></a></p></li>
+<li><p><a href='#method-num_scale'><code>FloundeR$num_scale()</code></a></p></li>
+<li><p><a href='#method-nums_scale'><code>FloundeR$nums_scale()</code></a></p></li>
 <li><p><a href='#method-clone'><code>FloundeR$clone()</code></a></p></li>
 </ul>
 <p><hr>
@@ -198,6 +200,29 @@ be excluded to simplify the plot.</p></li>
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
 <p>bin assignments for <code>data</code> elements</p>
+<p><hr>
+<a id="method-num_scale"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>num_scale()</code></h3>
+<p>scale numerics in bases into kilo/mega/giga etc measurements for e.g.
+plots and other graphic visualisations</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>FloundeR</span><span class='op'>$</span><span class='fu'>num_scale</span><span class='op'>(</span><span class='va'>val</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>val</code></dt><dd><p>a numeric (raw)</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>character representation scaled accordingly</p>
+<p><hr>
+<a id="method-nums_scale"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>nums_scale()</code></h3>
+<p>Apply the <code>num_scale</code> method across a multi-member vector of numerics</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>FloundeR</span><span class='op'>$</span><span class='fu'>nums_scale</span><span class='op'>(</span><span class='va'>vals</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>vals</code></dt><dd><p>the vector of numerics</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>

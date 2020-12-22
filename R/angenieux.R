@@ -18,6 +18,10 @@ Angenieux <- R6::R6Class(
   inherit = FloundeR,
   classname = "Angenieux",
   public = list(
+
+    #' @field colourMap - default colourMap for plots requiring discrete colours
+    colourMap = NA,
+
     #' @description
     #' Creates a new Angenieux object. This
     #' initialisation method performs other sanity checking of the defined
@@ -30,8 +34,11 @@ Angenieux <- R6::R6Class(
     #' @return A new `Angenieux` object.
     initialize = function(key, value) {
 
+      self$colourMap = RColorBrewer::brewer.pal(8, "Set1")
+
       private$hm.palette = grDevices::colorRampPalette(
         RColorBrewer::brewer.pal(9, "Blues"), space = "Lab")
+      private$.plot_elements <- list()
 
       if (key == "XYDensity") {
         if (!is.matrix(value)) {
@@ -62,6 +69,19 @@ Angenieux <- R6::R6Class(
       else {
         stop(paste0("Graph type [",key,"] not implemented"))
       }
+    },
+
+
+    #' @description
+    #' add an `AngenieuxDecoration` to the plot.
+    #'
+    #' @param item an `AngenieuxDecoration`
+    add = function(item) {
+      if (!class(item)[1] == "AngenieuxDecoration") {
+        stop("Can only add [AngenieuxDecoration] elements")
+      }
+      private$.plot_elements <- append(private$.plot_elements, item)
+      invisible(self)
     },
 
 
@@ -101,7 +121,7 @@ Angenieux <- R6::R6Class(
     #' @param dpi the plot resolution (print/300 by default)
     #'
     #' @return the original Angenieux object (self)
-    to_file = function(target_file, width=12, height=7.5, units="cm", dpi="print") {
+    to_file = function(target_file, width=18, height=12, units="cm", dpi="print") {
       private$target_type <- tolower(tools::file_ext(target_file))
       private$target_file <- target_file
       private$target_file_width = width
@@ -145,7 +165,7 @@ Angenieux <- R6::R6Class(
   ),
 
   private = list(
-
+    .plot_elements = NA,
     graph_type = NULL,
     graph_data = NULL,
     graph_title = "angenieux plot",
@@ -215,13 +235,14 @@ Angenieux <- R6::R6Class(
           ggplot2::geom_line()
         return(private$.decorate_plot(plot))
       } else {
-        molten[[level]] <- factor(
-          molten[[level]],
-          sort(unique(molten[[level]])))
+        #molten[[level]] <- factor(
+        #  molten[[level]],
+        #  sort(unique(molten[[level]])))
         plot <- ggplot2::ggplot(
           molten,
           ggplot2::aes_string(x=level, y="value", fill=key)) +
-          ggplot2::geom_col()
+          ggplot2::geom_bar(stat="identity") +
+          ggplot2::theme(axis.text.x = element_text(angle = 90, hjust = 1))
         return(private$.decorate_plot(plot))
       }
     },
@@ -238,8 +259,12 @@ Angenieux <- R6::R6Class(
 
 
     .decorate_plot = function(plot) {
+      for (decoration in private$.plot_elements) {
+        plot <- plot + decoration$decoration
+      }
       plot <- plot +
-        ggplot2::labs(title = private$graph_title)
+        ggplot2::labs(title = private$graph_title) +
+        ggplot2::theme(text = element_text(size = 10))
       return(private$.handle_plot_logistsics(plot))
     },
 
@@ -255,12 +280,95 @@ Angenieux <- R6::R6Class(
           device = private$target_type,
           width = private$target_file_width,
           height = private$target_file_height,
-          units = private$ target_file_units,
+          units = private$target_file_units,
           dpi = private$target_file_dpi)
         return(private$target_file)
       } else {
         stop(paste0("plottype - [",private$target_type,"] is not defined"))
       }
+    }
+  )
+)
+
+
+
+
+
+#' R6 Class for describing additional Angenieux decorations
+#'
+#' @export
+AngenieuxDecoration <- R6::R6Class(
+  inherit = FloundeR,
+  classname = "AngenieuxDecoration",
+  public = list(
+
+    #' @field decoration
+    #' This field contains the decoration that will be applied to the Angenieux
+    #' object
+    decoration = NA,
+
+    #' @description
+    #' This is the constructor for the AngenieuxDecoration object
+    #'
+    #' @param decoration_type
+    #' This field is used to specify the type of decoration; the cleanest type
+    #' at the moment is currently the `ggplot2` type.
+    #' @param ... the other variables passed on to methods contained within the
+    #' object
+    initialize = function(decoration_type, ...) {
+      if (decoration_type=="vline") {
+        self$.add_vline(...)
+      } else if (decoration_type=="vlegend") {
+        self$.add_vlegend(...)
+      } else if (decoration_type=="ggplot2") {
+        self$.add_ggplot2(...)
+      }
+    },
+
+    #' @description
+    #' Add a vertical line to a ggplot2 graph within Angenieux
+    #'
+    #' @param xintercept the point at which the vertical line will intercept the
+    #' x-axis
+    #' @param colour the colour of the line
+    #' @param size the width of the line (default 1)
+    .add_vline = function(xintercept, colour="green", size=1) {
+      self$decoration <- ggplot2::geom_vline(
+        xintercept=xintercept,
+        colour=colour,
+        size=size)
+    },
+
+    #' @description
+    #' Add a legend text to accompany a vertical line
+    #'
+    #' @param xintercept the point at which the vertical line will intercept the
+    #' x-axis
+    #' @param colour the colour of the line
+    #' @param legend the text to display at the given location
+    #' @param hjust horizonal justify (0=left, 1=right)
+    #' @param vjust vertical justify (0=bottom, 1=top)
+    #' @param size the size of the font to present at the given location
+    .add_vlegend = function(xintercept, colour="green", legend="", hjust=0, vjust=1, size = 6) {
+      self$decoration <- ggplot2::annotate(
+        "text",
+        x=xintercept,
+        y=+Inf,
+        label=legend,
+        hjust=hjust,
+        vjust=vjust,
+        colour=colour,
+        size=size)
+    },
+
+    #' @description
+    #' Just add some plain `ggplot2` to the AngenieuxDecoration and layer on to
+    #' the Angenieux plot - this is for the lazy hacking out and visualisation
+    #' of plots
+    #'
+    #' @param facet the stuff to be layered onto the graph
+    .add_ggplot2 = function(facet) {
+      self$decoration <- facet
     }
   )
 )

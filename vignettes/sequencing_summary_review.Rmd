@@ -27,14 +27,17 @@ provide a lightweight set of components that can be mixed and matched for the
 exploration of the `sequencing_summary` file that is produced during Guppy-based
 base-calling.
 
-This report is feature-complete with the earlier `BasicQC` tutorial but has been
-implemented with a different set of rules and expectations. Feedback is
-welcomed.
+This report is largely feature-complete with the earlier `BasicQC` tutorial but
+has been implemented with a different set of rules and expectations. A couple of
+figures previously reported have been deprecated for aesthetic reasons. Feedback
+is welcomed.
 
 
 ```{r setup}
 library(floundeR)
 library(ggplot2)
+library(magrittr)
+library(kableExtra)
 ```
 
 
@@ -82,11 +85,23 @@ flowcell platform - this should return the expected sequencing platform.
 
 
 ```{r create_ss}
-sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
+# sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
 seqsum <- SequencingSummary$new(sequencing_summary)
 
 # check the flowcell platform - ensures that something valid has been created
 seqsum$flowcell$platform
+```
+
+The majority of `floundeR` classes provide a simple `$as_tibble()` method that
+returns a `tibble` of data that the class operates on. For the 
+`SequencingSummary` object this is the whole imported file - we can have a check
+of the imported data using the following command
+
+```{r seqsum_tibble}
+knitr::kable(head(seqsum$as_tibble()), 
+             caption="An excerpt of imported data as prepared by $as_tibble", 
+             booktabs=TRUE, table.envir='table*', linesep="") %>%
+  kable_styling(latex_options=c("hold_position", font_size=8))
 ```
 
 
@@ -104,7 +119,7 @@ The `SequencingSet` in turn has a collection of methods that can be used to
 structure and visualise the data. The first that we'll have a look at is the
 `$enumerate` method that returns an `Angenieux` object for data visualisation.
 
-```{r sequencingset_enumerate, out.width="65%"}
+```{r sequencingset_enumerate, out.width="75%"}
 knitr::include_graphics(
   seqsum$sequencingset$enumerate$to_file("figure_2.png")$plot())
 ```
@@ -112,6 +127,32 @@ knitr::include_graphics(
 There are a plethora of ways through which the `Angenieux` object can be used
 to style, colour and manipulate the graph - please do have a look at the methods
 documentation.
+
+The `SequencingSet` object can also be used to access simple but primitive
+summary statistics such as **`mean`** sequence length, **`N50`** length etc
+
+```{r sequencingset_stats}
+seqsum$sequencingset$N50
+seqsum$sequencingset$mean
+```
+
+
+```{r sequencingset_readlengths, out.width="75%"}
+knitr::include_graphics(
+  seqsum$sequencingset$read_length_bins(bins=35, outliers=0.001)$
+    to_file("figure_3.png")$
+    plot(style="stacked"))
+
+```
+
+
+### Review sequence length distributions
+
+The distribution of sequence lengths is an important metric that is impacted by
+choice of library preparation, starting DNA isolation etc. A plot of length
+distributions is prepared from the same `SequencingSet` object that we
+reviewed in the previous section.
+
 
 ## Plot flowcell spatial density
 

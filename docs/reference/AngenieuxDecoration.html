@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>R6 Class for visualising floundeR based datasets — Angenieux • floundeR</title>
+<title>R6 Class for describing additional Angenieux decorations — AngenieuxDecoration • floundeR</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="R6 Class for visualising floundeR based datasets — Angenieux" />
-<meta property="og:description" content="This class aims to provide aplanat-like visualisation abstraction for the
-floundeR framework" />
+<meta property="og:title" content="R6 Class for describing additional Angenieux decorations — AngenieuxDecoration" />
+<meta property="og:description" content="R6 Class for describing additional Angenieux decorations
+R6 Class for describing additional Angenieux decorations" />
 
 
 
@@ -122,25 +122,26 @@ floundeR framework" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>R6 Class for visualising floundeR based datasets</h1>
+    <h1>R6 Class for describing additional Angenieux decorations</h1>
     
-    <div class="hidden name"><code>Angenieux.Rd</code></div>
+    <div class="hidden name"><code>AngenieuxDecoration.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This class aims to provide aplanat-like visualisation abstraction for the
-floundeR framework</p>
+    <p>R6 Class for describing additional Angenieux decorations</p>
+<p>R6 Class for describing additional Angenieux decorations</p>
     </div>
 
 
 
     <h2 class="hasAnchor" id="super-class"><a class="anchor" href="#super-class"></a>Super class</h2>
 
-    <p><code><a href='FloundeR.html'>floundeR::FloundeR</a></code> -&gt; <code>Angenieux</code></p>
-    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
+    <p><code><a href='FloundeR.html'>floundeR::FloundeR</a></code> -&gt; <code>AngenieuxDecoration</code></p>
+    <h2 class="hasAnchor" id="public-fields"><a class="anchor" href="#public-fields"></a>Public fields</h2>
 
-    <p><div class="r6-active-bindings"></p><dl>
-<dt><code>data</code></dt><dd><p>A method to dump out the stored data from an <code>Angenieux</code> object</p></dd>
+    <p><div class="r6-fields"></p><dl>
+<dt><code>decoration</code></dt><dd><p>This field contains the decoration that will be applied to the Angenieux
+object</p></dd>
 
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
@@ -149,12 +150,11 @@ floundeR framework</p>
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Public methods</h3>
 
 <ul>
-<li><p><a href='#method-new'><code>Angenieux$new()</code></a></p></li>
-<li><p><a href='#method-add'><code>Angenieux$add()</code></a></p></li>
-<li><p><a href='#method-plot'><code>Angenieux$plot()</code></a></p></li>
-<li><p><a href='#method-to_file'><code>Angenieux$to_file()</code></a></p></li>
-<li><p><a href='#method-set_title'><code>Angenieux$set_title()</code></a></p></li>
-<li><p><a href='#method-clone'><code>Angenieux$clone()</code></a></p></li>
+<li><p><a href='#method-new'><code>AngenieuxDecoration$new()</code></a></p></li>
+<li><p><a href='#method-.add_vline'><code>AngenieuxDecoration$.add_vline()</code></a></p></li>
+<li><p><a href='#method-.add_vlegend'><code>AngenieuxDecoration$.add_vlegend()</code></a></p></li>
+<li><p><a href='#method-.add_ggplot2'><code>AngenieuxDecoration$.add_ggplot2()</code></a></p></li>
+<li><p><a href='#method-clone'><code>AngenieuxDecoration$clone()</code></a></p></li>
 </ul>
 <p><details open ><summary>Inherited methods</summary>
 <ul>
@@ -167,91 +167,77 @@ floundeR framework</p>
 
 <hr>
 <a id="method-new"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>new()</code></h3>
-<p>Creates a new Angenieux object. This
-initialisation method performs other sanity checking of the defined
-file(s) and creates the required data structures.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>Angenieux</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>key</span>, <span class='va'>value</span><span class='op'>)</span></pre><p></div></p>
+<p>This is the constructor for the AngenieuxDecoration object</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>AngenieuxDecoration</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>decoration_type</span>, <span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>key</code></dt><dd><p>the datatype that is being passed to the object</p></dd>
+<dt><code>decoration_type</code></dt><dd><p>This field is used to specify the type of decoration; the cleanest type
+at the moment is currently the <code>ggplot2</code> type.</p></dd>
 
-<dt><code>value</code></dt><dd><p>the data that is being passed to the object</p></dd>
+<dt><code>...</code></dt><dd><p>the other variables passed on to methods contained within the
+object</p></dd>
 
 </dl><p></div></p>
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>A new <code>Angenieux</code> object.</p>
 <p><hr>
-<a id="method-add"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>add()</code></h3>
-<p>add an <code>AngenieuxDecoration</code> to the plot.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>Angenieux</span><span class='op'>$</span><span class='fu'>add</span><span class='op'>(</span><span class='va'>item</span><span class='op'>)</span></pre><p></div></p>
+<a id="method-.add_vline"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>.add_vline()</code></h3>
+<p>Add a vertical line to a ggplot2 graph within Angenieux</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>AngenieuxDecoration</span><span class='op'>$</span><span class='fu'>.add_vline</span><span class='op'>(</span><span class='va'>xintercept</span>, colour <span class='op'>=</span> <span class='st'>"green"</span>, size <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>item</code></dt><dd><p>an <code>AngenieuxDecoration</code></p></dd>
+<dt><code>xintercept</code></dt><dd><p>the point at which the vertical line will intercept the
+x-axis</p></dd>
+
+<dt><code>colour</code></dt><dd><p>the colour of the line</p></dd>
+
+<dt><code>size</code></dt><dd><p>the width of the line (default 1)</p></dd>
 
 </dl><p></div></p>
 <p><hr>
-<a id="method-plot"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot()</a></code></h3>
-<p>Prepare and present an Angenieux plot</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>Angenieux</span><span class='op'>$</span><span class='fu'>plot</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
-
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
-<p><div class="arguments"></p><dl>
-<dt><code>...</code></dt><dd><p>parameters passed on to downstream methods - please see
-examples for further examples as to how Angenieux plots can be customised
-using this approach.</p></dd>
-
-</dl><p></div></p>
-<p><hr>
-<a id="method-to_file"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>to_file()</code></h3>
-<p>Specify that Angenieux plot should be saved to file</p>
-<p>When working at the console an Angenieux plot may be plotted directly
-to the console. When preparing reports through Rmarkdown or Pkgdown a
-more logical saving of plots to a discrete file location may make more
-sense. The method is used to instruct Angenieux that the plot should be
-saved to a given location and with a given file format.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>Angenieux</span><span class='op'>$</span><span class='fu'>to_file</span><span class='op'>(</span>
-  <span class='va'>target_file</span>,
-  width <span class='op'>=</span> <span class='fl'>12</span>,
-  height <span class='op'>=</span> <span class='fl'>7.5</span>,
-  units <span class='op'>=</span> <span class='st'>"cm"</span>,
-  dpi <span class='op'>=</span> <span class='st'>"print"</span>
+<a id="method-.add_vlegend"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>.add_vlegend()</code></h3>
+<p>Add a legend text to accompany a vertical line</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>AngenieuxDecoration</span><span class='op'>$</span><span class='fu'>.add_vlegend</span><span class='op'>(</span>
+  <span class='va'>xintercept</span>,
+  colour <span class='op'>=</span> <span class='st'>"green"</span>,
+  legend <span class='op'>=</span> <span class='st'>""</span>,
+  hjust <span class='op'>=</span> <span class='fl'>0</span>,
+  vjust <span class='op'>=</span> <span class='fl'>1</span>,
+  size <span class='op'>=</span> <span class='fl'>6</span>
 <span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>target_file</code></dt><dd><p>the file with extension e.g. <code>figure1.png</code></p></dd>
+<dt><code>xintercept</code></dt><dd><p>the point at which the vertical line will intercept the
+x-axis</p></dd>
 
-<dt><code>width</code></dt><dd><p>the width of figure to save (12 by default)</p></dd>
+<dt><code>colour</code></dt><dd><p>the colour of the line</p></dd>
 
-<dt><code>height</code></dt><dd><p>the height of figure to save (7.5 by default)</p></dd>
+<dt><code>legend</code></dt><dd><p>the text to display at the given location</p></dd>
 
-<dt><code>units</code></dt><dd><p>the unit to use for height and width (cm by default)</p></dd>
+<dt><code>hjust</code></dt><dd><p>horizonal justify (0=left, 1=right)</p></dd>
 
-<dt><code>dpi</code></dt><dd><p>the plot resolution (print/300 by default)</p></dd>
+<dt><code>vjust</code></dt><dd><p>vertical justify (0=bottom, 1=top)</p></dd>
+
+<dt><code>size</code></dt><dd><p>the size of the font to present at the given location</p></dd>
 
 </dl><p></div></p>
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>the original Angenieux object (self)</p>
 <p><hr>
-<a id="method-set_title"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>set_title()</code></h3>
-<p>Set the title used in the given Angenieux plot</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>Angenieux</span><span class='op'>$</span><span class='fu'>set_title</span><span class='op'>(</span><span class='va'>title</span><span class='op'>)</span></pre><p></div></p>
+<a id="method-.add_ggplot2"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>.add_ggplot2()</code></h3>
+<p>Just add some plain <code>ggplot2</code> to the AngenieuxDecoration and layer on to
+the Angenieux plot - this is for the lazy hacking out and visualisation
+of plots</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>AngenieuxDecoration</span><span class='op'>$</span><span class='fu'>.add_ggplot2</span><span class='op'>(</span><span class='va'>facet</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>title</code></dt><dd><p><ul>
-<li><p>the title to use on the plot</p></li>
-</ul></p></dd>
+<dt><code>facet</code></dt><dd><p>the stuff to be layered onto the graph</p></dd>
 
 </dl><p></div></p>
-<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>the original Angenieux object (self)</p>
 <p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
-<p><div class="r"></p><pre><span class='va'>Angenieux</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
+<p><div class="r"></p><pre><span class='va'>AngenieuxDecoration</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>

@@ -56,7 +56,42 @@ FloundeR <- R6::R6Class(
       bin_assignments <- cut(
         data, breaks, label=head(breaks, -1), include.lowest=TRUE, right=FALSE)
       return(bin_assignments)
+    },
+
+
+    #' @description
+    #' scale numerics in bases into kilo/mega/giga etc measurements for e.g.
+    #' plots and other graphic visualisations
+    #'
+    #' @param val a numeric (raw)
+    #'
+    #' @return character representation scaled accordingly
+    num_scale = function(val) {
+      if (is.na(val)) {
+        return(val)
+      }
+      val = as.numeric(val)
+      if (val > 1e+12) {
+        return(paste0(val/1e+12,"Tb"))
+      } else if (val > 1e+9) {
+        return(paste0(val/1e+9,"Gb"))
+      } else if (val > 1e+6) {
+        return(paste0(val/1e+6,"Mb"))
+      } else if (val > 1e+3) {
+        return(paste0(val/1e+3,"kb"))
+      } else {
+        return(val)
+      }
+    },
+
+    #' @description
+    #' Apply the `num_scale` method across a multi-member vector of numerics
+    #'
+    #' @param vals the vector of numerics
+    nums_scale = function(vals) {
+      unlist(lapply(vals, self$num_scale))
     }
+
   ),
 
   private = list(
