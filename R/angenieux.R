@@ -245,7 +245,9 @@ Angenieux <- R6::R6Class(
 
 
     .handle_plot_logistsics = function(plot) {
-      if (private$target_type == "png") {
+      if (is.na(private$target_type)) {
+        return(plot)
+      } else if (private$target_type == "png") {
         message("saving plot as [png]")
         ggplot2::ggsave(
           private$target_file,
@@ -256,8 +258,9 @@ Angenieux <- R6::R6Class(
           units = private$ target_file_units,
           dpi = private$target_file_dpi)
         return(private$target_file)
+      } else {
+        stop(paste0("plottype - [",private$target_type,"] is not defined"))
       }
-      return(plot)
     }
   )
 )
