@@ -307,6 +307,10 @@ TRUE
 <span class="co">#&gt; [1] 29925</span>
 <span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">mean</span>
 <span class="co">#&gt; [1] 21933.22</span></code></pre></div>
+<div id="review-sequence-length-distributions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#review-sequence-length-distributions" class="anchor"></a>Review sequence length distributions</h3>
+<p>The distribution of sequence lengths is an important metric that is impacted by choice of library preparation, starting DNA isolation etc. A plot of length distributions is prepared from the same <code>SequencingSet</code> object that we reviewed in the previous section.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
   <span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="fu">read_length_bins</span><span class="op">(</span>bins<span class="op">=</span><span class="fl">35</span>, outliers<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span><span class="op">$</span>
@@ -314,16 +318,24 @@ TRUE
     <span class="fu">plot</span><span class="op">(</span>style<span class="op">=</span><span class="st">"stacked"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; saving plot as [png]</span></code></pre></div>
 <p><img src="figure_3.png" width="75%"></p>
-<div id="review-sequence-length-distributions" class="section level3">
+</div>
+<div id="review-quality-distributions" class="section level3">
 <h3 class="hasAnchor">
-<a href="#review-sequence-length-distributions" class="anchor"></a>Review sequence length distributions</h3>
+<a href="#review-quality-distributions" class="anchor"></a>Review quality distributions</h3>
 <p>The distribution of sequence lengths is an important metric that is impacted by choice of library preparation, starting DNA isolation etc. A plot of length distributions is prepared from the same <code>SequencingSet</code> object that we reviewed in the previous section.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">seqsum</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="fu">quality_bins</span><span class="op">(</span>bins<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_4.png"</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">plot</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_4.png" width="75%"></p>
 </div>
 </div>
 <div id="plot-flowcell-spatial-density" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-flowcell-spatial-density" class="anchor"></a>Plot flowcell spatial density</h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
   <span class="va">seqsum</span><span class="op">$</span><span class="va">flowcell</span><span class="op">$</span><span class="va">density_data</span><span class="op">$</span><span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_1.png"</span><span class="op">)</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; saving plot as [png]</span></code></pre></div>

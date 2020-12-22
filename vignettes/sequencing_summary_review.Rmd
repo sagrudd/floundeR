@@ -137,6 +137,14 @@ seqsum$sequencingset$mean
 ```
 
 
+
+### Review sequence length distributions
+
+The distribution of sequence lengths is an important metric that is impacted by
+choice of library preparation, starting DNA isolation etc. A plot of length
+distributions is prepared from the same `SequencingSet` object that we
+reviewed in the previous section.
+
 ```{r sequencingset_readlengths, out.width="75%"}
 knitr::include_graphics(
   seqsum$sequencingset$read_length_bins(bins=35, outliers=0.001)$
@@ -146,12 +154,20 @@ knitr::include_graphics(
 ```
 
 
-### Review sequence length distributions
+### Review quality distributions
 
 The distribution of sequence lengths is an important metric that is impacted by
 choice of library preparation, starting DNA isolation etc. A plot of length
 distributions is prepared from the same `SequencingSet` object that we
 reviewed in the previous section.
+
+```{r sequencingset_qualitybins, out.width="75%"}
+knitr::include_graphics(
+  seqsum$sequencingset$quality_bins(bins=100)$
+    to_file("figure_4.png")$
+    plot())
+
+```
 
 
 ## Plot flowcell spatial density
