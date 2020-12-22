@@ -16,6 +16,12 @@ R6 Class for loading and analysing sequence sets
 \describe{
 \item{\code{enumerate}}{prepares a simple \verb{1D Angenieux} enumeration of the provided dataset
 for quick visualisation of the dataset.}
+
+\item{\code{N50}}{Calculate and return the N50 value for passed quality sequence reads in
+the current \code{SequencingSet} object}
+
+\item{\code{mean}}{Calculate and return the mean sequence length for passed quality reads in
+the \code{SequencingSet} object}
 }
 \if{html}{\out{</div>}}
 }

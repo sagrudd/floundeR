@@ -135,6 +135,32 @@ SequencingSet <- R6::R6Class(
         Angenieux$new("1D_count", enumerated_counts)$
           set_title(paste0("Plot showing distribution of [",private$keycol,"]"))
       }
+    },
+
+    #' @field N50
+    #' Calculate and return the N50 value for passed quality sequence reads in
+    #' the current `SequencingSet` object
+    N50 = function(value) {
+      if (missing(value)) {
+        len_sorted <- private$seqsum %>%
+          dplyr::filter(passes_filtering == TRUE) %>%
+          dplyr::select(sequence_length_template) %>%
+          dplyr::arrange(desc(sequence_length_template))
+        len_sorted[cumsum(len_sorted) >= sum(len_sorted)*0.5][1]
+      }
+    },
+
+    #' @field mean
+    #' Calculate and return the mean sequence length for passed quality reads in
+    #' the `SequencingSet` object
+    mean = function(value) {
+      if (missing(value)) {
+        as.numeric(
+          private$seqsum %>%
+            dplyr::filter(passes_filtering == TRUE) %>%
+            dplyr::select(sequence_length_template) %>%
+            dplyr::summarize(mean(sequence_length_template)))
+      }
     }
 
   ),
