@@ -200,3 +200,35 @@ SequencingSet <- R6::R6Class(
     seqsum = NULL
   ),
 )
+
+
+
+
+
+#' Prepare a `SequencingSet` object from provided class
+#'
+#' This method is intended to streamline the usage of floundeR in more coherent
+#' workflows through the enabling of more magrittr-like piped commands. This
+#' method will consume floundeR specified classes and return a SequencingSet
+#' object where possible.
+#'
+#' @param r6_object is the floundeR R6 object to extract SequencingSet from
+#'
+#' @return Flounder SequencingSet object
+#' 
+#' @importFrom magrittr %>%
+#' @export %>%
+#'
+#' @examples
+#' SequencingSummary$new(flnDr("sequencing_summary.txt.bz2")) %>% 
+#'     to_sequencing_set()
+#'
+#' @export
+to_sequencing_set = function(r6_object) {
+  if (class(r6_object)[1] == "SequencingSummary") {
+    return(r6_object$sequencingset)
+  } else {
+    stop("Unable to prepare flowcell object from provided input")
+  }
+  
+}

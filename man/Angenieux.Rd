@@ -10,6 +10,15 @@ floundeR framework
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Angenieux}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{colourMap}}{\itemize{
+\item default colourMap for plots requiring discrete colours
+}}
+}
+\if{html}{\out{</div>}}
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -112,8 +121,8 @@ saved to a given location and with a given file format.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Angenieux$to_file(
   target_file,
-  width = 12,
-  height = 7.5,
+  width = 18,
+  height = 12,
   units = "cm",
   dpi = "print"
 )}\if{html}{\out{</div>}}

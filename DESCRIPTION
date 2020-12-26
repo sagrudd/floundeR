@@ -1,6 +1,6 @@
 Package: floundeR
 Title: Toolkit For Nanopore Sequence Analysis
-Version: 0.0.3.9000
+Version: 0.0.3.9001
 Authors@R: 
     person(given = "Stephen",
            family = "Rudd",

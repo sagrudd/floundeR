@@ -83,7 +83,6 @@ constructor with the `SequencingSummary$new()` call. We will pass the
 Let's also check that the object creation has worked by asking about the
 flowcell platform - this should return the expected sequencing platform.
 
-
 ```{r create_ss}
 # sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
 seqsum <- SequencingSummary$new(sequencing_summary)
@@ -91,6 +90,27 @@ seqsum <- SequencingSummary$new(sequencing_summary)
 # check the flowcell platform - ensures that something valid has been created
 seqsum$flowcell$platform
 ```
+
+### What is this$mischief?
+
+As discussed in the section above, the `floundeR` objects have been wrapped
+as R6 objects. In the code `seqsum` is an object and the `$` is used to access
+stored variables, functions and active-bindings. It just happens that
+`seqsum$flowcell` returns a `Flowcell` object and this has a method called
+`platform` that returns the sequencing platform used.
+
+While these classes make life simpler this can create some slightly scary code;
+within this package we have tried to ensure that the methods accessible through
+the R6 objects are also available through `magrittr::%>%` pipes - the author of
+this package finds that this often makes for simpler code.
+
+```{r R6_descendents_and_magrittr}
+# let's see if things are really similar
+seqsum$flowcell
+
+seqsum %>% to_flowcell()
+```
+
 
 The majority of `floundeR` classes provide a simple `$as_tibble()` method that
 returns a `tibble` of data that the class operates on. For the 
@@ -109,10 +129,11 @@ knitr::kable(head(seqsum$as_tibble()),
 
 In the previous section we created our `SequencingSummary` object. We can
 obtain a `SequencingSet` from the `SequencingSummary` object by calling its
-`$sequencingset` active binding. 
+`$sequencingset` active binding; here we'll use the `magrittr::%>%` pipe for
+simplicity.
 
 ```{r sequencingset}
-seqsum$sequencingset
+seqsum %>% to_sequencing_set()
 ```
 
 The `SequencingSet` in turn has a collection of methods that can be used to
