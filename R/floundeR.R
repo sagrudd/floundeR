@@ -110,3 +110,10 @@ FloundeR <- R6::R6Class(
 
 
 )
+
+
+
+
+#' @useDynLib floundeR
+#' @importFrom Rcpp sourceCpp
+NULL

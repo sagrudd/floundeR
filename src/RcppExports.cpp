@@ -5,20 +5,20 @@
 
 using namespace Rcpp;
 
-// timesTwo
-NumericVector timesTwo(NumericVector x);
-RcppExport SEXP _floundeR_timesTwo(SEXP xSEXP) {
+// fishy_fastq
+int fishy_fastq(std::string fastq);
+RcppExport SEXP _floundeR_fishy_fastq(SEXP fastqSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    Rcpp::traits::input_parameter< std::string >::type fastq(fastqSEXP);
+    rcpp_result_gen = Rcpp::wrap(fishy_fastq(fastq));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_floundeR_timesTwo", (DL_FUNC) &_floundeR_timesTwo, 1},
+    {"_floundeR_fishy_fastq", (DL_FUNC) &_floundeR_fishy_fastq, 1},
     {NULL, NULL, 0}
 };
 
