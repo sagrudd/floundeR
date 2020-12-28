@@ -19,6 +19,7 @@ static double seqqual = 0;
 static vector<int> id_vect; 
 static vector<int> length_vect; 
 static vector<double> quality_vect; 
+static std::vector<bool> qc_pass_vect;
 
 struct Fastq_tag {
   char header[10000000];
@@ -35,6 +36,7 @@ void init() {
   id_vect.clear();
   length_vect.clear();
   quality_vect.clear();
+  qc_pass_vect.clear();
 }
 
 
@@ -236,10 +238,11 @@ DataFrame fishy_fastq(std::string fastq) {
   
   while (get_next_fastq() == 1)
   {
-    Rcout << "(s/q)Lengths==" << seqlength << "/" << seqqual << std::endl;
+    // Rcout << "(s/q)Lengths==" << seqlength << "/" << seqqual << std::endl;
     id_vect.push_back(counter); 
     length_vect.push_back(seqlength);
     quality_vect.push_back(seqqual);
+    qc_pass_vect.push_back(true);
     counter += 1;
   }
   
@@ -256,8 +259,9 @@ DataFrame fishy_fastq(std::string fastq) {
   
   DataFrame df = DataFrame::create( 
     Named("id") = id_vect , 
-    _["length"] = length_vect ,
-    _["mean_q"] = quality_vect);
+    _["sequence_length_template"] = length_vect ,
+    _["mean_qscore_template"] = quality_vect ,
+    _["passes_filtering"] = qc_pass_vect);
   
   return df;
 }
