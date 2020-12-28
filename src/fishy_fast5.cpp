@@ -5,6 +5,7 @@ using namespace Rcpp;
 using namespace std;
 #include <zlib.h>
 #include <stdio.h>
+#include <cmath>
 
 static std::string fastq_filename;
 static int isZipped = 0;
@@ -13,6 +14,7 @@ static FILE *file;
 static int LONGEST_SEQ = 10000000;
 static bool validFastq = true;
 static size_t seqlength = 0;
+static double seqqual = 0;
 
 struct Fastq_tag {
   char header[10000000];
@@ -75,6 +77,34 @@ int has_next_fastq()
   return (0);
 }
 
+//' calculate mean Phred score from an ASCII encoded phred string
+//' 
+//' FASTQ and BAM store per base qualities as an ASCII string. Accessory methods
+//' in e.g. ShortRead allow for a sum of the numeric encoded scores; this is not
+//' corrected for the log/linear so scores are synthetically boosted
+//' - this simple method performs mean on the character level data ...
+//'
+//' @param qstring is an ASCII encoded Phred quality score
+//'
+//' @return mean phred scaled q-value
+//'
+//' @examples
+//' sequence_quality("ABCDEFGH")
+//'
+//' @export
+// [[Rcpp::export]]
+double sequence_quality(std::string qstring) 
+{
+  double running_total = 0.0;
+  for (unsigned i=0; i<qstring.length(); ++i)
+  {
+    running_total += pow(
+      (double) 10.0, (double) ((int) qstring.at(i) - 33) / -10.0);
+  }
+  double run_tot_mean =  -10 * log10( 
+    running_total / qstring.length() );
+  return(run_tot_mean);
+}
 
 
 int validate_fastq()
@@ -104,6 +134,7 @@ int validate_fastq()
   // is sequence length > 0
   seqlength = strlen(fq.sequence);
   size_t qlength = strlen(fq.quality);
+  seqqual = sequence_quality(fq.quality);
   if (seqlength == 0) {
     Rcout << "Malformed fastq entry ~ length(sequence)==0" << std::endl;
     validFastq = false;
@@ -188,8 +219,7 @@ int fishy_fastq(std::string fastq) {
 
   while (get_next_fastq() == 1)
   {
-    Rcout << "Entry .. .. " << std::endl;
-    Rcout << "(s/q)Lengths==" << seqlength << "/" << std::endl;
+    Rcout << "(s/q)Lengths==" << seqlength << "/" << seqqual << std::endl;
   }
   
   if (isZipped) {

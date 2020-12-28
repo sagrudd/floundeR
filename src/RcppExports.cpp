@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// sequence_quality
+double sequence_quality(std::string qstring);
+RcppExport SEXP _floundeR_sequence_quality(SEXP qstringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type qstring(qstringSEXP);
+    rcpp_result_gen = Rcpp::wrap(sequence_quality(qstring));
+    return rcpp_result_gen;
+END_RCPP
+}
 // fishy_fastq
 int fishy_fastq(std::string fastq);
 RcppExport SEXP _floundeR_fishy_fastq(SEXP fastqSEXP) {
@@ -18,6 +29,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_floundeR_sequence_quality", (DL_FUNC) &_floundeR_sequence_quality, 1},
     {"_floundeR_fishy_fastq", (DL_FUNC) &_floundeR_fishy_fastq, 1},
     {NULL, NULL, 0}
 };
