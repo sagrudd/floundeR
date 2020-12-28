@@ -25,10 +25,86 @@ decoupled from the requirement for the `sequencing_summary` file.
 
 ## Getting started with the canned dataset
 
+The `floundeR` package is distributed with a collection of canned datasets.
+These include an example `FASTQ` file that has been gzip compressed and contains
+a somewhat lacklustre historical dataset that is interesting only in its
+compactness.
+
 ```{r setup}
 library(floundeR)
+
+canonical_fastq <- flnDr("example.fastq.gz")
+fastq <- Fastq$new(canonical_fastq)
+
+print(fastq)
+
+fastq$as_tibble()
 ```
 
+So what have we done here? We have identified the packaged fastq file and we
+have used this file to instantiate the `Fastq` object - this can be displayed
+using the `print()` command and we can have a quick look at the data that has
+been extracted using the `$as_tibble()` function that is exported by the 
+package.
+
+```{r simple_sequenceset}
+
+fastq %>% to_sequencing_set()
+
+```
+
+The `SequencingSet` in turn has a collection of methods that can be used to
+structure and visualise the data. The first that we'll have a look at is the
+`$enumerate` method that returns an `Angenieux` object for data visualisation.
+
+```{r sequencingset_enumerate, out.width="75%"}
+knitr::include_graphics(
+  fastq$sequencingset$enumerate$to_file("figure_5.png")$plot())
+```
+
+There are a plethora of ways through which the `Angenieux` object can be used
+to style, colour and manipulate the graph - please do have a look at the methods
+documentation.
+
+The `SequencingSet` object can also be used to access simple but primitive
+summary statistics such as **`mean`** sequence length, **`N50`** length etc
+
+```{r sequencingset_stats}
+fastq$sequencingset$N50
+fastq$sequencingset$mean
+```
+
+
+### Review sequence length distributions
+
+The distribution of sequence lengths is an important metric that is impacted by
+choice of library preparation, starting DNA isolation etc. A plot of length
+distributions is prepared from the same `SequencingSet` object that we
+reviewed in the previous section.
+
+```{r sequencingset_readlengths, out.width="75%"}
+knitr::include_graphics(
+  fastq$sequencingset$read_length_bins(bins=35, outliers=0.001)$
+    to_file("figure_6.png")$
+    plot(style="stacked"))
+
+```
+
+
+### Review quality distributions
+
+The distribution of sequence lengths is an important metric that is impacted by
+choice of library preparation, starting DNA isolation etc. A plot of length
+distributions is prepared from the same `SequencingSet` object that we
+reviewed in the previous section.
+
+```{r sequencingset_qualitybins, out.width="75%"}
+knitr::include_graphics(
+  fastq$sequencingset$quality_bins(bins=100)$
+    to_file("figure_7.png")$
+    plot(style="stacked"))
+
+```
 
 
 ## Exploring a more impressive sequence collection

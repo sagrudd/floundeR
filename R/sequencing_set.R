@@ -113,7 +113,7 @@ SequencingSet <- R6::R6Class(
       }
 
       if (normalised) {
-        plot$add(AngenieuxDecoration$new("ggplot2",facet= scale_y_continuous(labels = seqsum$nums_scale)))
+        plot$add(AngenieuxDecoration$new("ggplot2",facet= scale_y_continuous(labels = private$seqsum$nums_scale)))
         plot$add(AngenieuxDecoration$new("ggplot2",facet= ylab("Sequence bases")))
       } else {
         plot$add(AngenieuxDecoration$new("ggplot2",facet= ylab("Sequence reads")))
@@ -227,7 +227,9 @@ SequencingSet <- R6::R6Class(
 to_sequencing_set = function(r6_object) {
   if (class(r6_object)[1] == "SequencingSummary") {
     return(r6_object$sequencingset)
-  } else {
+  } else if (class(r6_object)[1] == "Fastq") {
+    return(r6_object$sequencingset)
+  }  else {
     stop("Unable to prepare flowcell object from provided input")
   }
   
