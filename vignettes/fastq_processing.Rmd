@@ -14,6 +14,35 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Preamble
+
+This `fastq_processing` vignette re-introduces some of the content from the
+`BasicQC` tutorial concept but derives the primary information from the FASTQ
+file for users who have not maintained their sequencing_summary file. This is
+intended to facilitate the development of workflows and reports that are
+decoupled from the requirement for the `sequencing_summary` file.
+
+
+## Getting started with the canned dataset
+
 ```{r setup}
 library(floundeR)
 ```
+
+
+
+## Exploring a more impressive sequence collection
+
+The `Guppy` basecalling software converts the Nanopore format FAST5 raw sequence
+files into the FASTQ files that we have reviewed in the previous section. The
+FASTQ entries prepared by `Guppy` contain additional information in their
+**header** fields. These additional information contain metadata that relates
+to the sequencing run and are, for example, used by the EPI2ME software for the
+preparation of the rich real-time reports. The `fishy_fastq` method used in the
+previous section can also parse these sequence metadata facets from the FASTQ
+file.
+
+### Let's review the metadata content from a Guppy base-called FASTQ file
+
+
+### Prepare a `tibble` from these Guppy based FASTQ data
