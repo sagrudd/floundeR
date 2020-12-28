@@ -91,14 +91,105 @@
 
     
     
+<div id="preamble" class="section level2">
+<h2 class="hasAnchor">
+<a href="#preamble" class="anchor"></a>Preamble</h2>
+<p>This <code>fastq_processing</code> vignette re-introduces some of the content from the <code>BasicQC</code> tutorial concept but derives the primary information from the FASTQ file for users who have not maintained their sequencing_summary file. This is intended to facilitate the development of workflows and reports that are decoupled from the requirement for the <code>sequencing_summary</code> file.</p>
+</div>
+<div id="getting-started-with-the-canned-dataset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#getting-started-with-the-canned-dataset" class="anchor"></a>Getting started with the canned dataset</h2>
+<p>The <code>floundeR</code> package is distributed with a collection of canned datasets. These include an example <code>FASTQ</code> file that has been gzip compressed and contains a somewhat lacklustre historical dataset that is interesting only in its compactness.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">floundeR</span><span class="op">)</span>
-<span class="co">#&gt; floundeR v0.0.3.9003</span></code></pre></div>
+<span class="co">#&gt; floundeR v0.0.3.9003</span>
+
+<span class="va">canonical_fastq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flnDr.html">flnDr</a></span><span class="op">(</span><span class="st">"example.fastq.gz"</span><span class="op">)</span>
+<span class="va">fastq</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Fastq.html">Fastq</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">canonical_fastq</span><span class="op">)</span>
+<span class="co">#&gt; Reading beyond end of file ...</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fastq</span><span class="op">)</span>
+<span class="co">#&gt; &lt;floundeR::Fastq&gt;</span>
+
+<span class="va">fastq</span><span class="op">$</span><span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 625 x 4</span>
+<span class="co">#&gt;       id sequence_length_template mean_qscore_template passes_filtering</span>
+<span class="co">#&gt;    &lt;int&gt;                    &lt;int&gt;                &lt;dbl&gt; &lt;lgl&gt;           </span>
+<span class="co">#&gt;  1     0                      481                 8.58 TRUE            </span>
+<span class="co">#&gt;  2     1                      700                 8.94 TRUE            </span>
+<span class="co">#&gt;  3     2                      722                 8.71 TRUE            </span>
+<span class="co">#&gt;  4     3                      402                 8.68 TRUE            </span>
+<span class="co">#&gt;  5     4                      840                 8.77 TRUE            </span>
+<span class="co">#&gt;  6     5                      351                 8.55 TRUE            </span>
+<span class="co">#&gt;  7     6                      780                 9.18 TRUE            </span>
+<span class="co">#&gt;  8     7                      784                 9.07 TRUE            </span>
+<span class="co">#&gt;  9     8                      803                 8.67 TRUE            </span>
+<span class="co">#&gt; 10     9                      769                 8.46 TRUE            </span>
+<span class="co">#&gt; # … with 615 more rows</span></code></pre></div>
+<p>So what have we done here? We have identified the packaged fastq file and we have used this file to instantiate the <code>Fastq</code> object - this can be displayed using the <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> command and we can have a quick look at the data that has been extracted using the <code>$as_tibble()</code> function that is exported by the package.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="va">fastq</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/to_sequencing_set.html">to_sequencing_set</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; &lt;floundeR::SequencingSet&gt;</span></code></pre></div>
+<p>The <code>SequencingSet</code> in turn has a collection of methods that can be used to structure and visualise the data. The first that we’ll have a look at is the <code>$enumerate</code> method that returns an <code>Angenieux</code> object for data visualisation.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">fastq</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">enumerate</span><span class="op">$</span><span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_5.png"</span><span class="op">)</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_5.png" width="75%"></p>
+<p>There are a plethora of ways through which the <code>Angenieux</code> object can be used to style, colour and manipulate the graph - please do have a look at the methods documentation.</p>
+<p>The <code>SequencingSet</code> object can also be used to access simple but primitive summary statistics such as <strong><code>mean</code></strong> sequence length, <strong><code>N50</code></strong> length etc</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fastq</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">N50</span>
+<span class="co">#&gt; [1] 1156</span>
+<span class="va">fastq</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">mean</span>
+<span class="co">#&gt; [1] 1071.438</span></code></pre></div>
+<div id="review-sequence-length-distributions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#review-sequence-length-distributions" class="anchor"></a>Review sequence length distributions</h3>
+<p>The distribution of sequence lengths is an important metric that is impacted by choice of library preparation, starting DNA isolation etc. A plot of length distributions is prepared from the same <code>SequencingSet</code> object that we reviewed in the previous section.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">fastq</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="fu">read_length_bins</span><span class="op">(</span>bins<span class="op">=</span><span class="fl">35</span>, outliers<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_6.png"</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">plot</span><span class="op">(</span>style<span class="op">=</span><span class="st">"stacked"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Unknown or uninitialised column: `nums_scale`.</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_6.png" width="75%"></p>
+</div>
+<div id="review-quality-distributions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#review-quality-distributions" class="anchor"></a>Review quality distributions</h3>
+<p>The distribution of sequence lengths is an important metric that is impacted by choice of library preparation, starting DNA isolation etc. A plot of length distributions is prepared from the same <code>SequencingSet</code> object that we reviewed in the previous section.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
+  <span class="va">fastq</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="fu">quality_bins</span><span class="op">(</span>bins<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_7.png"</span><span class="op">)</span><span class="op">$</span>
+    <span class="fu">plot</span><span class="op">(</span>style<span class="op">=</span><span class="st">"stacked"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; saving plot as [png]</span></code></pre></div>
+<p><img src="figure_7.png" width="75%"></p>
+</div>
+</div>
+<div id="exploring-a-more-impressive-sequence-collection" class="section level2">
+<h2 class="hasAnchor">
+<a href="#exploring-a-more-impressive-sequence-collection" class="anchor"></a>Exploring a more impressive sequence collection</h2>
+<p>The <code>Guppy</code> basecalling software converts the Nanopore format FAST5 raw sequence files into the FASTQ files that we have reviewed in the previous section. The FASTQ entries prepared by <code>Guppy</code> contain additional information in their <strong>header</strong> fields. These additional information contain metadata that relates to the sequencing run and are, for example, used by the EPI2ME software for the preparation of the rich real-time reports. The <code>fishy_fastq</code> method used in the previous section can also parse these sequence metadata facets from the FASTQ file.</p>
+<div id="lets-review-the-metadata-content-from-a-guppy-base-called-fastq-file" class="section level3">
+<h3 class="hasAnchor">
+<a href="#lets-review-the-metadata-content-from-a-guppy-base-called-fastq-file" class="anchor"></a>Let’s review the metadata content from a Guppy base-called FASTQ file</h3>
+</div>
+<div id="prepare-a-tibble-from-these-guppy-based-fastq-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#prepare-a-tibble-from-these-guppy-based-fastq-data" class="anchor"></a>Prepare a <code>tibble</code> from these Guppy based FASTQ data</h3>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
