@@ -17,7 +17,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // fishy_fastq
-int fishy_fastq(std::string fastq);
+DataFrame fishy_fastq(std::string fastq);
 RcppExport SEXP _floundeR_fishy_fastq(SEXP fastqSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

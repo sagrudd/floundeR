@@ -16,6 +16,10 @@ static bool validFastq = true;
 static size_t seqlength = 0;
 static double seqqual = 0;
 
+static vector<int> id_vect; 
+static vector<int> length_vect; 
+static vector<double> quality_vect; 
+
 struct Fastq_tag {
   char header[10000000];
   char sequence[10000000];
@@ -24,6 +28,15 @@ struct Fastq_tag {
 };
 
 static Fastq_tag fq;
+
+
+
+void init() {
+  id_vect.clear();
+  length_vect.clear();
+  quality_vect.clear();
+}
+
 
 
 inline bool myfile_exists (const std::string& name) {
@@ -189,7 +202,7 @@ int get_next_fastq()
 //' a quick collation of summary_statistic information that may be used to make
 //' decisions as to how FASTQ sequence collections are crafted.
 //'
-//' @return long long integer of read fastq bases
+//' @return DataFrame of FASTQ based sequence observations
 //'
 //' @examples
 //' fastq <- system.file("extdata", "example.fastq.gz", package = "floundeR")
@@ -197,14 +210,17 @@ int get_next_fastq()
 //'
 //' @export
 // [[Rcpp::export]]
-int fishy_fastq(std::string fastq) {
+DataFrame fishy_fastq(std::string fastq) {
+  
+  init();
+  
   fastq_filename = fastq;
   
   // TEST (1) - DOES THE SPECIFIED FILE EXIST
   if (!myfile_exists(fastq_filename))
   {
     Rcout << "FastqFileNotFound" << std::endl;
-    return(NumericVector::get_na());
+    //return(NumericVector::get_na());
   }
   
   if (is_gzipped(fastq_filename)==1)
@@ -216,10 +232,15 @@ int fishy_fastq(std::string fastq) {
     file = fopen(fastq_filename.c_str(), "r");
   }
 
-
+  int counter = 0;
+  
   while (get_next_fastq() == 1)
   {
     Rcout << "(s/q)Lengths==" << seqlength << "/" << seqqual << std::endl;
+    id_vect.push_back(counter); 
+    length_vect.push_back(seqlength);
+    quality_vect.push_back(seqqual);
+    counter += 1;
   }
   
   if (isZipped) {
@@ -228,6 +249,15 @@ int fishy_fastq(std::string fastq) {
     fclose(file);
   }
   
+  //NumericVector output = wrap(id_vect, length_vect);
+  //output.attr("dim") = Dimension(id_vect.size(), 1);
   
-  return 1;
+  //NumericMatrix c = NumericMatrix(counter, 3);
+  
+  DataFrame df = DataFrame::create( 
+    Named("id") = id_vect , 
+    _["length"] = length_vect ,
+    _["mean_q"] = quality_vect);
+  
+  return df;
 }

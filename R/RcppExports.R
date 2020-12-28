@@ -26,7 +26,7 @@ sequence_quality <- function(qstring) {
 #' a quick collation of summary_statistic information that may be used to make
 #' decisions as to how FASTQ sequence collections are crafted.
 #'
-#' @return long long integer of read fastq bases
+#' @return DataFrame of FASTQ based sequence observations
 #'
 #' @examples
 #' fastq <- system.file("extdata", "example.fastq.gz", package = "floundeR")

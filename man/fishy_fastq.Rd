@@ -7,7 +7,7 @@
 fishy_fastq(fastq)
 }
 \value{
-long long integer of read fastq bases
+DataFrame of FASTQ based sequence observations
 }
 \description{
 This method is a fast C++ implementation of a FASTQ parser aimed to perform
