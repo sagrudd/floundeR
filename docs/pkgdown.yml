@@ -3,6 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   fast5_review: fast5_review.html
+  fastq_processing: fastq_processing.html
   sequencing_summary_review: sequencing_summary_review.html
-last_built: 2020-12-26T16:35Z
+last_built: 2020-12-28T17:11Z
 
