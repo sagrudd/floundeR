@@ -24,7 +24,7 @@ fastq <- Fastq$new(canonical_fastq)
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{fastq_file}}{the file.path
-to the query FAST5 file}
+to the query FASTQ file}
 }
 \if{html}{\out{</div>}}
 }
@@ -59,7 +59,7 @@ field to allow assessment of sequencing characteristics.}
 \if{html}{\out{<a id="method-new"></a>}}
 \if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
-Creates a new SequencingSummary object. This
+Creates a new Fastq object. This
 initialisation method performs other sanity checking
 of the defined file(s) to ensure that it is indeed
 parseable and creates the required data structures.

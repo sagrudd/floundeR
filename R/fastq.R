@@ -16,11 +16,11 @@ Fastq <- R6::R6Class(
   classname = "Fastq",
   public = list(
     #' @field fastq_file the file.path
-    #' to the query FAST5 file
+    #' to the query FASTQ file
     fastq_file = NULL,
-    
+
     #' @description
-    #' Creates a new SequencingSummary object. This
+    #' Creates a new Fastq object. This
     #' initialisation method performs other sanity checking
     #' of the defined file(s) to ensure that it is indeed
     #' parseable and creates the required data structures.
@@ -34,18 +34,18 @@ Fastq <- R6::R6Class(
     #' fastq <- Fastq$new(canonical_fastq)
     initialize = function(
       fastq_file) {
-      
+
       # first pass QC - let's ensure that this is a single FILE
       .check_path(
         "fastq_file", fastq_file)
       self$fastq_file = fastq_file
-      
+
       # and import the fastq metadata (cleanly)
       if (!private$.parse_fastq()) {
         stop("Failed to import the fastq file provided ...")
       }
     },
-    
+
     #' @description
     #' Export the imported dataset(s) as a tibble
     #'
@@ -58,11 +58,11 @@ Fastq <- R6::R6Class(
     as_tibble = function() {
       return(private$fastq)
     }
-    
+
   ),
-  
+
   active = list(
-    
+
     #' @field sequencingset
     #' The `sequencingset` active binding returns a sequencingset object
     #' that is canonically structured around the `passes_filtering` logical
@@ -75,19 +75,19 @@ Fastq <- R6::R6Class(
       }
       return(private$sequencing_set)
     }
-    
+
   ),
-  
-  
+
+
   private = list(
       fastq = NULL,
       sequencing_set = NULL,
-      
+
       .parse_fastq = function() {
         private$fastq <- tibble::as_tibble(fishy_fastq(self$fastq_file))
         return(TRUE)
       }
-    
-    
+
+
   )
 )

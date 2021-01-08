@@ -37,6 +37,9 @@ Imports:
     magrittr,
     tibble,
     aws.s3,
-    Rcpp
+    Rcpp,
+    Rsamtools,
+    cli,
+    stringr
 LinkingTo: 
     Rcpp
