@@ -21,18 +21,15 @@ fasta <- Fasta$new(canonical_fasta)
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Fasta}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{fasta_file}}{the file.path
-to the query FASTA file}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{Fasta$new()}}
+\item \href{#method-sequence_chunks}{\code{Fasta$sequence_chunks()}}
+\item \href{#method-get_sequence_chunk}{\code{Fasta$get_sequence_chunk()}}
+\item \href{#method-get_tibble_chunk}{\code{Fasta$get_tibble_chunk()}}
+\item \href{#method-get_index}{\code{Fasta$get_index()}}
+\item \href{#method-count}{\code{Fasta$count()}}
 \item \href{#method-clone}{\code{Fasta$clone()}}
 }
 }
@@ -78,6 +75,101 @@ fasta <- Fasta$new(canonical_fasta)
 
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-sequence_chunks"></a>}}
+\if{latex}{\out{\hypertarget{method-sequence_chunks}{}}}
+\subsection{Method \code{sequence_chunks()}}{
+Split the fasta sequence file explored by the package into sequence
+chunks for e.g. import into a relational database.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fasta$sequence_chunks(chunk_size = 1000)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{chunk_size}}{The number of fasta entries that should be contained
+within a single chunk (default: 1000)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+an invisible integer that defines the number of possible chunks;
+this can for example be iterated over
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_sequence_chunk"></a>}}
+\if{latex}{\out{\hypertarget{method-get_sequence_chunk}{}}}
+\subsection{Method \code{get_sequence_chunk()}}{
+Get a chunk of fasta sequences from a larger monolithic file
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fasta$get_sequence_chunk(id = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{the chunk (see \verb{$sequence_chunks()}) to extract sequence for -
+this must be an integer that is > 0 and <= sequence_chunks.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+DNAStringSet containing the fasta entries corresponding to the
+specified sequence chunk.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_tibble_chunk"></a>}}
+\if{latex}{\out{\hypertarget{method-get_tibble_chunk}{}}}
+\subsection{Method \code{get_tibble_chunk()}}{
+Get a chunk of fasta sequences from a larger monolithic file as a tibble
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fasta$get_tibble_chunk(id)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{the chunk (see \verb{$sequence_chunks()}) to extract sequence for -
+this must be an integer that is > 0 and <= sequence_chunks.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{tibble} containing the fasta entries corresponding to the
+specified sequence chunk.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_index"></a>}}
+\if{latex}{\out{\hypertarget{method-get_index}{}}}
+\subsection{Method \code{get_index()}}{
+return the Rsamtools FASTA index
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fasta$get_index()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+GRanges object describing the fasta elements contained within the
+sequence file
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-count"></a>}}
+\if{latex}{\out{\hypertarget{method-count}{}}}
+\subsection{Method \code{count()}}{
+return the number of sequence elements contained within the sequence
+file specified
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fasta$count()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+integer of fasta entries in file
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

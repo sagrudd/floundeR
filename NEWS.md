@@ -1,5 +1,6 @@
 # floundeR 0.0.4
 
+* inclusion of a basic Rsamtools derived FASTA R6 class (lodestar dependency)
 * starting to ensure that methods are also available through documented
   magrittr %>% pipes for legibility of code
 * robust Angenieux decorations and demonstration of more comprehensive plots

@@ -53,6 +53,15 @@ Fasta <- R6::R6Class(
       private$load_index()
     },
 
+    #' @description
+    #' Split the fasta sequence file explored by the package into sequence
+    #' chunks for e.g. import into a relational database.
+    #' 
+    #' @param chunk_size The number of fasta entries that should be contained
+    #' within a single chunk (default: 1000)
+    #' 
+    #' @return an invisible integer that defines the number of possible chunks;
+    #' this can for example be iterated over
     sequence_chunks = function(chunk_size=1000) {
       max <- length(private$fasta_index)
       private$starts <- seq(from=1, to = max, by = chunk_size)
@@ -61,6 +70,14 @@ Fasta <- R6::R6Class(
       invisible(length(private$starts))
     },
 
+    #' @description 
+    #' Get a chunk of fasta sequences from a larger monolithic file
+    #' 
+    #' @param id the chunk (see `$sequence_chunks()`) to extract sequence for -
+    #' this must be an integer that is > 0 and <= sequence_chunks.
+    #' 
+    #' @return DNAStringSet containing the fasta entries corresponding to the
+    #' specified sequence chunk.
     get_sequence_chunk = function(id=1) {
       if (class(private$starts)=="numeric" & id <= length(private$starts)) {
         start = private$starts[id]
@@ -77,7 +94,14 @@ Fasta <- R6::R6Class(
       }
     },
 
-
+    #' @description 
+    #' Get a chunk of fasta sequences from a larger monolithic file as a tibble
+    #'
+    #' @param id the chunk (see `$sequence_chunks()`) to extract sequence for -
+    #' this must be an integer that is > 0 and <= sequence_chunks.
+    #' 
+    #' @return `tibble` containing the fasta entries corresponding to the
+    #' specified sequence chunk.
     get_tibble_chunk = function(id) {
       chunk <- self$get_sequence_chunk(id)
       if ("DNAStringSet" %in% class(chunk)) {
@@ -85,13 +109,27 @@ Fasta <- R6::R6Class(
         return(dna_tib)
       }
       return(chunk)
+    },
+    
+    #' @description 
+    #' return the Rsamtools FASTA index
+    #' @return GRanges object describing the fasta elements contained within the
+    #' sequence file
+    get_index = function() {
+      return(private$fasta_index)
+    },
+    
+    #' @description 
+    #' return the number of sequence elements contained within the sequence
+    #' file specified
+    #' @return integer of fasta entries in file
+    count = function() {
+      return(length(private$fasta_index))
     }
 
   ),
 
   private = list(
-    #' @field fasta_file the file.path
-    #' to the query FASTA file
     fasta_file = NULL,
     fasta_index = NULL,
     starts = NA,
@@ -103,25 +141,3 @@ Fasta <- R6::R6Class(
     }
   )
 )
-
-
-
-#
-
-#
-#
-# max <- Rsamtools::countFa(fl)
-# starts <- seq(from=0, to = max, by = interval)
-# ends <- c(seq(from=0, to = max, by = interval)[-1], max)
-#
-#
-# extract_fasta <- function(pointer, starts, ends) {
-#   start = starts[pointer]
-#   end = ends[pointer]
-#   print(paste0("[",start,"-",end,"]"))
-#   dna <- Rsamtools::scanFa(fl, param=idx[start:end])
-# }
-#
-# lapply(seq.int(length(starts)), extract_fasta, starts=starts, ends=ends)
-#
-#
