@@ -1,4 +1,4 @@
-# floundeR (development version)
+# floundeR 0.0.4
 
 * starting to ensure that methods are also available through documented
   magrittr %>% pipes for legibility of code
