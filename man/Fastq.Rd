@@ -42,6 +42,8 @@ field to allow assessment of sequencing characteristics.}
 \itemize{
 \item \href{#method-new}{\code{Fastq$new()}}
 \item \href{#method-as_tibble}{\code{Fastq$as_tibble()}}
+\item \href{#method-sequence_chunks}{\code{Fastq$sequence_chunks()}}
+\item \href{#method-get_sequence_chunk}{\code{Fastq$get_sequence_chunk()}}
 \item \href{#method-clone}{\code{Fastq$clone()}}
 }
 }
@@ -104,6 +106,45 @@ out the in-memory object for further exploration and development.
 
 \subsection{Returns}{
 A tibble representation of the starting dataset
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-sequence_chunks"></a>}}
+\if{latex}{\out{\hypertarget{method-sequence_chunks}{}}}
+\subsection{Method \code{sequence_chunks()}}{
+Split the fastq sequence file explored by the package into sequence
+chunks for e.g. import into a relational database.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fastq$sequence_chunks(chunk_size = 10000)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{chunk_size}}{The number of fastq entries that should be contained
+within a single chunk (default: 10000)}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+an invisible integer that defines the number of possible chunks;
+this can for example be iterated over
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-get_sequence_chunk"></a>}}
+\if{latex}{\out{\hypertarget{method-get_sequence_chunk}{}}}
+\subsection{Method \code{get_sequence_chunk()}}{
+Get a chunk of fastq sequences from a larger monolithic file. This method
+can be called for up to \verb{$sequence_chunks()} times or until NULL results
+are returned.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fastq$get_sequence_chunk()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+tibble containing the fastq entries corresponding to the
+available sequence chunk.
 }
 }
 \if{html}{\out{<hr>}}

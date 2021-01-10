@@ -106,25 +106,25 @@
 
 <span class="va">canonical_fastq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/flnDr.html">flnDr</a></span><span class="op">(</span><span class="st">"example.fastq.gz"</span><span class="op">)</span>
 <span class="va">fastq</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/Fastq.html">Fastq</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">canonical_fastq</span><span class="op">)</span>
-<span class="co">#&gt; Reading beyond end of file ...</span>
+<span class="co">#&gt; → opening fastq stream</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">fastq</span><span class="op">)</span>
 <span class="co">#&gt; &lt;floundeR::Fastq&gt;</span>
 
 <span class="va">fastq</span><span class="op">$</span><span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 625 x 4</span>
-<span class="co">#&gt;       id sequence_length_template mean_qscore_template passes_filtering</span>
-<span class="co">#&gt;    &lt;int&gt;                    &lt;int&gt;                &lt;dbl&gt; &lt;lgl&gt;           </span>
-<span class="co">#&gt;  1     0                      481                 8.58 TRUE            </span>
-<span class="co">#&gt;  2     1                      700                 8.94 TRUE            </span>
-<span class="co">#&gt;  3     2                      722                 8.71 TRUE            </span>
-<span class="co">#&gt;  4     3                      402                 8.68 TRUE            </span>
-<span class="co">#&gt;  5     4                      840                 8.77 TRUE            </span>
-<span class="co">#&gt;  6     5                      351                 8.55 TRUE            </span>
-<span class="co">#&gt;  7     6                      780                 9.18 TRUE            </span>
-<span class="co">#&gt;  8     7                      784                 9.07 TRUE            </span>
-<span class="co">#&gt;  9     8                      803                 8.67 TRUE            </span>
-<span class="co">#&gt; 10     9                      769                 8.46 TRUE            </span>
+<span class="co">#&gt; # A tibble: 625 x 3</span>
+<span class="co">#&gt;    sequence_length_template mean_qscore_template passes_filtering</span>
+<span class="co">#&gt;                       &lt;int&gt;                &lt;dbl&gt; &lt;lgl&gt;           </span>
+<span class="co">#&gt;  1                      481                 8.58 TRUE            </span>
+<span class="co">#&gt;  2                      700                 8.94 TRUE            </span>
+<span class="co">#&gt;  3                      722                 8.71 TRUE            </span>
+<span class="co">#&gt;  4                      402                 8.68 TRUE            </span>
+<span class="co">#&gt;  5                      840                 8.77 TRUE            </span>
+<span class="co">#&gt;  6                      351                 8.55 TRUE            </span>
+<span class="co">#&gt;  7                      780                 9.18 TRUE            </span>
+<span class="co">#&gt;  8                      784                 9.07 TRUE            </span>
+<span class="co">#&gt;  9                      803                 8.67 TRUE            </span>
+<span class="co">#&gt; 10                      769                 8.46 TRUE            </span>
 <span class="co">#&gt; # … with 615 more rows</span></code></pre></div>
 <p>So what have we done here? We have identified the packaged fastq file and we have used this file to instantiate the <code>Fastq</code> object - this can be displayed using the <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> command and we can have a quick look at the data that has been extracted using the <code>$as_tibble()</code> function that is exported by the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">

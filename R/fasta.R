@@ -35,18 +35,27 @@ Fasta <- R6::R6Class(
     #' fasta <- Fasta$new(canonical_fasta)
     initialize = function(fasta_file) {
       cli::cli_div(theme = list(span.emph = list(color = "orange")))
-      cli::cli_h1(stringr::str_interp("creating {.emph floundR::fasta} with [${basename(fasta_file)}]"))
+      cli::cli_h1(
+        stringr::str_interp(
+          "creating {.emph floundR::fasta} with [${basename(fasta_file)}]"))
 
       if (grepl("(.fa$)|(.fasta$)", fasta_file)) {
          Rsamtools::bgzip(fasta_file, overwrite=TRUE)
         fasta_file <- sprintf("%s.bgz", fasta_file)
-         cli::cli_alert(stringr::str_interp("fasta file compressed to bzip2 format [${basename(fasta_file)}]"))
+         cli::cli_alert(
+           stringr::str_interp(
+             "fasta file compressed to bzip2 format [${basename(fasta_file)}]"))
       }
-      if (!any(grepl("\\.fai$", list.files(dirname(fasta_file), pattern=basename(fasta_file))))) {
-         cli::cli_alert_warning(stringr::str_interp("Creating index for [${basename(fasta_file)}]"))
+      if (!any(
+        grepl(
+          "\\.fai$", 
+          list.files(dirname(fasta_file), pattern=basename(fasta_file))))) {
+         cli::cli_alert_warning(
+           stringr::str_interp("Creating index for [${basename(fasta_file)}]"))
          Rsamtools::indexFa(fasta_file)
       } else {
-         cli::cli_alert_info(stringr::str_interp("index for [${basename(fasta_file)}] found"))
+         cli::cli_alert_info(
+           stringr::str_interp("index for [${basename(fasta_file)}] found"))
       }
       private$fasta_file <- fasta_file
 
@@ -66,7 +75,10 @@ Fasta <- R6::R6Class(
       max <- length(private$fasta_index)
       private$starts <- seq(from=1, to = max, by = chunk_size)
       private$ends <- c(seq(from=0, to = max, by = chunk_size)[-1], max)
-      cli::cli_alert_info(stringr::str_interp("sequence collection can be resolved into [${length(private$starts)}] chunks of [${chunk_size}] reads"))
+      cli::cli_alert_info(
+        stringr::str_interp(
+          "sequence collection can be resolved into [${length(private$starts)}] 
+          chunks of [${chunk_size}] reads"))
       invisible(length(private$starts))
     },
 
@@ -82,14 +94,20 @@ Fasta <- R6::R6Class(
       if (class(private$starts)=="numeric" & id <= length(private$starts)) {
         start = private$starts[id]
         end = private$ends[id]
-        cli::cli_alert_info(stringr::str_interp("Extracting fasta entries for sequences [${start}-${end}]"))
-        dna <- Rsamtools::scanFa(private$fasta_file, param=private$fasta_index[start:end])
+        cli::cli_alert_info(
+          stringr::str_interp(
+            "Extracting fasta entries for sequences [${start}-${end}]"))
+        dna <- Rsamtools::scanFa(
+          private$fasta_file, param=private$fasta_index[start:end])
         return(dna)
       } else if (class(starts)=="numeric" & id > length(private$starts)) {
-        cli::cli_alert_warning(stringr::str_interp("Only [${length(private$starts)}] sequence chunks are available"))
+        cli::cli_alert_warning(
+          stringr::str_interp(
+            "Only [${length(private$starts)}] sequence chunks are available"))
         return(NA)
       } else if (is.na(private$starts)) {
-        cli::cli_alert_warning("please prepare sequence chunks `$sequence_chunks()` before this method")
+        cli::cli_alert_warning(
+          "please prepare sequence chunks `$sequence_chunks()` before method")
         return(NA)
       }
     },
@@ -105,7 +123,10 @@ Fasta <- R6::R6Class(
     get_tibble_chunk = function(id) {
       chunk <- self$get_sequence_chunk(id)
       if ("DNAStringSet" %in% class(chunk)) {
-        dna_tib <- tibble::tibble(accession=names(chunk), width=chunk@ranges@width, sequence=unlist(as.character(chunk)))
+        dna_tib <- tibble::tibble(
+          accession=names(chunk), 
+          width=chunk@ranges@width, 
+          sequence=unlist(as.character(chunk)))
         return(dna_tib)
       }
       return(chunk)
@@ -136,7 +157,9 @@ Fasta <- R6::R6Class(
     ends = NA,
 
     load_index = function() {
-      cli::cli_alert_info(stringr::str_interp("loading fasta index [${basename(private$fasta_file)}.idx]"))
+      cli::cli_alert_info(
+        stringr::str_interp(
+          "loading fasta index [${basename(private$fasta_file)}.idx]"))
       private$fasta_index <- Rsamtools::scanFaIndex(private$fasta_file)
     }
   )

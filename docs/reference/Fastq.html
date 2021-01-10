@@ -165,6 +165,8 @@ field to allow assessment of sequencing characteristics.</p></dd>
 <ul>
 <li><p><a href='#method-new'><code>Fastq$new()</code></a></p></li>
 <li><p><a href='#method-as_tibble'><code>Fastq$as_tibble()</code></a></p></li>
+<li><p><a href='#method-sequence_chunks'><code>Fastq$sequence_chunks()</code></a></p></li>
+<li><p><a href='#method-get_sequence_chunk'><code>Fastq$get_sequence_chunk()</code></a></p></li>
 <li><p><a href='#method-clone'><code>Fastq$clone()</code></a></p></li>
 </ul>
 <p><details open ><summary>Inherited methods</summary>
@@ -209,6 +211,31 @@ out the in-memory object for further exploration and development.</p><h4 class='
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
 <p>A tibble representation of the starting dataset</p>
 <p><hr>
+<a id="method-sequence_chunks"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>sequence_chunks()</code></h3>
+<p>Split the fastq sequence file explored by the package into sequence
+chunks for e.g. import into a relational database.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>Fastq</span><span class='op'>$</span><span class='fu'>sequence_chunks</span><span class='op'>(</span>chunk_size <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>chunk_size</code></dt><dd><p>The number of fastq entries that should be contained
+within a single chunk (default: 10000)</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>an invisible integer that defines the number of possible chunks;
+this can for example be iterated over</p>
+<p><hr>
+<a id="method-get_sequence_chunk"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>get_sequence_chunk()</code></h3>
+<p>Get a chunk of fastq sequences from a larger monolithic file. This method
+can be called for up to <code>$sequence_chunks()</code> times or until NULL results
+are returned.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>Fastq</span><span class='op'>$</span><span class='fu'>get_sequence_chunk</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>tibble containing the fastq entries corresponding to the
+available sequence chunk.</p>
+<p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>Fastq</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
@@ -229,7 +256,7 @@ out the in-memory object for further exploration and development.</p><h4 class='
 
 <span class='va'>canonical_fastq</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"example.fastq.gz"</span><span class='op'>)</span>
 <span class='va'>fastq</span> <span class='op'>&lt;-</span> <span class='va'>Fastq</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>canonical_fastq</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Reading beyond end of file ...</div></pre>
+</div><div class='output co'>#&gt; <span class='message'>→ opening fastq stream</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
