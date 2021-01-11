@@ -22,7 +22,6 @@ Suggests:
     kableExtra
 VignetteBuilder: knitr
 Imports: 
-    rhdf5,
     dplyr,
     rlang,
     purrr,
@@ -42,5 +41,5 @@ Imports:
     cli,
     stringr,
     ShortRead
-LinkingTo: 
-    Rcpp
+Enhances:
+    rhdf5
