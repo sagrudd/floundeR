@@ -1,0 +1,98 @@
+---
+title: "blast_parsing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{blast_parsing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Parsing BLAST results? Why?
+
+NCBI BLAST (just BLAST for the rest of this document) can produce a variety
+of different outputs. These include the traditional and human-readable
+`Pairwise` format and a variety of machine readable formats that include JSON,
+XML and Tabular formats. The 
+[Lodestar](https://github.com/sagrudd/gwangmyeongseong3) project aims to enable
+comparative genomics and we thus require a format that can be assessed by a
+curious user and can be computed by software. The simplest approach would be
+to run each BLAST analysis twice; once for the human user and once for the
+machine... This doesn't seem very environmentally friendly though.
+
+Many bioinformaticians have joked that you're not a bioinformatician until you
+have written yet another BLAST parser. In an attempt to expedite the rollout
+of the `floundeR` package (and the Lodestar functionality) a review of available
+R BLAST parsers was performed. There are certainly 
+[examples](https://github.com/gschofl/blastr/) but they are based on the more
+tabular output and do not seem dreadfully contemporary.
+
+So, having written (much, much earlier in my career) BLAST parsers (that are
+lost to time) in Perl, Python and Java it is now time to again write a parser
+but this time in R.
+
+## An example BLAST dataset
+
+The `UniRef100` database was downloaded from `uniprot`; NCBI BLAST was installed
+in a `conda` environment and a BLAST database was created.
+
+```
+wget ftp://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref100/uniref100.fasta.gz
+mamba install -c bioconda blast
+# create the table of taxid mappings
+gunzip -c uniref100.fasta.gz | \
+    grep '^>' | sed -e 's/>//g' | sed -e 's/\s.*TaxID=/?/g' | \
+    sed -e 's/\s.*//g' | sed -e 's/\?/\t/g' | grep -v 'N/A' > tax_id_table
+# and create the BLAST index
+gunzip -c uniref100.fasta.gz | \
+    makeblastdb -dbtype prot -input_type fasta -title "UniRef100" \
+    -parse_seqids -hash_index -out UniRef100 -taxid_map tax_id_table
+    
+Building a new DB, current time: 01/11/2021 11:54:37
+New DB name:   /data/UniRef100/UniRef100
+New DB title:  UniRef100
+Sequence type: Protein
+Keep MBits: T
+Maximum file size: 1000000000B
+
+
+```
+
+1000 randomly picked Drosophila sequences from a full-length cDNA analysis were
+compared to the `uniref100` resource using BLASTX with the standard `Pairwise` 
+output. This sequence resource has been used for development and is reflected
+within the accompanying unit tests.
+
+```
+mamba install -c bioconda seqkit
+seqkit sample -n 250 cluster_cons.fq | seqkit fq2fa > drosophila_fl_sample.fasta
+[INFO] sample by number
+[INFO] loading all sequences into memory...
+[INFO] 248 sequences outputted
+```
+
+
+
+[stephen@dellr720-16x data]$ time blastx -query drosophila_fl_sample.fasta -db ./UniRef100/UniRef100 -num_threads 40 -out drosophila_fl_sample.uniref100.blastx
+
+real    370m57.073s
+user    14621m30.880s
+sys     0m28.504s
+
+
+time blastx -query drosophila_fl_sample.fasta -db ./UniRef100/UniRef100 -num_threads 40 -outfmt 18 -out 
+drosophila_fl_sample.uniref100.blastx.org_report
+
+
+
+
+
+```{r setup}
+library(floundeR)
+```

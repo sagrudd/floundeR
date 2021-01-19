@@ -37,9 +37,8 @@ Imports:
     tibble,
     aws.s3,
     Rcpp,
+    rhdf5,
     Rsamtools,
     cli,
     stringr,
     ShortRead
-Enhances:
-    rhdf5
