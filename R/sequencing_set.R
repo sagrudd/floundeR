@@ -215,12 +215,12 @@ SequencingSet <- R6::R6Class(
 #' @param r6_object is the floundeR R6 object to extract SequencingSet from
 #'
 #' @return Flounder SequencingSet object
-#' 
+#'
 #' @importFrom magrittr %>%
 #' @export %>%
 #'
 #' @examples
-#' SequencingSummary$new(flnDr("sequencing_summary.txt.bz2")) %>% 
+#' SequencingSummary$new(flnDr("sequencing_summary.txt.bz2")) %>%
 #'     to_sequencing_set()
 #'
 #' @export
@@ -229,8 +229,10 @@ to_sequencing_set = function(r6_object) {
     return(r6_object$sequencingset)
   } else if (class(r6_object)[1] == "Fastq") {
     return(r6_object$sequencingset)
+  }  else if (class(r6_object)[1] == "Fasta") {
+    return(r6_object$sequencingset)
   }  else {
     stop("Unable to prepare flowcell object from provided input")
   }
-  
+
 }
