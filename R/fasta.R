@@ -64,7 +64,6 @@ Fasta <- R6::R6Class(
 
       private$load_index()
 
-      private$parse_fasta()
     },
 
     #' @description
@@ -198,18 +197,11 @@ Fasta <- R6::R6Class(
         stringr::str_interp(
           "loading fasta index [${basename(private$fasta_file)}.idx]"))
       private$fasta_index <- Rsamtools::scanFaIndex(private$fasta_file)
-    },
 
-    parse_fasta = function() {
-      chunks <- self$sequence_chunks(chunk_size=private$chunk_size)
-      for (i in seq.int(chunks)) {
-        private$fasta_parsed <-  private$fasta_parsed %>%
-          dplyr::bind_rows(
-            self$get_tibble_chunk(i) %>%
-              dplyr::select(-sequence))
-      }
-      colnames(private$fasta_parsed) <- c("read_id", "sequence_length_template")
-      private$fasta_parsed$passes_filtering=TRUE
+      private$fasta_parsed <- tibble::tibble(
+        read_id=as.vector(seqnames(private$fasta_index)),
+        sequence_length_template=width(private$fasta_index),
+        passes_filtering=TRUE)
       cli::cli_alert_success(
         stringr::str_interp(
           "[${nrow(private$fasta_parsed)}] fasta entries parsed"
