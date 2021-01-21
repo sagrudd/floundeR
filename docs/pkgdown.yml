@@ -2,8 +2,10 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  fast5_review: fast5_review.html
-  fastq_processing: fastq_processing.html
-  sequencing_summary_review: sequencing_summary_review.html
-last_built: 2021-01-10T15:29Z
+  01_fasta_files: 01_fasta_files.html
+  02_fastq_files: 02_fastq_files.html
+  03_fast5_files: 03_fast5_files.html
+  04_seqsum_files: 04_seqsum_files.html
+  05_blast_files: 05_blast_files.html
+last_built: 2021-01-20T16:46Z
 

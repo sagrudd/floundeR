@@ -1,8 +1,8 @@
 ---
-title: "blast_parsing"
+title: "Blast result parsing"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{blast_parsing}
+  %\VignetteIndexEntry{Blast result parsing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

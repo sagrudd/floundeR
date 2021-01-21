@@ -28,15 +28,12 @@ Fasta <- R6::R6Class(
     #'
     #' @param fasta_file The source
     #' sequencing_summary file.
-    #' @param chunk_size the number of sequences to parse or process per chunk;
-    #' this is used to avoid loading complete sequence collections into memory.
     #' @return A new `Fasta` object.
     #'
     #' @examples
     #' canonical_fasta <- flnDr("cluster_cons.fasta.bgz")
     #' fasta <- Fasta$new(canonical_fasta)
-    initialize = function(fasta_file, chunk_size=25000) {
-      private$chunk_size <- chunk_size
+    initialize = function(fasta_file) {
       cli::cli_div(theme = list(span.emph = list(color = "orange")))
       cli::cli_h1(
         stringr::str_interp(
@@ -185,7 +182,6 @@ Fasta <- R6::R6Class(
 
   private = list(
     sequencing_set = NULL,
-    chunk_size = NULL,
     fasta_file = NULL,
     fasta_index = NULL,
     fasta_parsed = NULL,

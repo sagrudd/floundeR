@@ -90,33 +90,37 @@ SequencingSet <- R6::R6Class(
       }
 
       plot <- Angenieux$new("2D_count", rls)
-      plot$add(AngenieuxDecoration$new("ggplot2",facet= xlab("Length of sequence bin (bases)")))
-      plot$add(AngenieuxDecoration$new("ggplot2",facet= scale_x_continuous(labels = self$nums_scale)))
-      plot$add(AngenieuxDecoration$new("vline", xintercept=self$N50, colour=plot$colourMap[4]))
-      plot$add(AngenieuxDecoration$new("vlegend", xintercept=self$N50, legend=" N50 ", size=3, colour=plot$colourMap[4]))
-      plot$add(AngenieuxDecoration$new("vline", xintercept=self$mean, colour=plot$colourMap[3]))
-      plot$add(AngenieuxDecoration$new("vlegend", xintercept=self$mean, legend=" mean ", colour=plot$colourMap[3], hjust=1, size=3))
-      plot$add(AngenieuxDecoration$new("ggplot2", facet=guides(shape = guide_legend(override.aes = list(size = 0.3)))))
-      plot$add(AngenieuxDecoration$new("ggplot2", facet=guides(color = guide_legend(override.aes = list(size = 0.3)))))
-      plot$add(AngenieuxDecoration$new("ggplot2", facet=theme(legend.title = element_text(size = 6),
-                                                           legend.text = element_text(size = 6))))
-      plot$add(AngenieuxDecoration$new("ggplot2", facet=scale_fill_manual("QC PASS", values = c("FALSE" = plot$colourMap[1], "TRUE" = plot$colourMap[2]))))
+
+      plot$add(
+        list(
+          AngenieuxDecoration$new("ggplot2", facet=xlab("Length of sequence (bases)")),
+          AngenieuxDecoration$new("ggplot2",facet= scale_x_continuous(labels = self$nums_scale)),
+          AngenieuxDecoration$new("vline", xintercept=self$N50, colour="gold", size=0.5),
+          AngenieuxDecoration$new("vlegend", xintercept=self$N50, legend=" N50 ", size=3, colour="gold"),
+          AngenieuxDecoration$new("vline", xintercept=self$mean, colour=plot$colourMap[3], size=0.5),
+          AngenieuxDecoration$new("vlegend", xintercept=self$mean, legend=" mean ", colour=plot$colourMap[3], hjust=1, size=3),
+          AngenieuxDecoration$new("ggplot2", facet=guides(shape = guide_legend(override.aes = list(size = 0.3)))),
+          AngenieuxDecoration$new("ggplot2", facet=guides(color = guide_legend(override.aes = list(size = 0.3)))),
+          AngenieuxDecoration$new("ggplot2", facet=theme(legend.title = element_text(size = 6), legend.text = element_text(size = 6)))
+          )
+      )
+
 
       if (normalised & cumulative) {
-        plot$set_title("Plot showing normalised cumulative distribution of \nread lengths across SequencingSummary")
+        plot$set_title("Plot showing normalised cumulative distribution of read lengths across sequence collection")
       } else if (normalised & !cumulative) {
-        plot$set_title("Plot showing normalised distribution of read lengths\nacross SequencingSummary")
+        plot$set_title("Plot showing normalised distribution of read lengths across sequence collection")
       } else if (!normalised & cumulative) {
-        plot$set_title("Plot showing cumulative distribution of sequenced\nreads by read length")
+        plot$set_title("Plot showing cumulative distribution of sequenced reads by read length")
       } else if (!normalised & !cumulative) {
-        plot$set_title("Plot showing distribution of sequenced reads by\nread length")
+        plot$set_title("Plot showing distribution of sequenced reads by read length")
       }
 
       if (normalised) {
-        plot$add(AngenieuxDecoration$new("ggplot2",facet= scale_y_continuous(labels = private$seqsum$nums_scale)))
-        plot$add(AngenieuxDecoration$new("ggplot2",facet= ylab("Sequence bases")))
+        plot$add(AngenieuxDecoration$new("ggplot2",facet = scale_y_continuous(labels = self$nums_scale)))
+        plot$add(AngenieuxDecoration$new("ggplot2",facet = ylab("Sequence bases")))
       } else {
-        plot$add(AngenieuxDecoration$new("ggplot2",facet= ylab("Sequence reads")))
+        plot$add(AngenieuxDecoration$new("ggplot2",facet = ylab("Sequence reads")))
       }
 
       return(plot)
@@ -162,8 +166,18 @@ SequencingSet <- R6::R6Class(
         enumerated_counts <- private$seqsum %>%
           dplyr::group_by(.dots=private$keycol) %>%
           dplyr::summarize(count=dplyr::n())
-        Angenieux$new("1D_count", enumerated_counts)$
-          set_title(paste0("Plot showing distribution of [",private$keycol,"]"))
+        plot <- Angenieux$new("1D_count", enumerated_counts)
+        plot$set_title(
+          stringr::str_interp(
+            "Plot showing count information for reads that ${private$keycol}"))
+        plot$add(
+          list(
+            AngenieuxDecoration$new("ggplot2",facet = ylab("Sequence reads")),
+            AngenieuxDecoration$new("ggplot2",facet= scale_y_continuous(labels = self$nums_scale))
+            )
+        )
+
+        return(plot)
       }
     },
 

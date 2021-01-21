@@ -75,7 +75,7 @@ Rsamtools (alone)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">floundeR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.5</span>
       </span>
     </div>
 
@@ -98,13 +98,19 @@ Rsamtools (alone)." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/fast5_review.html">fast5_review</a>
+      <a href="../articles/01_fasta_files.html">Fasta format sequence files</a>
     </li>
     <li>
-      <a href="../articles/fastq_processing.html">fastq_processing</a>
+      <a href="../articles/02_fastq_files.html">Fastq format sequence files</a>
     </li>
     <li>
-      <a href="../articles/sequencing_summary_review.html">Using the Nanopore `sequencing_summary` file for BasicQC</a>
+      <a href="../articles/03_fast5_files.html">Fast5 format sequence files</a>
+    </li>
+    <li>
+      <a href="../articles/04_seqsum_files.html">the Nanopore `Sequencing Summary` file</a>
+    </li>
+    <li>
+      <a href="../articles/05_blast_files.html">Blast result parsing</a>
     </li>
   </ul>
 </li>
@@ -268,7 +274,7 @@ file specified</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#
 
 <span class='va'>canonical_fasta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"cluster_cons.fasta.bgz"</span><span class='op'>)</span>
 <span class='va'>fasta</span> <span class='op'>&lt;-</span> <span class='va'>Fasta</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>canonical_fasta</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'><span style='color: #00BBBB;'>──</span><span> </span><span style='font-weight: bold;'>creating </span><span style='color: #BBBB00;font-weight: bold;font-style: italic;'>floundR::fasta</span><span style='font-weight: bold;'> with [cluster_cons.fasta.bgz]</span><span> </span><span style='color: #00BBBB;'>───────────────────────</span><span></span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> index for [cluster_cons.fasta.bgz] found</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> loading fasta index [cluster_cons.fasta.bgz.idx]</span></div></span></pre>
+</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'><span style='color: #00BBBB;'>──</span><span> </span><span style='font-weight: bold;'>creating </span><span style='color: #FFAF00;font-weight: bold;font-style: italic;'>floundR::fasta</span><span style='font-weight: bold;'> with [cluster_cons.fasta.bgz]</span><span> </span><span style='color: #00BBBB;'>───────────────────────</span><span></span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> index for [cluster_cons.fasta.bgz] found</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> loading fasta index [cluster_cons.fasta.bgz.idx]</span></div><div class='output co'>#&gt; <span class='error'>Error in seqnames(private$fasta_index): could not find function "seqnames"</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

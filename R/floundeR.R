@@ -72,13 +72,13 @@ FloundeR <- R6::R6Class(
       }
       val = as.numeric(val)
       if (val > 1e+12) {
-        return(paste0(val/1e+12,"Tb"))
+        return(paste0(val/1e+12,"T"))
       } else if (val > 1e+9) {
-        return(paste0(val/1e+9,"Gb"))
+        return(paste0(val/1e+9,"G"))
       } else if (val > 1e+6) {
-        return(paste0(val/1e+6,"Mb"))
+        return(paste0(val/1e+6,"M"))
       } else if (val > 1e+3) {
-        return(paste0(val/1e+3,"kb"))
+        return(paste0(val/1e+3,"k"))
       } else {
         return(val)
       }

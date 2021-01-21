@@ -1,8 +1,8 @@
 ---
-title: "fastq_processing"
+title: "Fastq format sequence files"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{fastq_processing}
+  %\VignetteIndexEntry{Fastq format sequence files}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

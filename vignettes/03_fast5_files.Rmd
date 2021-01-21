@@ -1,8 +1,8 @@
 ---
-title: "fast5_review"
+title: "Fast5 format sequence files"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{fast5_review}
+  %\VignetteIndexEntry{Fast5 format sequence files}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

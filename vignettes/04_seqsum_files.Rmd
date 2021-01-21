@@ -1,10 +1,10 @@
 ---
-title: "Using the Nanopore `sequencing_summary` file for BasicQC"
+title: "the Nanopore `Sequencing Summary` file"
 output: rmarkdown::html_vignette
 fig_width: 6 
 fig_height: 4 
 vignette: >
-  %\VignetteIndexEntry{Using the Nanopore `sequencing_summary` file for BasicQC}
+  %\VignetteIndexEntry{the Nanopore `Sequencing Summary` file}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

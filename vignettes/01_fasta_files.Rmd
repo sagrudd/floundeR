@@ -1,0 +1,171 @@
+---
+title: "Fasta format sequence files"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fasta format sequence files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Preamble
+
+The `fasta` file format is one of the simplest file formats for sequence data
+and the files can contain either protein or nucleotide sequences. The `fasta`
+format contains a minimal amount of additional information or metadata.
+
+The `fasta` file contains the following elements
+
+- `>` character is used as a field delimiter
+- `first_word` after the `>` delimiter is used to identify the sequence name
+  or `accession`
+- The rest of the delimiter line may contain free form comments or description
+- `sequence` is contained following the delimiter line (and until the EOF or
+  subsequent delimiters) and may be either in the form of constant line width
+  records or single monolithic sequence records.
+  
+The information within the `fasta` record is thus limited to facets of the
+sequence itself - e.g. length.
+
+There is not really any mystery or complication with `fasta` format sequence
+files - the functionality is provided within `floundeR` to support other
+applications and workflows. The `fasta` parsing functionality is provided
+by the [`Rsamtools`](https://bioconductor.org/packages/release/bioc/html/Rsamtools.html)
+package but could equally have been provided by numberous other packages such as
+[`ShortRead`](https://bioconductor.org/packages/release/bioc/html/ShortRead.html).
+
+The aim of this vignette is to introduce the `Fasta` R6 object and to show how
+this can be used within the broader `floundeR` environment for producing tabular
+data and graphical visualisations.
+
+## Getting started
+
+```{r silent_setup, echo=FALSE, message=FALSE, warning=FALSE}
+library(Rsamtools)
+library(ggplot2)
+```
+
+The first step in a `floundeR` based `fasta` analysis is to load the `floundeR`
+package. We will also load a collection of other packages - please check the
+vignette code to see what has been loaded silently.
+
+```{r setup}
+library(floundeR)
+
+```
+
+A `fasta` format sequence file is provided within the accompanying `floundeR`
+packaged data. Let's have a quick look at a `fasta` format sequence file.
+
+```{r find_fasta}
+canonical_fasta <- flnDr("cluster_cons.fasta.bgz")
+print(canonical_fasta)
+```
+
+The extension of the file above shows that this is a `bgzip` compressed fasta
+file. This can be read directly using the `R` `readLines` command - let's have
+a look at the first 10 lines contained within the file.
+
+```{r fasta_readLines}
+readLines(canonical_fasta, n=10)
+```
+
+The output above should reflect the description in the preamble. Since this is
+an `R` package let's also have a quick look at the file contents using the 
+`Rsamtools` package instead.
+
+```{r open_fasta}
+fasta <- open(FaFile(canonical_fasta))
+index <- scanFaIndex(fasta)
+# how many fasta entries in file?
+countFa(fasta)
+# let's pull out the first two entries
+scanFa(fasta, index[1:2])
+# fasta is a connection and should thus be closed when done
+close(fasta)
+```
+
+This really covers the basics of `fasta` sequence handling using `R`. The
+objectives of `floundeR` are not to reproduce the capabilities of other packages
+but to simplify analyses.
+
+
+## The `floundeR` `Fasta` R6 object.
+
+The `floundeR` package contained R6 objects to describe many bioinformatics
+data types. There is a simple constructor for loading a `fasta` format sequence
+file.
+
+```{r fasta_r6_create}
+fasta <- Fasta$new(canonical_fasta)
+print(fasta)
+fasta$as_tibble()
+```
+
+That's pretty lean data - not much to show or present.
+
+
+## What can be presented from `Fasta` object?
+
+As described in the previous section, there is not really very much information
+in the `fasta` sequence format other than the sequence itself. The `Fasta` R6
+object can be exported as a `SequencingSet` object.
+
+```{r simple_sequenceset}
+fasta %>% to_sequencing_set()
+```
+
+
+The `SequencingSet` object can also be used to access simple but primitive
+summary statistics such as **`mean`** sequence length, **`N50`** length etc
+
+```{r sequencingset_stats}
+fasta$sequencingset$N50
+fasta$sequencingset$mean
+```
+
+The `SequencingSet` in turn has a collection of methods that can be used to
+structure and visualise the data. The first that we'll have a look at is the
+`$enumerate` method that returns an `Angenieux` object for data visualisation.
+
+```{r fasta2seqsum, out.width="75%"}
+knitr::include_graphics(
+  fasta$sequencingset$enumerate$to_file("figure_8.png")$plot()
+)
+```
+
+The format for the plotting command is a little gnarly - please check the
+vignettes on the `Angenieux` R6 object for further details and information on
+the logic and control of the presentation.
+
+The final plot that makes sense with just sequence data is a length distribution
+plot; this can be prepared with the command below. In this command we transform
+the `Fasta` object into a `SequencingSet` and we request that a distribution
+of binned sequence lengths be prepared.
+
+```{r fasta2seqsum_lengthbins, out.width="75%"}
+knitr::include_graphics(
+  fasta$sequencingset$read_length_bins(bins=35, outliers=0.001)$to_file("figure_9.png")$plot(style="stacked")
+)
+```
+
+## todo
+
+- there are still tasks to be performed for the `Fasta` object ...
+- exclude by minimum length
+- exclude by maximum length
+
+## Continue learning about `floundeR`
+
+Please consider having a quick read on the following subjects
+
+- [The Fastq file format](./fastq_files.html)
+- [The Fast5 file format](./fast5_files.html)
+- [Angenieux and floundeR plots](./angenieux.html)
+

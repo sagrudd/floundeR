@@ -1,3 +1,5 @@
+# floundeR 0.0.5
+
 # floundeR 0.0.4
 
 * inclusion of a basic Rsamtools derived FASTA R6 class (lodestar dependency)

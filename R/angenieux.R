@@ -34,7 +34,7 @@ Angenieux <- R6::R6Class(
     #' @return A new `Angenieux` object.
     initialize = function(key, value) {
 
-      self$colourMap = RColorBrewer::brewer.pal(8, "Set1")
+      self$colourMap <- ggsci:::ggsci_db[["startrek"]][[1]]
 
       private$hm.palette = grDevices::colorRampPalette(
         RColorBrewer::brewer.pal(9, "Blues"), space = "Lab")
@@ -77,10 +77,15 @@ Angenieux <- R6::R6Class(
     #'
     #' @param item an `AngenieuxDecoration`
     add = function(item) {
-      if (!class(item)[1] == "AngenieuxDecoration") {
+      if (class(item)[1]=="list") {
+        for (i in item) {
+          self$add(i)
+        }
+      } else if (!class(item)[1] == "AngenieuxDecoration") {
         stop("Can only add [AngenieuxDecoration] elements")
+      } else {
+        private$.plot_elements <- append(private$.plot_elements, item)
       }
-      private$.plot_elements <- append(private$.plot_elements, item)
       invisible(self)
     },
 
@@ -212,13 +217,15 @@ Angenieux <- R6::R6Class(
           private$graph_data,
           aes_string(x=as.factor(" "), y="count", fill=key)) +
           ggplot2::geom_col(width=0.2) +
-          ggplot2::coord_flip()
+          ggplot2::coord_flip() +
+          angenieux_theme() + ggsci::scale_fill_startrek()
         return(private$.decorate_plot(plot))
       } else {
         plot <- ggplot2::ggplot(
           private$graph_data,
-          ggplot2::aes_string(key, "count")) +
-          ggplot2::geom_bar(stat = "identity", width = 0.5)
+          ggplot2::aes_string(key, "count", fill=key)) +
+          ggplot2::geom_bar(stat = "identity", width = 0.5, ) +
+          angenieux_theme() + ggsci::scale_fill_startrek()
         return(private$.decorate_plot(plot))
       }
     },
@@ -229,10 +236,14 @@ Angenieux <- R6::R6Class(
       molten <- reshape2::melt(
         private$graph_data, id.vars=c(level, key), measure.vars=c("count"))
       if (style == "line") {
+        cli::cli_alert(stringr::str_interp("using palette ${self$palette}"))
         plot <- ggplot2::ggplot(
           molten,
           ggplot2::aes_string(x=level, y="value", colour=key)) +
-          ggplot2::geom_line()
+          ggplot2::geom_line() +
+          angenieux_theme() + ggsci::scale_color_startrek()
+
+
         return(private$.decorate_plot(plot))
       } else {
         #molten[[level]] <- factor(
@@ -242,7 +253,8 @@ Angenieux <- R6::R6Class(
           molten,
           ggplot2::aes_string(x=level, y="value", fill=key)) +
           ggplot2::geom_bar(stat="identity") +
-          ggplot2::theme(axis.text.x = element_text(angle = 90, hjust = 1))
+          ggplot2::theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+          angenieux_theme() + ggsci::scale_fill_startrek()
         return(private$.decorate_plot(plot))
       }
     },
@@ -263,7 +275,7 @@ Angenieux <- R6::R6Class(
         plot <- plot + decoration$decoration
       }
       plot <- plot +
-        ggplot2::labs(title = private$graph_title) +
+        ggplot2::labs(title = stringr::str_wrap(private$graph_title, 60)) +
         ggplot2::theme(text = element_text(size = 10))
       return(private$.handle_plot_logistsics(plot))
     },
