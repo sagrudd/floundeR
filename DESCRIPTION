@@ -41,4 +41,5 @@ Imports:
     Rsamtools,
     cli,
     stringr,
-    ShortRead
+    ShortRead,
+    ggsci
