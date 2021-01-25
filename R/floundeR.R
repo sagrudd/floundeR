@@ -153,7 +153,9 @@ qualToMeanQ <- function(qstr) {
   -10 * log10(meanerror)
 }
 
-silent_stop <- function() {
+silent_stop <- function(message=NULL) {
+  if (!is.null(message))
+    cli::cli_alert_danger(message)
   opt <- options(show.error.messages = FALSE)
   on.exit(options(opt))
   stop("\r ", call.=FALSE)
