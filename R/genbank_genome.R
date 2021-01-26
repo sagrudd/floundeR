@@ -14,11 +14,6 @@ GenbankGenome <- R6::R6Class(
         },
 
 
-        get_accession = function() {
-
-        },
-
-
         get_description = function() {
 
         },
@@ -37,13 +32,44 @@ GenbankGenome <- R6::R6Class(
 
     ),
 
+    active = list (
+
+        accession = function(set=NULL) {
+            if (!is.null(set)) {
+                cli::cli_alert(stringr::str_interp("setting accession [${set}]"))
+                private$gb_accession <- set
+            }
+            return(private$gb_accession)
+        },
+
+        version = function(set=NULL) {
+            if (!is.null(set)) {
+                cli::cli_alert(stringr::str_interp("setting version [${set}]"))
+                private$gb_version <- set
+            }
+            return(private$gb_version)
+        },
+
+        definition = function(set=NULL) {
+            if (!is.null(set)) {
+                cli::cli_alert(stringr::str_interp("setting definition [${set}]"))
+                private$gb_definition <- set
+            }
+            return(private$gb_definition)
+        }
+
+    ),
+
     private = list(
         conn = NA,
         current_tag = NA,
         tag_string = NULL,
-        key_tags = c("DEFINITION", "ACCESSION", "FEATURES"),
+        key_tags = c("DEFINITION", "ACCESSION", "VERSION", "FEATURES"),
         debug_counter = 0,
         cds = NA,
+        gb_accession = "undefined",
+        gb_version = "undefined",
+        gb_definition = "undefined",
 
         process_file = function(gb_file) {
             line_count <- 0
@@ -115,10 +141,28 @@ GenbankGenome <- R6::R6Class(
                 cli::cli_alert(
                     stringr::str_interp(
                         "leaving tag [${private$current_tag}] at line [${pos}]"))
-                # print(private$tag_string)
+
+                if (private$current_tag == "ACCESSION") {
+                    self$accession <- private$clip_tag()
+                } else if (private$current_tag == "VERSION") {
+                    self$version <- private$clip_tag()
+                } else if (private$current_tag == "DEFINITION") {
+                    self$definition <- private$clip_tag()
+                }
+
                 private$current_tag <- NA
                 private$tag_string <- NULL
             }
+        },
+
+
+        clip_tag = function() {
+            regex = paste0("(?<=",private$current_tag,").+")
+            return(
+                stringr::str_trim(
+                    stringr::str_extract(
+                        private$tag_string, regex))
+           )
         },
 
 
@@ -168,8 +212,8 @@ GenbankGenome <- R6::R6Class(
                     "(?<=gene=\")[^\"]+", "(?<=locus_tag=\")[^\"]+")
 
             # and coerce this collection of data into a GRanges
-            cli::cli_alert(
-                stringr::str_interp("[${gene_id}] --> [${coordinates}]"))
+            # cli::cli_alert(
+            #    stringr::str_interp("[${gene_id}] --> [${coordinates}]"))
 
         },
 
