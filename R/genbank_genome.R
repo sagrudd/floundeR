@@ -60,7 +60,7 @@ GenbankGenome <- R6::R6Class(
         conn = NA,
         current_tag = NA,
         tag_string = NULL,
-        key_tags = c("DEFINITION", "ACCESSION", "VERSION", "FEATURES"),
+        key_tags = c("DEFINITION", "ACCESSION", "VERSION", "FEATURES", "ORIGIN"),
         debug_counter = 0,
         gb_cds = data.frame(
             gene=character(0),
@@ -96,8 +96,6 @@ GenbankGenome <- R6::R6Class(
         },
 
         tag_handler = function(line, pos) {
-
-
             # if leading whitespace continue quickly
             if (grepl("^ +", line) && private$in_tag()) {
                 if (
@@ -150,6 +148,12 @@ GenbankGenome <- R6::R6Class(
                     self$version <- private$clip_tag()
                 } else if (private$current_tag == "DEFINITION") {
                     self$definition <- private$clip_tag()
+                } else if (private$current_tag == "FEATURES") {
+                    # features are messily parsed during load - there should
+                    # be a single residual feature to process ...
+                    private$flush_feature()
+                } else if (private$current_tag == "ORIGIN") {
+                    private$process_sequence()
                 }
 
                 private$current_tag <- NA
@@ -173,10 +177,12 @@ GenbankGenome <- R6::R6Class(
         },
 
 
-        flush_feature = function() {
+        flush_feature = function(silent=TRUE) {
             #cli::cli_alert_warning("feature flush called")
             private$debug_counter <- private$debug_counter + 1
-            #print(private$tag_string)
+            if (!silent) {
+                print(private$tag_string)
+            }
 
             if (grepl("^     source", private$tag_string[1])) {
                 private$feature_source()
@@ -270,6 +276,11 @@ GenbankGenome <- R6::R6Class(
                      strand,
                      filter_position(positions[1]),
                      filter_position(positions[2])))
+        },
+
+
+        process_sequence = function() {
+            cli::cli_alert(stringr::str_interp("processing sequence [${length(private$tag_string)}] lines"))
         }
 
     )
