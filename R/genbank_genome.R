@@ -8,19 +8,15 @@ GenbankGenome <- R6::R6Class(
     public = list(
 
         initialize = function(gb_file) {
-
             private$process_file(gb_file)
-
         },
 
-
-        get_description = function() {
-
-        },
 
 
         get_cds = function() {
-
+            return(
+                GenomicRanges::makeGRangesFromDataFrame(
+                    private$gb_cds, keep.extra.columns = TRUE))
         },
 
 
@@ -66,7 +62,13 @@ GenbankGenome <- R6::R6Class(
         tag_string = NULL,
         key_tags = c("DEFINITION", "ACCESSION", "VERSION", "FEATURES"),
         debug_counter = 0,
-        cds = NA,
+        gb_cds = data.frame(
+            gene=character(0),
+            chr=character(0),
+            strand=character(0),
+            start=integer(0),
+            end=integer(0),
+            translation=character(0)),
         gb_accession = "undefined",
         gb_version = "undefined",
         gb_definition = "undefined",
@@ -130,17 +132,17 @@ GenbankGenome <- R6::R6Class(
             if (!is.na(private$current_tag)) {
                 private$exit_tag(pos)
             }
-            cli::cli_alert(
-                stringr::str_interp("entering tag [${tag}] at line [${pos}]"))
+            # cli::cli_alert(
+            #     stringr::str_interp("entering tag [${tag}] at line [${pos}]"))
             private$current_tag <- tag
         },
 
 
         exit_tag = function(pos) {
             if (!is.na(private$current_tag)) {
-                cli::cli_alert(
-                    stringr::str_interp(
-                        "leaving tag [${private$current_tag}] at line [${pos}]"))
+                # cli::cli_alert(
+                #     stringr::str_interp(
+                #         "leaving tag [${private$current_tag}] at line [${pos}]"))
 
                 if (private$current_tag == "ACCESSION") {
                     self$accession <- private$clip_tag()
@@ -197,6 +199,7 @@ GenbankGenome <- R6::R6Class(
 
 
         feature_cds = function(subfeature_tag = "     CDS +") {
+
             # clip the subfeature tag & leading whitespace
             private$tag_string <- private$tag_string %>%
                 stringr::str_replace(subfeature_tag, "") %>%
@@ -211,10 +214,22 @@ GenbankGenome <- R6::R6Class(
                 private$extract_value_from_regex(
                     "(?<=gene=\")[^\"]+", "(?<=locus_tag=\")[^\"]+")
 
-            # and coerce this collection of data into a GRanges
-            # cli::cli_alert(
-            #    stringr::str_interp("[${gene_id}] --> [${coordinates}]"))
+            translation <- stringr::str_extract(
+                private$tag_string, "(?<=translation=\")[^\"]+")
 
+            #cli::cli_alert(
+            #    stringr::str_interp("[${gene_id}] --> [${coordinates}]"))
+            private$gb_cds <- private$gb_cds %>%
+                dplyr::bind_rows(
+                    list(
+                        chr=coordinates[1],
+                        gene=gene_id,
+                        strand=coordinates[2],
+                        start=as.integer(coordinates[3]),
+                        end=as.integer(coordinates[4]),
+                        translation=translation
+                        )
+                    )
         },
 
 
@@ -236,7 +251,25 @@ GenbankGenome <- R6::R6Class(
                 position_str <- stringr::str_extract(
                     position_str, "(?<=complement\\()[^\\)]+")
             }
-            return(position_str)
+            positions <- unlist(stringr::str_split(position_str, "\\.\\."))
+
+            # there are a few edge cases where gene locations are not atomic
+            filter_position = function(str) {
+                str_mod <- str %>%
+                    stringr::str_replace("<", "") %>%
+                    stringr::str_replace(">", "")
+
+                xval = stringr::str_extract(str_mod, "[^\\d]+")
+                if (is.na(xval)) return(str_mod)
+
+                print(str)
+                silent_stop("numeric issue")
+            }
+
+            return(c(self$accession,
+                     strand,
+                     filter_position(positions[1]),
+                     filter_position(positions[2])))
         }
 
     )
