@@ -122,17 +122,34 @@ GenbankGenome <- R6::R6Class(
             cli::cli_alert_info(
                 stringr::str_interp("Parsing genbank file [${gb_file}]"))
             private$conn = file(gb_file, "r")
-            while(TRUE) {
-                line = readLines(private$conn, n = 1)
-                if ( length(line) == 0 ) {
-                    break
+
+            tryCatch(
+                {
+                    while(TRUE) {
+                        line = readLines(private$conn, n = 1)
+                        if ( length(line) == 0 ) {
+                            break
+                        }
+                        line_count <- line_count + 1
+                        private$tag_handler(line, line_count)
+                    }
+
+                    cli::cli_alert_success(
+                        stringr::str_interp("Done! [${line_count}] lines parsed"))
+                },
+
+                error=function(cond) {
+                    cli::cli_alert_danger("Genbank file not parsed as expected")
+                },
+
+
+                finally = {
+                    close(private$conn)
                 }
-                line_count <- line_count + 1
-                private$tag_handler(line, line_count)
-            }
-            close(private$conn)
-            cli::cli_alert_success(
-                stringr::str_interp("Done! [${line_count}] lines parsed"))
+            )
+
+
+
         },
 
         in_tag = function() {
