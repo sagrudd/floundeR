@@ -40,4 +40,5 @@ Imports:
     ShortRead,
     stringr,
     tibble,
-    tidyr
+    tidyr,
+    Biostrings

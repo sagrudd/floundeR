@@ -1,6 +1,8 @@
 # TB_reference = flnDr("NC_000962")
 # GenbankGenome$new(TB_reference)
 
+# check https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html
+
 #' @export
 GenbankGenome <- R6::R6Class(
     inherit = FloundeR,
@@ -13,15 +15,27 @@ GenbankGenome <- R6::R6Class(
 
 
 
-        get_cds = function() {
+        list_cds = function() {
+
+            #GenomeInfoDb::seqlengths(x)
             return(
                 GenomicRanges::makeGRangesFromDataFrame(
                     private$gb_cds, keep.extra.columns = TRUE))
         },
 
-
-        get_sequence = function() {
-
+        get_cds = function(feature_id="fusA1") {
+            cli::cli_alert(
+                stringr::str_interp(
+                    "extracting cds [${feature_id}]"))
+            if (!feature_id %in% private$gb_cds$gene) {
+                silent_stop(stringr::str_interp(
+                    "cds feature [${feature_id}] not annotated in [${self$accession}]"))
+            } else {
+                return(
+                    GenomicRanges::makeGRangesFromDataFrame(
+                        private$gb_cds[which("fusA1" == private$gb_cds$gene),],
+                        keep.extra.columns = TRUE))
+            }
         }
 
 
@@ -52,6 +66,28 @@ GenbankGenome <- R6::R6Class(
                 private$gb_definition <- set
             }
             return(private$gb_definition)
+        },
+
+        length = function(set=NULL) {
+            return(private$setter("gb_sequence_length", set))
+        },
+
+        sequence = function(set=NULL) {
+            if (!is.null(set)) {
+                cli::cli_alert(
+                    stringr::str_interp(
+                        "setting sequence"))
+                if (class(set)[[1]] == "DNAString") {
+                    private$gb_sequence <- set
+                } else if (class(set)[[1]] == "character") {
+                    private$gb_sequence <- Biostrings::DNAString(set)
+                } else {
+                    silent_stop("sequence can only be DNAString|character")
+                }
+
+
+            }
+            return(private$gb_sequence)
         }
 
     ),
@@ -60,7 +96,7 @@ GenbankGenome <- R6::R6Class(
         conn = NA,
         current_tag = NA,
         tag_string = NULL,
-        key_tags = c("DEFINITION", "ACCESSION", "VERSION", "FEATURES", "ORIGIN"),
+        key_tags = c("LOCUS", "DEFINITION", "ACCESSION", "VERSION", "FEATURES", "ORIGIN"),
         debug_counter = 0,
         gb_cds = data.frame(
             gene=character(0),
@@ -72,6 +108,14 @@ GenbankGenome <- R6::R6Class(
         gb_accession = "undefined",
         gb_version = "undefined",
         gb_definition = "undefined",
+        gb_sequence = "undefined",
+        gb_sequence_length = 0,
+
+
+        setter = function(key, value) {
+            target = paste0("private$", key)
+            cli::cli_alert(stringr::str_interp("evaluating [${target}]"))
+        },
 
         process_file = function(gb_file) {
             line_count <- 0
@@ -154,6 +198,8 @@ GenbankGenome <- R6::R6Class(
                     private$flush_feature()
                 } else if (private$current_tag == "ORIGIN") {
                     private$process_sequence()
+                } else if (private$current_tag == "LOCUS") {
+                    private$process_locus()
                 }
 
                 private$current_tag <- NA
@@ -250,6 +296,17 @@ GenbankGenome <- R6::R6Class(
         },
 
 
+        process_locus = function() {
+            cli::cli_alert("processing locus ...")
+            locus_string <- private$clip_tag() %>%
+                stringr::str_split("\\s+")
+            print(locus_string[[1]])
+
+            self$length <- locus_string[[1]][2]
+
+            silent_stop("dev debug")
+        },
+
         extract_positions = function(position_str) {
             strand <- "+"
             if (stringr::str_detect(position_str, "complement")) {
@@ -280,7 +337,17 @@ GenbankGenome <- R6::R6Class(
 
 
         process_sequence = function() {
-            cli::cli_alert(stringr::str_interp("processing sequence [${length(private$tag_string)}] lines"))
+            cli::cli_alert(
+                stringr::str_interp(
+                    "processing sequence [${length(private$tag_string)}] lines"))
+            # clip leading whitespace
+            private$tag_string <- private$tag_string %>%
+                stringr::str_replace("^ORIGIN\\s+", "") %>%
+                stringr::str_replace("^\\s+\\d+\\s+", "")  %>%
+                stringr::str_replace_all("\\s", "") %>%
+                stringr::str_c(collapse="")
+            self$sequence <- private$tag_string
+
         }
 
     )
