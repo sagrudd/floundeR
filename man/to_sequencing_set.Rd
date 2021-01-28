@@ -19,7 +19,7 @@ method will consume floundeR specified classes and return a SequencingSet
 object where possible.
 }
 \examples{
-SequencingSummary$new(flnDr("sequencing_summary.txt.bz2")) \%>\% 
+SequencingSummary$new(flnDr("sequencing_summary.txt.bz2")) \%>\%
     to_sequencing_set()
 
 }

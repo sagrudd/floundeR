@@ -21,6 +21,15 @@ fasta <- Fasta$new(canonical_fasta)
 \section{Super class}{
 \code{\link[floundeR:FloundeR]{floundeR::FloundeR}} -> \code{Fasta}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{sequencingset}}{The \code{sequencingset} active binding returns a sequencingset object
+that is canonically structured around the \code{passes_filtering} logical
+field to allow assessment of sequencing characteristics.}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -30,6 +39,7 @@ fasta <- Fasta$new(canonical_fasta)
 \item \href{#method-get_tibble_chunk}{\code{Fasta$get_tibble_chunk()}}
 \item \href{#method-get_index}{\code{Fasta$get_index()}}
 \item \href{#method-count}{\code{Fasta$count()}}
+\item \href{#method-as_tibble}{\code{Fasta$as_tibble()}}
 \item \href{#method-clone}{\code{Fasta$clone()}}
 }
 }
@@ -64,7 +74,7 @@ sequencing_summary file.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A new \code{Fastq} object.
+A new \code{Fasta} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -169,6 +179,23 @@ file specified
 
 \subsection{Returns}{
 integer of fasta entries in file
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\subsection{Method \code{as_tibble()}}{
+Export the imported dataset(s) as a tibble
+
+The Fasta R6 object consumes a fasta format file and creates an object in
+memory that can be explored, sliced and filtered. This method dumps
+out the in-memory object for further exploration and development.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Fasta$as_tibble()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}

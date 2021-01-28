@@ -37,7 +37,7 @@ GenbankGenome <- R6::R6Class(
                     "cds feature [${feature_id}] not annotated in [${self$accession}]"))
             } else {
                 cds_data <- GenomicRanges::makeGRangesFromDataFrame(
-                    private$gb_cds[which("fusA1" == private$gb_cds$gene),],
+                    private$gb_cds[which(feature_id == private$gb_cds$gene),],
                     keep.extra.columns = TRUE)
                 GenomeInfoDb::seqlengths(cds_data) <- self$length
                 GenomeInfoDb::genome(cds_data) <- self$definition

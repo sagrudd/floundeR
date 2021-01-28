@@ -1,0 +1,91 @@
+---
+title: "genbank_parsing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{genbank_parsing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(floundeR)
+```
+
+## Genbank parsing
+
+The Genbank file format is a standard for the sharing and distribution of whole
+genome sequences with their accompanying annotations. The `Genbank` parser in
+`floundeR` may not be the most technically competent parser and have been
+implemented with a couple of ambitions that are related to the analysis and
+identification of genetic variants in microbial genomes. This will undoubtedly
+change with time ...
+
+
+## Load the Genbank flatfile
+
+There is an R6 object defined in `floundeR` called **`GenbankGenome`**. Let's
+identify the packaged genbank file that corresponds to a Tuberculosis reference
+genome and create the corresponding object.
+
+```{r load_genbank}
+TB_reference = flnDr("NC_000962")
+tb <- GenbankGenome$new(TB_reference)
+```
+
+This has created a TB `GenbankGenome` object. A number of functions are provided
+by the object to access the annotation content of this genome. The fundamental
+methods provided a briefly introduced below.
+
+### Accessing the CDS annoations
+
+The `CDS` features annotated in the `Genbank` file have been collated as a
+`GenomicRanges` object. This can be accessed using
+
+```{r list_cds}
+tb$list_cds()
+```
+
+or for atomic entries (I am interested in the gene identified as `eis` we can
+use the more targetted method method
+
+```{r get_cds}
+tb$get_cds(feature_id="eis")
+```
+
+
+### Accessing the genome sequence
+
+The genome sequence from the Genbank entry can be accessed using an 
+`active binding` called `sequence`.
+
+```{r get_sequence}
+tb$sequence
+```
+
+
+# Case studies
+
+## Variant analysis in tuberculosis
+
+A clinical collaborator has provided me with some information on a variant that
+we should be checking in some whole genome sequencing studies. The variant
+is a C->T transition located 12 nucleotides upstream of the eis gene. I would
+like to sanity check the provided information and identify an absolute
+coordinate within the reference genome.
+
+## Variant definition in tubeculosis
+
+The same collaborator as above is also interested in a mutation that has been
+described as a peptide change from A->E at amino acid number three of the 
+pncA protein.
+
+```{r pncA}
+tb$get_cds(feature_id="pncA")
+```
