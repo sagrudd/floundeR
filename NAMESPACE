@@ -3,6 +3,7 @@
 export("%>%")
 export(Angenieux)
 export(AngenieuxDecoration)
+export(BamFile)
 export(Blast)
 export(Fast5)
 export(Fasta)
