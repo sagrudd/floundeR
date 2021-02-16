@@ -44,6 +44,96 @@ GenbankGenome <- R6::R6Class(
                 return(cds_data)
 
             }
+        },
+
+        focus_cds = function(feature_id="fusA1") {
+            cli::cli_alert(
+                stringr::str_interp(
+                    "setting focus to cds [${feature_id}]"))
+            private$focus_grange <- self$get_cds(feature_id)
+            return(invisible(self))
+        },
+
+        focus_range = function(chromosome=NULL, start=NULL, end=NULL) {
+
+        },
+
+        as_tibble = function() {
+            return(tibble::as_tibble(private$gb_cds))
+        },
+
+        whole_genome_focus = function() {
+            gr <- GenomicRanges::GRanges(
+                seqnames = self$accession, strand = "+",
+                ranges = IRanges::IRanges(start = 1, width = self$length))
+            GenomeInfoDb::seqlengths(gr) <- self$length
+            GenomeInfoDb::genome(gr) <- self$definition
+            return(gr)
+        },
+
+
+        focus_nucleotide = function(position) {
+            if (!is.numeric(position)) {
+                silent_stop("position must be an integer")
+            }
+            range <- self$get_focus()
+
+            strand <- as.character(BiocGenerics::strand(tb$get_focus()))
+
+            delta_pos <- NULL
+            if (strand == "+") {
+                cli::cli_alert("working on FWD")
+                core_position <-  BiocGenerics::start(range)
+                cli::cli_alert(stringr::str_interp("core_pos == [(${strand})..${core_position}]"))
+                delta_pos <- core_position + position
+            } else if (strand == "-") {
+                cli::cli_alert("working on REV")
+                core_position <-  BiocGenerics::end(range)
+                cli::cli_alert(stringr::str_interp("core_pos == [(${strand})..${core_position}]"))
+                delta_pos <- core_position - position
+            } else {
+                silent_stop("This method requires strand information")
+            }
+
+            if (delta_pos > self$length || delta_pos <= 0) {
+                silent_stop("position has dropped off the end of the chromosome")
+            }
+            cli::cli_alert(stringr::str_interp("delta_pos == [(${strand})..${delta_pos}]"))
+            self$get_nucleotide(delta_pos, strand)
+        },
+
+        get_nucleotide = function(position, strand) {
+            if (position > self$length || position <= 0) {
+                silent_stop("position has dropped off the end of the chromosome")
+            }
+            nucleotide <- NULL
+            if (strand == "+") {
+                cli::cli_alert("working on FWD")
+                nucleotide <- self$sequence[position]
+            } else if (strand == "-") {
+                cli::cli_alert("working on REV")
+                nucleotide <- Biostrings::reverseComplement(self$sequence[position])
+            } else {
+                silent_stop("This method requires strand information")
+            }
+            cli::cli_alert(stringr::str_interp("[${nucleotide}]"))
+        },
+
+        unfocus = function() {
+            private$focus_grange <- NULL
+            return(invisible(self))
+        },
+
+        is_focused = function() {
+            return(!is.null(private$focus_grange))
+        },
+
+        get_focus = function() {
+            range <- self$whole_genome_focus()
+            if (self$is_focused()) {
+                range <- private$focus_grange
+            }
+            return(range)
         }
 
 
@@ -84,6 +174,7 @@ GenbankGenome <- R6::R6Class(
             end=integer(0),
             translation=character(0)),
         gb_sequence = "undefined",
+        focus_grange = NULL,
 
 
         # setter = function(key, value) {
