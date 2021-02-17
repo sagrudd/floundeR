@@ -77,7 +77,6 @@ GenbankGenome <- R6::R6Class(
                 silent_stop("position must be an integer")
             }
             range <- self$get_focus()
-
             strand <- as.character(BiocGenerics::strand(tb$get_focus()))
 
             delta_pos <- NULL
@@ -100,6 +99,39 @@ GenbankGenome <- R6::R6Class(
             }
             cli::cli_alert(stringr::str_interp("delta_pos == [(${strand})..${delta_pos}]"))
             self$get_nucleotide(delta_pos, strand)
+        },
+
+
+        focus_codon = function(codon) {
+            cli::cli_alert("focusing codon ...")
+            range <- self$get_focus()
+            print(range)
+            strand <- as.character(BiocGenerics::strand(self$get_focus()))
+
+            if (strand == "+") {
+                cli::cli_alert("working on FWD")
+                core_position <-  BiocGenerics::start(range)
+                # codons are 1-based ???
+                start <- core_position + ((codon - 1) * 3)
+                end <- start + 2
+                nucleotide <- self$sequence[start:end]
+                print(nucleotide)
+                print(Biostrings::translate(nucleotide))
+            } else if (strand == "-") {
+                cli::cli_alert("working on REV")
+                core_position <-  BiocGenerics::end(range)
+
+                print(self$sequence[BiocGenerics::start(range):BiocGenerics::end(range)])
+
+                end <- core_position - ((codon - 1) * 3)
+                start <- end - 2
+                cli::cli_alert(stringr::str_interp("slicing [ ${start} : ${end} ]"))
+                nucleotide <- Biostrings::reverseComplement(self$sequence[start:end])
+                print(nucleotide)
+                print(Biostrings::translate(nucleotide))
+            } else {
+                silent_stop("This method requires strand information")
+            }
         },
 
         get_nucleotide = function(position, strand) {
