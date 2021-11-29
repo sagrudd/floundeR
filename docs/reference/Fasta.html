@@ -112,6 +112,9 @@ Rsamtools (alone)." />
     <li>
       <a href="../articles/05_blast_files.html">Blast result parsing</a>
     </li>
+    <li>
+      <a href="../articles/genbank_parsing.html">genbank_parsing</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -150,6 +153,14 @@ Rsamtools (alone).</p>
     <h2 class="hasAnchor" id="super-class"><a class="anchor" href="#super-class"></a>Super class</h2>
 
     <p><code><a href='FloundeR.html'>floundeR::FloundeR</a></code> -&gt; <code>Fasta</code></p>
+    <h2 class="hasAnchor" id="active-bindings"><a class="anchor" href="#active-bindings"></a>Active bindings</h2>
+
+    <p><div class="r6-active-bindings"></p><dl>
+<dt><code>sequencingset</code></dt><dd><p>The <code>sequencingset</code> active binding returns a sequencingset object
+that is canonically structured around the <code>passes_filtering</code> logical
+field to allow assessment of sequencing characteristics.</p></dd>
+
+</dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
     
@@ -162,6 +173,7 @@ Rsamtools (alone).</p>
 <li><p><a href='#method-get_tibble_chunk'><code>Fasta$get_tibble_chunk()</code></a></p></li>
 <li><p><a href='#method-get_index'><code>Fasta$get_index()</code></a></p></li>
 <li><p><a href='#method-count'><code>Fasta$count()</code></a></p></li>
+<li><p><a href='#method-as_tibble'><code>Fasta$as_tibble()</code></a></p></li>
 <li><p><a href='#method-clone'><code>Fasta$clone()</code></a></p></li>
 </ul>
 <p><details open ><summary>Inherited methods</summary>
@@ -188,7 +200,7 @@ sequencing_summary file.</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
-<p>A new <code>Fastq</code> object.</p>
+<p>A new <code>Fasta</code> object.</p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre><span class='va'>canonical_fasta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"cluster_cons.fasta.bgz"</span><span class='op'>)</span>
 <span class='va'>fasta</span> <span class='op'>&lt;-</span> <span class='va'>Fasta</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>canonical_fasta</span><span class='op'>)</span>
@@ -254,6 +266,16 @@ file specified</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
 <p>integer of fasta entries in file</p>
 <p><hr>
+<a id="method-as_tibble"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>as_tibble()</code></h3>
+<p>Export the imported dataset(s) as a tibble</p>
+<p>The Fasta R6 object consumes a fasta format file and creates an object in
+memory that can be explored, sliced and filtered. This method dumps
+out the in-memory object for further exploration and development.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>Fasta</span><span class='op'>$</span><span class='fu'>as_tibble</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A tibble representation of the starting dataset</p>
+<p><hr>
 <a id="method-clone"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>Fasta</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span>deep <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre><p></div></p>
@@ -267,14 +289,19 @@ file specified</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fasta$new`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>canonical_fasta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"cluster_cons.fasta.bgz"</span><span class='op'>)</span>
-<span class='va'>fasta</span> <span class='op'>&lt;-</span> <span class='va'>Fasta</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>canonical_fasta</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'><span style='color: #00BBBB;'>──</span><span> </span><span style='font-weight: bold;'>creating </span><span style='color: #FFAF00;font-weight: bold;font-style: italic;'>floundR::fasta</span><span style='font-weight: bold;'> with [cluster_cons.fasta.bgz]</span><span> </span><span style='color: #00BBBB;'>───────────────────────</span><span></span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> index for [cluster_cons.fasta.bgz] found</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BBBB;'>ℹ</span><span> loading fasta index [cluster_cons.fasta.bgz.idx]</span></div><div class='output co'>#&gt; <span class='error'>Error in seqnames(private$fasta_index): could not find function "seqnames"</span></div></span></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fasta$new`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>canonical_fasta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"cluster_cons.fasta.bgz"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fasta</span> <span class='op'>&lt;-</span> <span class='va'>Fasta</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='va'>canonical_fasta</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>──</span> <span style='font-weight: bold;'>creating </span><span style='color: #FFAF00; font-weight: bold; font-style: italic;'>floundR::fasta</span><span style='font-weight: bold;'> with [cluster_cons.fasta.bgz]</span> <span style='color: #00BBBB;'>───────────────────────</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>ℹ</span> index for [cluster_cons.fasta.bgz] found</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>ℹ</span> loading fasta index [cluster_cons.fasta.bgz.idx]</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in seqnames(private$fasta_index):</span> could not find function "seqnames"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -10,7 +10,7 @@
         stop(paste0("path [",file.path,"] does not exist"))
     } else if (!utils::file_test("-f", file.path)) {
         stop(paste0("path [",file.path,
-                    "] is a directory - file reqd"))
+                    "] is a directory - file read"))
     }
 }
 

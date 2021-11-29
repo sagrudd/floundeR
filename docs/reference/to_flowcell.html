@@ -112,6 +112,9 @@ where possible." />
     <li>
       <a href="../articles/05_blast_files.html">Blast result parsing</a>
     </li>
+    <li>
+      <a href="../articles/genbank_parsing.html">genbank_parsing</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -161,9 +164,11 @@ where possible.</p>
     <p>Flounder flowcell object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'><a href='SequencingSummary.html'>SequencingSummary</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"sequencing_summary.txt.bz2"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>to_flowcell</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Preparing channel count information</span></div><div class='output co'>#&gt; &lt;floundeR::Flowcell&gt;</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'><a href='SequencingSummary.html'>SequencingSummary</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='fu'><a href='flnDr.html'>flnDr</a></span><span class='op'>(</span><span class='st'>"sequencing_summary.txt.bz2"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>to_flowcell</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Preparing channel count information</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;floundeR::Flowcell&gt;</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

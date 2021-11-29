@@ -68,6 +68,9 @@
     <li>
       <a href="../articles/05_blast_files.html">Blast result parsing</a>
     </li>
+    <li>
+      <a href="../articles/genbank_parsing.html">genbank_parsing</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -84,7 +87,7 @@
 
       
 
-      </header><script src="03_fast5_files_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="03_fast5_files_files/kePrint-0.0.1/kePrint.js"></script><link href="03_fast5_files_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="03_fast5_files_files/header-attrs-2.11/header-attrs.js"></script><script src="03_fast5_files_files/kePrint-0.0.1/kePrint.js"></script><link href="03_fast5_files_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -204,8 +207,8 @@
 <code class="sourceCode R"><span class="va">bulk_info</span> <span class="op">&lt;-</span> <span class="va">multiF5</span><span class="op">$</span><span class="fu">get_info</span><span class="op">(</span>atomic<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">bulk_info</span>, 
              caption<span class="op">=</span><span class="st">"Table showing the summary information pulled from FAST5"</span>, 
-             booktabs<span class="op">=</span><span class="cn">TRUE</span>, table.envir<span class="op">=</span><span class="st">'table*'</span>, linesep<span class="op">=</span><span class="st">""</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>latex_options<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hold_position"</span>, font_size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+             booktabs<span class="op">=</span><span class="cn">TRUE</span>, table.envir<span class="op">=</span><span class="st">'table*'</span>, linesep<span class="op">=</span><span class="st">""</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>latex_options<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hold_position"</span>, font_size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/add_footnote.html">add_footnote</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"These data are expected to be redundant"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <table class="table table">
 <caption>

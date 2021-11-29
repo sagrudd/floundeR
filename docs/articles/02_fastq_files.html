@@ -68,6 +68,9 @@
     <li>
       <a href="../articles/05_blast_files.html">Blast result parsing</a>
     </li>
+    <li>
+      <a href="../articles/genbank_parsing.html">genbank_parsing</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -84,7 +87,7 @@
 
       
 
-      </header><script src="02_fastq_files_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="02_fastq_files_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Fastq format sequence files</h1>
@@ -118,7 +121,7 @@
 <span class="co">#&gt; &lt;floundeR::Fastq&gt;</span>
 
 <span class="va">fastq</span><span class="op">$</span><span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 625 x 3</span>
+<span class="co">#&gt; # A tibble: 625 × 3</span>
 <span class="co">#&gt;    sequence_length_template mean_qscore_template passes_filtering</span>
 <span class="co">#&gt;                       &lt;int&gt;                &lt;dbl&gt; &lt;lgl&gt;           </span>
 <span class="co">#&gt;  1                      481                 8.58 TRUE            </span>
@@ -141,6 +144,9 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>
   <span class="va">fastq</span><span class="op">$</span><span class="va">sequencingset</span><span class="op">$</span><span class="va">enumerate</span><span class="op">$</span><span class="fu">to_file</span><span class="op">(</span><span class="st">"figure_5.png"</span><span class="op">)</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Warning: The `.dots` argument of `group_by()` is deprecated as of dplyr 1.0.0.</span>
+<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
+<span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span>
 <span class="co">#&gt; saving plot as [png]</span></code></pre></div>
 <p><img src="figure_5.png" width="75%"></p>
 <p>There are a plethora of ways through which the <code>Angenieux</code> object can be used to style, colour and manipulate the graph - please do have a look at the methods documentation.</p>

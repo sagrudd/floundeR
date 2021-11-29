@@ -113,6 +113,9 @@ files." />
     <li>
       <a href="../articles/05_blast_files.html">Blast result parsing</a>
     </li>
+    <li>
+      <a href="../articles/genbank_parsing.html">genbank_parsing</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -362,130 +365,139 @@ considered (FALSE)</p></dd>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$is_single_fast5`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>is_single_fast5</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$is_multi_fast5`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>is_multi_fast5</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_platform`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_platform</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "promethion"</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_flowcell_id`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_flowcell_id</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] ""</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_exp_start_time`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_exp_start_time</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "2018-05-08 15:53:32 UTC"</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_read_count`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_read_count</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 25</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_flowcell_type`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_flowcell_type</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "flo-pro001"</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_sequencing_kit`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_sequencing_kit</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "sqk-lsk109"</div><div class='input'>
-<span class='co'>## ------------------------------------------------</span>
-<span class='co'>## Method `Fast5$get_info`</span>
-<span class='co'>## ------------------------------------------------</span>
-
-<span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span>
-<span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span>
-<span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_info</span><span class='op'>(</span>atomic<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;    device_type flow_cell_id       exp_start_time experiment_type flowcell_type
-#&gt; 1   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 2   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 3   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 4   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 5   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 6   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 7   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 8   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 9   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 10  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 11  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 12  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 13  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 14  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 15  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 16  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 17  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 18  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 19  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 20  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 21  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 22  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 23  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 24  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt; 25  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001
-#&gt;    sequencing_kit
-#&gt; 1      sqk-lsk109
-#&gt; 2      sqk-lsk109
-#&gt; 3      sqk-lsk109
-#&gt; 4      sqk-lsk109
-#&gt; 5      sqk-lsk109
-#&gt; 6      sqk-lsk109
-#&gt; 7      sqk-lsk109
-#&gt; 8      sqk-lsk109
-#&gt; 9      sqk-lsk109
-#&gt; 10     sqk-lsk109
-#&gt; 11     sqk-lsk109
-#&gt; 12     sqk-lsk109
-#&gt; 13     sqk-lsk109
-#&gt; 14     sqk-lsk109
-#&gt; 15     sqk-lsk109
-#&gt; 16     sqk-lsk109
-#&gt; 17     sqk-lsk109
-#&gt; 18     sqk-lsk109
-#&gt; 19     sqk-lsk109
-#&gt; 20     sqk-lsk109
-#&gt; 21     sqk-lsk109
-#&gt; 22     sqk-lsk109
-#&gt; 23     sqk-lsk109
-#&gt; 24     sqk-lsk109
-#&gt; 25     sqk-lsk109</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$is_single_fast5`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>is_single_fast5</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] FALSE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$is_multi_fast5`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>is_multi_fast5</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_platform`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_platform</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "promethion"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_flowcell_id`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_flowcell_id</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] ""</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_exp_start_time`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_exp_start_time</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2018-05-08 15:53:32 UTC"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_read_count`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_read_count</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 25</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_flowcell_type`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_flowcell_type</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "flo-pro001"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_sequencing_kit`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_sequencing_kit</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "sqk-lsk109"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'><span class='co'>## Method `Fast5$get_info`</span></span>
+<span class='r-in'><span class='co'>## ------------------------------------------------</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>promFast5</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"prom.fast5"</span>, package<span class='op'>=</span><span class='st'>"floundeR"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span> <span class='op'>&lt;-</span> <span class='va'>Fast5</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span>fast5_file<span class='op'>=</span><span class='va'>promFast5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>promF5</span><span class='op'>$</span><span class='fu'>get_info</span><span class='op'>(</span>atomic<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    device_type flow_cell_id       exp_start_time experiment_type flowcell_type</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9   promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 11  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 13  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 14  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 15  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 17  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 18  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 19  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 21  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 22  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 23  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 24  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 25  promethion              2018-05-08T15:53:32Z     genomic_dna    flo-pro001</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    sequencing_kit</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9      sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 11     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 13     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 14     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 15     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 17     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 18     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 19     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 21     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 22     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 23     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 24     sqk-lsk109</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 25     sqk-lsk109</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
