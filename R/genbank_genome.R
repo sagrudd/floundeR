@@ -464,3 +464,16 @@ GenbankGenome <- R6::R6Class(
 
 
 )
+
+
+
+triplet2DeltaPeptide = function(triplet=Biostrings::DNAString("CCG"), peptide=Biostrings::AAString("Q")) {
+
+    cli::cli_alert(stringr::str_interp("${triplet} --> ${Biostrings::translate(triplet)}"))
+    geneticcode <- Biostrings::getGeneticCode("11")
+    modified_triplets <- names(geneticcode)[which(as.character(geneticcode) == as.character(peptide))]
+    distances <- stringdist::stringdist(triplet, modified_triplets)
+    print(distances)
+    print(modified_triplets[order(distances, decreasing=FALSE)])
+}
+
