@@ -1,8 +1,14 @@
-# TB_reference = flnDr("NC_000962")
-# GenbankGenome$new(TB_reference)
-
 # check https://www.ncbi.nlm.nih.gov/Sitemap/samplerecord.html
 
+#' R6 Class for loading and analysing Genbank whole genome files
+#'
+#' @description
+#' This class aims to implement a couple of trivial methods for wrangling whole
+#' microbial genome information from Genbank files
+#'
+#' @import R6
+#' @importFrom magrittr %>%
+#'
 #' @export
 GenbankGenome <- R6::R6Class(
     inherit = FloundeR,
@@ -14,12 +20,27 @@ GenbankGenome <- R6::R6Class(
         version = NULL,
         definition = NULL,
 
+
+        #' @description
+        #' Creates a new GenbankGenome object. This
+        #' initialisation method performs minimal sanity checking
+        #' of the defined file(s)
+        #'
+        #' @param gb_file The source
+        #' sequencing_summary file.
+        #' @return A new `GenbankGenome` object.
+        #'
+        #' @examples
+        #' TB_reference = flnDr("TB_H37Rv.gb.gz")
+        #' tb <- GenbankGenome$new(TB_reference)
         initialize = function(gb_file) {
             private$process_file(gb_file)
         },
 
 
-
+        #' @description
+        #' exports the annotated genomic features as a GenomicRanges object.
+        #' This can be used for the review of content in a genomics context.
         list_cds = function() {
             cds_data <- GenomicRanges::makeGRangesFromDataFrame(
                 private$gb_cds, keep.extra.columns = TRUE)
@@ -28,16 +49,19 @@ GenbankGenome <- R6::R6Class(
             return(cds_data)
         },
 
+        #' @description
+        #' Get the CDS information for one or more annotated features from the
+        #' genome of interest.
         get_cds = function(feature_id="fusA1") {
             cli::cli_alert(
                 stringr::str_interp(
                     "extracting cds [${feature_id}]"))
-            if (!feature_id %in% private$gb_cds$gene) {
+            if (!any(feature_id %in% private$gb_cds$gene)) {
                 silent_stop(stringr::str_interp(
                     "cds feature [${feature_id}] not annotated in [${self$accession}]"))
             } else {
                 cds_data <- GenomicRanges::makeGRangesFromDataFrame(
-                    private$gb_cds[which(feature_id == private$gb_cds$gene),],
+                    private$gb_cds[which(private$gb_cds$gene %in% feature_id),],
                     keep.extra.columns = TRUE)
                 GenomeInfoDb::seqlengths(cds_data) <- self$length
                 GenomeInfoDb::genome(cds_data) <- self$definition
@@ -207,19 +231,6 @@ GenbankGenome <- R6::R6Class(
             translation=character(0)),
         gb_sequence = "undefined",
         focus_grange = NULL,
-
-
-        # setter = function(key, value) {
-        #     target = paste0("private$", key)
-        #     cli::cli_alert(stringr::str_interp("evaluating [${target}]"))
-        #     if (!is.null(value)) {
-        #         print(stringr::str_interp("assigning value ... --> ${value}"))
-        #         assign(target, value, envir=private)
-        #         print(get(target, envir=private))
-        #         print(private$gb_sequence_length)
-        #     }
-        #     return(eval(as.name(target)))
-        # },
 
         process_file = function(gb_file) {
             line_count <- 0
@@ -430,7 +441,9 @@ GenbankGenome <- R6::R6Class(
             filter_position = function(str) {
                 str_mod <- str %>%
                     stringr::str_replace("<", "") %>%
-                    stringr::str_replace(">", "")
+                    stringr::str_replace(">", "") %>%
+                    stringr::str_replace("join\\(", "") %>%
+                    stringr::str_replace(",.+", "")
 
                 xval = stringr::str_extract(str_mod, "[^\\d]+")
                 if (is.na(xval)) return(str_mod)
@@ -466,7 +479,7 @@ GenbankGenome <- R6::R6Class(
 )
 
 
-
+#' @importFrom stringdist stringdist
 triplet2DeltaPeptide = function(triplet=Biostrings::DNAString("CCG"), peptide=Biostrings::AAString("Q")) {
 
     cli::cli_alert(stringr::str_interp("${triplet} --> ${Biostrings::translate(triplet)}"))

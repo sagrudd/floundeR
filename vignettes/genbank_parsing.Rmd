@@ -35,7 +35,7 @@ identify the packaged genbank file that corresponds to a Tuberculosis reference
 genome and create the corresponding object.
 
 ```{r load_genbank}
-TB_reference = flnDr("NC_000962")
+TB_reference = flnDr("TB_H37Rv.gb.gz")
 tb <- GenbankGenome$new(TB_reference)
 ```
 
@@ -43,7 +43,7 @@ This has created a TB `GenbankGenome` object. A number of functions are provided
 by the object to access the annotation content of this genome. The fundamental
 methods provided a briefly introduced below.
 
-### Accessing the CDS annoations
+### Accessing the CDS annotations
 
 The `CDS` features annotated in the `Genbank` file have been collated as a
 `GenomicRanges` object. This can be accessed using
