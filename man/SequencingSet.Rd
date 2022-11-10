@@ -28,26 +28,26 @@ the \code{SequencingSet} object}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{SequencingSet$new()}}
-\item \href{#method-as_tibble}{\code{SequencingSet$as_tibble()}}
-\item \href{#method-read_length_bins}{\code{SequencingSet$read_length_bins()}}
-\item \href{#method-quality_bins}{\code{SequencingSet$quality_bins()}}
-\item \href{#method-clone}{\code{SequencingSet$clone()}}
+\item \href{#method-SequencingSet-new}{\code{SequencingSet$new()}}
+\item \href{#method-SequencingSet-as_tibble}{\code{SequencingSet$as_tibble()}}
+\item \href{#method-SequencingSet-read_length_bins}{\code{SequencingSet$read_length_bins()}}
+\item \href{#method-SequencingSet-quality_bins}{\code{SequencingSet$quality_bins()}}
+\item \href{#method-SequencingSet-clone}{\code{SequencingSet$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-SequencingSet-new"></a>}}
+\if{latex}{\out{\hypertarget{method-SequencingSet-new}{}}}
 \subsection{Method \code{new()}}{
 Initialise a new instance of the R6 Class \code{SequencingSet}
 \subsection{Usage}{
@@ -66,8 +66,8 @@ direct parsing and exploration of the file.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\if{html}{\out{<a id="method-SequencingSet-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-SequencingSet-as_tibble}{}}}
 \subsection{Method \code{as_tibble()}}{
 Export the imported dataset(s) as a tibble
 
@@ -84,8 +84,8 @@ A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-read_length_bins"></a>}}
-\if{latex}{\out{\hypertarget{method-read_length_bins}{}}}
+\if{html}{\out{<a id="method-SequencingSet-read_length_bins"></a>}}
+\if{latex}{\out{\hypertarget{method-SequencingSet-read_length_bins}{}}}
 \subsection{Method \code{read_length_bins()}}{
 bin the sequences in \code{seqsum} content into bins of sequence length
 
@@ -129,8 +129,8 @@ Angenieux 2D graph object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-quality_bins"></a>}}
-\if{latex}{\out{\hypertarget{method-quality_bins}{}}}
+\if{html}{\out{<a id="method-SequencingSet-quality_bins"></a>}}
+\if{latex}{\out{\hypertarget{method-SequencingSet-quality_bins}{}}}
 \subsection{Method \code{quality_bins()}}{
 bin the sequences in \code{seqsum} content into bins of quality
 
@@ -159,8 +159,8 @@ Angenieux 2D graph object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-SequencingSet-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-SequencingSet-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

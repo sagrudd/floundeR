@@ -14,28 +14,28 @@ R6 Class for analysing sequence sets with accompanying temporal data
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{TemporalSet$new()}}
-\item \href{#method-as_tibble}{\code{TemporalSet$as_tibble()}}
-\item \href{#method-runtime}{\code{TemporalSet$runtime()}}
-\item \href{#method-run_yield}{\code{TemporalSet$run_yield()}}
-\item \href{#method-feature_over_time}{\code{TemporalSet$feature_over_time()}}
-\item \href{#method-t50}{\code{TemporalSet$t50()}}
-\item \href{#method-clone}{\code{TemporalSet$clone()}}
+\item \href{#method-TemporalSet-new}{\code{TemporalSet$new()}}
+\item \href{#method-TemporalSet-as_tibble}{\code{TemporalSet$as_tibble()}}
+\item \href{#method-TemporalSet-runtime}{\code{TemporalSet$runtime()}}
+\item \href{#method-TemporalSet-run_yield}{\code{TemporalSet$run_yield()}}
+\item \href{#method-TemporalSet-feature_over_time}{\code{TemporalSet$feature_over_time()}}
+\item \href{#method-TemporalSet-t50}{\code{TemporalSet$t50()}}
+\item \href{#method-TemporalSet-clone}{\code{TemporalSet$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-TemporalSet-new"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-new}{}}}
 \subsection{Method \code{new()}}{
 Initialise a new instance of the R6 Class \code{TemporalSet}
 \subsection{Usage}{
@@ -51,8 +51,8 @@ Initialise a new instance of the R6 Class \code{TemporalSet}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\if{html}{\out{<a id="method-TemporalSet-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-as_tibble}{}}}
 \subsection{Method \code{as_tibble()}}{
 Export the imported dataset(s) as a tibble
 \subsection{Usage}{
@@ -64,8 +64,8 @@ A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-runtime"></a>}}
-\if{latex}{\out{\hypertarget{method-runtime}{}}}
+\if{html}{\out{<a id="method-TemporalSet-runtime"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-runtime}{}}}
 \subsection{Method \code{runtime()}}{
 get a rounded runtime from temporal information in sequencing summary
 
@@ -82,8 +82,8 @@ a numeric describing the rounded runtime in hours
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-run_yield"></a>}}
-\if{latex}{\out{\hypertarget{method-run_yield}{}}}
+\if{html}{\out{<a id="method-TemporalSet-run_yield"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-run_yield}{}}}
 \subsection{Method \code{run_yield()}}{
 Prepare summary statistics that describe a flowcell run's yield
 
@@ -115,8 +115,8 @@ Angenieux object prepared for rendering in reports
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-feature_over_time"></a>}}
-\if{latex}{\out{\hypertarget{method-feature_over_time}{}}}
+\if{html}{\out{<a id="method-TemporalSet-feature_over_time"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-feature_over_time}{}}}
 \subsection{Method \code{feature_over_time()}}{
 Report a binned temporal data facet (such as speed, quality, length)
 
@@ -153,8 +153,8 @@ Angenieux object prepared for rendering in reports
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-t50"></a>}}
-\if{latex}{\out{\hypertarget{method-t50}{}}}
+\if{html}{\out{<a id="method-TemporalSet-t50"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-t50}{}}}
 \subsection{Method \code{t50()}}{
 calculate T50 timepoint at which 50\% of sequence reads are obtained
 
@@ -183,8 +183,8 @@ data was obtained.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-TemporalSet-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-TemporalSet-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -22,26 +22,26 @@ object}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{AngenieuxDecoration$new()}}
-\item \href{#method-.add_vline}{\code{AngenieuxDecoration$.add_vline()}}
-\item \href{#method-.add_vlegend}{\code{AngenieuxDecoration$.add_vlegend()}}
-\item \href{#method-.add_ggplot2}{\code{AngenieuxDecoration$.add_ggplot2()}}
-\item \href{#method-clone}{\code{AngenieuxDecoration$clone()}}
+\item \href{#method-AngenieuxDecoration-new}{\code{AngenieuxDecoration$new()}}
+\item \href{#method-AngenieuxDecoration-.add_vline}{\code{AngenieuxDecoration$.add_vline()}}
+\item \href{#method-AngenieuxDecoration-.add_vlegend}{\code{AngenieuxDecoration$.add_vlegend()}}
+\item \href{#method-AngenieuxDecoration-.add_ggplot2}{\code{AngenieuxDecoration$.add_ggplot2()}}
+\item \href{#method-AngenieuxDecoration-clone}{\code{AngenieuxDecoration$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-AngenieuxDecoration-new"></a>}}
+\if{latex}{\out{\hypertarget{method-AngenieuxDecoration-new}{}}}
 \subsection{Method \code{new()}}{
 This is the constructor for the AngenieuxDecoration object
 \subsection{Usage}{
@@ -61,8 +61,8 @@ object}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.add_vline"></a>}}
-\if{latex}{\out{\hypertarget{method-.add_vline}{}}}
+\if{html}{\out{<a id="method-AngenieuxDecoration-.add_vline"></a>}}
+\if{latex}{\out{\hypertarget{method-AngenieuxDecoration-.add_vline}{}}}
 \subsection{Method \code{.add_vline()}}{
 Add a vertical line to a ggplot2 graph within Angenieux
 \subsection{Usage}{
@@ -83,8 +83,8 @@ x-axis}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.add_vlegend"></a>}}
-\if{latex}{\out{\hypertarget{method-.add_vlegend}{}}}
+\if{html}{\out{<a id="method-AngenieuxDecoration-.add_vlegend"></a>}}
+\if{latex}{\out{\hypertarget{method-AngenieuxDecoration-.add_vlegend}{}}}
 \subsection{Method \code{.add_vlegend()}}{
 Add a legend text to accompany a vertical line
 \subsection{Usage}{
@@ -118,8 +118,8 @@ x-axis}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-.add_ggplot2"></a>}}
-\if{latex}{\out{\hypertarget{method-.add_ggplot2}{}}}
+\if{html}{\out{<a id="method-AngenieuxDecoration-.add_ggplot2"></a>}}
+\if{latex}{\out{\hypertarget{method-AngenieuxDecoration-.add_ggplot2}{}}}
 \subsection{Method \code{.add_ggplot2()}}{
 Just add some plain \code{ggplot2} to the AngenieuxDecoration and layer on to
 the Angenieux plot - this is for the lazy hacking out and visualisation
@@ -137,8 +137,8 @@ of plots
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-AngenieuxDecoration-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-AngenieuxDecoration-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -33,25 +33,25 @@ predicted by \code{get_flowcell_platform}}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Flowcell$new()}}
-\item \href{#method-set_channel_counts}{\code{Flowcell$set_channel_counts()}}
-\item \href{#method-as_tibble}{\code{Flowcell$as_tibble()}}
-\item \href{#method-clone}{\code{Flowcell$clone()}}
+\item \href{#method-Flowcell-new}{\code{Flowcell$new()}}
+\item \href{#method-Flowcell-set_channel_counts}{\code{Flowcell$set_channel_counts()}}
+\item \href{#method-Flowcell-as_tibble}{\code{Flowcell$as_tibble()}}
+\item \href{#method-Flowcell-clone}{\code{Flowcell$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Flowcell-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Flowcell-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new Flowcell object. This
 initialisation method performs other sanity checking of the defined
@@ -65,8 +65,8 @@ A new \code{Flowcell} object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_channel_counts"></a>}}
-\if{latex}{\out{\hypertarget{method-set_channel_counts}{}}}
+\if{html}{\out{<a id="method-Flowcell-set_channel_counts"></a>}}
+\if{latex}{\out{\hypertarget{method-Flowcell-set_channel_counts}{}}}
 \subsection{Method \code{set_channel_counts()}}{
 set channel count summary information
 
@@ -86,8 +86,8 @@ used for the generation of spatial plots
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\if{html}{\out{<a id="method-Flowcell-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-Flowcell-as_tibble}{}}}
 \subsection{Method \code{as_tibble()}}{
 Export the imported dataset(s) as a tibble
 
@@ -104,8 +104,8 @@ A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Flowcell-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Flowcell-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

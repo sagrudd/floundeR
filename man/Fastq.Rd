@@ -40,26 +40,26 @@ field to allow assessment of sequencing characteristics.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Fastq$new()}}
-\item \href{#method-as_tibble}{\code{Fastq$as_tibble()}}
-\item \href{#method-sequence_chunks}{\code{Fastq$sequence_chunks()}}
-\item \href{#method-get_sequence_chunk}{\code{Fastq$get_sequence_chunk()}}
-\item \href{#method-clone}{\code{Fastq$clone()}}
+\item \href{#method-Fastq-new}{\code{Fastq$new()}}
+\item \href{#method-Fastq-as_tibble}{\code{Fastq$as_tibble()}}
+\item \href{#method-Fastq-sequence_chunks}{\code{Fastq$sequence_chunks()}}
+\item \href{#method-Fastq-get_sequence_chunk}{\code{Fastq$get_sequence_chunk()}}
+\item \href{#method-Fastq-clone}{\code{Fastq$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Fastq-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Fastq-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new Fastq object. This
 initialisation method performs other sanity checking
@@ -91,8 +91,8 @@ fastq <- Fastq$new(canonical_fastq)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\if{html}{\out{<a id="method-Fastq-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-Fastq-as_tibble}{}}}
 \subsection{Method \code{as_tibble()}}{
 Export the imported dataset(s) as a tibble
 
@@ -109,8 +109,8 @@ A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sequence_chunks"></a>}}
-\if{latex}{\out{\hypertarget{method-sequence_chunks}{}}}
+\if{html}{\out{<a id="method-Fastq-sequence_chunks"></a>}}
+\if{latex}{\out{\hypertarget{method-Fastq-sequence_chunks}{}}}
 \subsection{Method \code{sequence_chunks()}}{
 Split the fastq sequence file explored by the package into sequence
 chunks for e.g. import into a relational database.
@@ -132,8 +132,8 @@ this can for example be iterated over
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_sequence_chunk"></a>}}
-\if{latex}{\out{\hypertarget{method-get_sequence_chunk}{}}}
+\if{html}{\out{<a id="method-Fastq-get_sequence_chunk"></a>}}
+\if{latex}{\out{\hypertarget{method-Fastq-get_sequence_chunk}{}}}
 \subsection{Method \code{get_sequence_chunk()}}{
 Get a chunk of fastq sequences from a larger monolithic file. This method
 can be called for up to \verb{$sequence_chunks()} times or until NULL results
@@ -148,8 +148,8 @@ available sequence chunk.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Fastq-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Fastq-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

@@ -29,27 +29,27 @@ floundeR framework
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Angenieux$new()}}
-\item \href{#method-add}{\code{Angenieux$add()}}
-\item \href{#method-plot}{\code{Angenieux$plot()}}
-\item \href{#method-to_file}{\code{Angenieux$to_file()}}
-\item \href{#method-set_title}{\code{Angenieux$set_title()}}
-\item \href{#method-clone}{\code{Angenieux$clone()}}
+\item \href{#method-Angenieux-new}{\code{Angenieux$new()}}
+\item \href{#method-Angenieux-add}{\code{Angenieux$add()}}
+\item \href{#method-Angenieux-plot}{\code{Angenieux$plot()}}
+\item \href{#method-Angenieux-to_file}{\code{Angenieux$to_file()}}
+\item \href{#method-Angenieux-set_title}{\code{Angenieux$set_title()}}
+\item \href{#method-Angenieux-clone}{\code{Angenieux$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Angenieux-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Angenieux-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new Angenieux object. This
 initialisation method performs other sanity checking of the defined
@@ -72,8 +72,8 @@ A new \code{Angenieux} object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add"></a>}}
-\if{latex}{\out{\hypertarget{method-add}{}}}
+\if{html}{\out{<a id="method-Angenieux-add"></a>}}
+\if{latex}{\out{\hypertarget{method-Angenieux-add}{}}}
 \subsection{Method \code{add()}}{
 add an \code{AngenieuxDecoration} to the plot.
 \subsection{Usage}{
@@ -89,8 +89,8 @@ add an \code{AngenieuxDecoration} to the plot.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-plot"></a>}}
-\if{latex}{\out{\hypertarget{method-plot}{}}}
+\if{html}{\out{<a id="method-Angenieux-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-Angenieux-plot}{}}}
 \subsection{Method \code{plot()}}{
 Prepare and present an Angenieux plot
 \subsection{Usage}{
@@ -108,8 +108,8 @@ using this approach.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-to_file"></a>}}
-\if{latex}{\out{\hypertarget{method-to_file}{}}}
+\if{html}{\out{<a id="method-Angenieux-to_file"></a>}}
+\if{latex}{\out{\hypertarget{method-Angenieux-to_file}{}}}
 \subsection{Method \code{to_file()}}{
 Specify that Angenieux plot should be saved to file
 
@@ -148,8 +148,8 @@ the original Angenieux object (self)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_title"></a>}}
-\if{latex}{\out{\hypertarget{method-set_title}{}}}
+\if{html}{\out{<a id="method-Angenieux-set_title"></a>}}
+\if{latex}{\out{\hypertarget{method-Angenieux-set_title}{}}}
 \subsection{Method \code{set_title()}}{
 Set the title used in the given Angenieux plot
 \subsection{Usage}{
@@ -170,8 +170,8 @@ the original Angenieux object (self)
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Angenieux-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Angenieux-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

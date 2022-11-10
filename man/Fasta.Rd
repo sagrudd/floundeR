@@ -33,29 +33,29 @@ field to allow assessment of sequencing characteristics.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Fasta$new()}}
-\item \href{#method-sequence_chunks}{\code{Fasta$sequence_chunks()}}
-\item \href{#method-get_sequence_chunk}{\code{Fasta$get_sequence_chunk()}}
-\item \href{#method-get_tibble_chunk}{\code{Fasta$get_tibble_chunk()}}
-\item \href{#method-get_index}{\code{Fasta$get_index()}}
-\item \href{#method-count}{\code{Fasta$count()}}
-\item \href{#method-as_tibble}{\code{Fasta$as_tibble()}}
-\item \href{#method-clone}{\code{Fasta$clone()}}
+\item \href{#method-Fasta-new}{\code{Fasta$new()}}
+\item \href{#method-Fasta-sequence_chunks}{\code{Fasta$sequence_chunks()}}
+\item \href{#method-Fasta-get_sequence_chunk}{\code{Fasta$get_sequence_chunk()}}
+\item \href{#method-Fasta-get_tibble_chunk}{\code{Fasta$get_tibble_chunk()}}
+\item \href{#method-Fasta-get_index}{\code{Fasta$get_index()}}
+\item \href{#method-Fasta-count}{\code{Fasta$count()}}
+\item \href{#method-Fasta-as_tibble}{\code{Fasta$as_tibble()}}
+\item \href{#method-Fasta-clone}{\code{Fasta$clone()}}
 }
 }
-\if{html}{
-\out{<details open ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data">}\href{../../floundeR/html/FloundeR.html#method-bin_data}{\code{floundeR::FloundeR$bin_data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale">}\href{../../floundeR/html/FloundeR.html#method-num_scale}{\code{floundeR::FloundeR$num_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale">}\href{../../floundeR/html/FloundeR.html#method-nums_scale}{\code{floundeR::FloundeR$nums_scale()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print">}\href{../../floundeR/html/FloundeR.html#method-print}{\code{floundeR::FloundeR$print()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="bin_data"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-bin_data'><code>floundeR::FloundeR$bin_data()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="num_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-num_scale'><code>floundeR::FloundeR$num_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="nums_scale"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-nums_scale'><code>floundeR::FloundeR$nums_scale()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="floundeR" data-topic="FloundeR" data-id="print"><a href='../../floundeR/html/FloundeR.html#method-FloundeR-print'><code>floundeR::FloundeR$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Fasta-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new Fasta object. This
 initialisation method performs other sanity checking
@@ -87,8 +87,8 @@ fasta <- Fasta$new(canonical_fasta)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-sequence_chunks"></a>}}
-\if{latex}{\out{\hypertarget{method-sequence_chunks}{}}}
+\if{html}{\out{<a id="method-Fasta-sequence_chunks"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-sequence_chunks}{}}}
 \subsection{Method \code{sequence_chunks()}}{
 Split the fasta sequence file explored by the package into sequence
 chunks for e.g. import into a relational database.
@@ -110,8 +110,8 @@ this can for example be iterated over
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_sequence_chunk"></a>}}
-\if{latex}{\out{\hypertarget{method-get_sequence_chunk}{}}}
+\if{html}{\out{<a id="method-Fasta-get_sequence_chunk"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-get_sequence_chunk}{}}}
 \subsection{Method \code{get_sequence_chunk()}}{
 Get a chunk of fasta sequences from a larger monolithic file
 \subsection{Usage}{
@@ -132,8 +132,8 @@ specified sequence chunk.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_tibble_chunk"></a>}}
-\if{latex}{\out{\hypertarget{method-get_tibble_chunk}{}}}
+\if{html}{\out{<a id="method-Fasta-get_tibble_chunk"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-get_tibble_chunk}{}}}
 \subsection{Method \code{get_tibble_chunk()}}{
 Get a chunk of fasta sequences from a larger monolithic file as a tibble
 \subsection{Usage}{
@@ -154,8 +154,8 @@ specified sequence chunk.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_index"></a>}}
-\if{latex}{\out{\hypertarget{method-get_index}{}}}
+\if{html}{\out{<a id="method-Fasta-get_index"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-get_index}{}}}
 \subsection{Method \code{get_index()}}{
 return the Rsamtools FASTA index
 \subsection{Usage}{
@@ -168,8 +168,8 @@ sequence file
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-count"></a>}}
-\if{latex}{\out{\hypertarget{method-count}{}}}
+\if{html}{\out{<a id="method-Fasta-count"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-count}{}}}
 \subsection{Method \code{count()}}{
 return the number of sequence elements contained within the sequence
 file specified
@@ -182,8 +182,8 @@ integer of fasta entries in file
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-as_tibble"></a>}}
-\if{latex}{\out{\hypertarget{method-as_tibble}{}}}
+\if{html}{\out{<a id="method-Fasta-as_tibble"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-as_tibble}{}}}
 \subsection{Method \code{as_tibble()}}{
 Export the imported dataset(s) as a tibble
 
@@ -199,8 +199,8 @@ A tibble representation of the starting dataset
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Fasta-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Fasta-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

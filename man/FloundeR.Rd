@@ -12,17 +12,17 @@ actually creating a \code{floundeR} instance on its own.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{FloundeR$new()}}
-\item \href{#method-print}{\code{FloundeR$print()}}
-\item \href{#method-bin_data}{\code{FloundeR$bin_data()}}
-\item \href{#method-num_scale}{\code{FloundeR$num_scale()}}
-\item \href{#method-nums_scale}{\code{FloundeR$nums_scale()}}
-\item \href{#method-clone}{\code{FloundeR$clone()}}
+\item \href{#method-FloundeR-new}{\code{FloundeR$new()}}
+\item \href{#method-FloundeR-print}{\code{FloundeR$print()}}
+\item \href{#method-FloundeR-bin_data}{\code{FloundeR$bin_data()}}
+\item \href{#method-FloundeR-num_scale}{\code{FloundeR$num_scale()}}
+\item \href{#method-FloundeR-nums_scale}{\code{FloundeR$nums_scale()}}
+\item \href{#method-FloundeR-clone}{\code{FloundeR$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-FloundeR-new"></a>}}
+\if{latex}{\out{\hypertarget{method-FloundeR-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new FloundeR object.
 \subsection{Usage}{
@@ -34,8 +34,8 @@ A new \code{FloundeR} object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-FloundeR-print"></a>}}
+\if{latex}{\out{\hypertarget{method-FloundeR-print}{}}}
 \subsection{Method \code{print()}}{
 this print method overrides the standard print function as included with
 R6 objects - this is to better define what is contained within an object
@@ -56,8 +56,8 @@ nothing (at present) - output to stdout
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-bin_data"></a>}}
-\if{latex}{\out{\hypertarget{method-bin_data}{}}}
+\if{html}{\out{<a id="method-FloundeR-bin_data"></a>}}
+\if{latex}{\out{\hypertarget{method-FloundeR-bin_data}{}}}
 \subsection{Method \code{bin_data()}}{
 general method for binning continuous data into sensible bins - used by
 various methods within the broader floundeR framework.
@@ -92,8 +92,8 @@ bin assignments for \code{data} elements
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-num_scale"></a>}}
-\if{latex}{\out{\hypertarget{method-num_scale}{}}}
+\if{html}{\out{<a id="method-FloundeR-num_scale"></a>}}
+\if{latex}{\out{\hypertarget{method-FloundeR-num_scale}{}}}
 \subsection{Method \code{num_scale()}}{
 scale numerics in bases into kilo/mega/giga etc measurements for e.g.
 plots and other graphic visualisations
@@ -113,8 +113,8 @@ character representation scaled accordingly
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-nums_scale"></a>}}
-\if{latex}{\out{\hypertarget{method-nums_scale}{}}}
+\if{html}{\out{<a id="method-FloundeR-nums_scale"></a>}}
+\if{latex}{\out{\hypertarget{method-FloundeR-nums_scale}{}}}
 \subsection{Method \code{nums_scale()}}{
 Apply the \code{num_scale} method across a multi-member vector of numerics
 \subsection{Usage}{
@@ -130,8 +130,8 @@ Apply the \code{num_scale} method across a multi-member vector of numerics
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-FloundeR-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-FloundeR-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

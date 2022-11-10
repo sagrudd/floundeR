@@ -94,23 +94,23 @@ promF5$get_info(atomic=FALSE)
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{Fast5$new()}}
-\item \href{#method-is_single_fast5}{\code{Fast5$is_single_fast5()}}
-\item \href{#method-is_multi_fast5}{\code{Fast5$is_multi_fast5()}}
-\item \href{#method-get_platform}{\code{Fast5$get_platform()}}
-\item \href{#method-get_flowcell_id}{\code{Fast5$get_flowcell_id()}}
-\item \href{#method-get_exp_start_time}{\code{Fast5$get_exp_start_time()}}
-\item \href{#method-get_read_count}{\code{Fast5$get_read_count()}}
-\item \href{#method-get_flowcell_type}{\code{Fast5$get_flowcell_type()}}
-\item \href{#method-get_sequencing_kit}{\code{Fast5$get_sequencing_kit()}}
-\item \href{#method-get_info}{\code{Fast5$get_info()}}
-\item \href{#method-print}{\code{Fast5$print()}}
-\item \href{#method-clone}{\code{Fast5$clone()}}
+\item \href{#method-Fast5-new}{\code{Fast5$new()}}
+\item \href{#method-Fast5-is_single_fast5}{\code{Fast5$is_single_fast5()}}
+\item \href{#method-Fast5-is_multi_fast5}{\code{Fast5$is_multi_fast5()}}
+\item \href{#method-Fast5-get_platform}{\code{Fast5$get_platform()}}
+\item \href{#method-Fast5-get_flowcell_id}{\code{Fast5$get_flowcell_id()}}
+\item \href{#method-Fast5-get_exp_start_time}{\code{Fast5$get_exp_start_time()}}
+\item \href{#method-Fast5-get_read_count}{\code{Fast5$get_read_count()}}
+\item \href{#method-Fast5-get_flowcell_type}{\code{Fast5$get_flowcell_type()}}
+\item \href{#method-Fast5-get_sequencing_kit}{\code{Fast5$get_sequencing_kit()}}
+\item \href{#method-Fast5-get_info}{\code{Fast5$get_info()}}
+\item \href{#method-Fast5-print}{\code{Fast5$print()}}
+\item \href{#method-Fast5-clone}{\code{Fast5$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-Fast5-new"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new Fast5 object. This initialisation method performs other
 sanity checking of the defined file to ensure that it is indeed a
@@ -132,8 +132,8 @@ A new \code{Fast5} object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_single_fast5"></a>}}
-\if{latex}{\out{\hypertarget{method-is_single_fast5}{}}}
+\if{html}{\out{<a id="method-Fast5-is_single_fast5"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-is_single_fast5}{}}}
 \subsection{Method \code{is_single_fast5()}}{
 Check if a provided file corresponds to a single entry FAST5 file
 
@@ -159,8 +159,8 @@ promF5$is_single_fast5()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-is_multi_fast5"></a>}}
-\if{latex}{\out{\hypertarget{method-is_multi_fast5}{}}}
+\if{html}{\out{<a id="method-Fast5-is_multi_fast5"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-is_multi_fast5}{}}}
 \subsection{Method \code{is_multi_fast5()}}{
 Check if a provided file corresponds to a multiple entry FAST5 file
 
@@ -186,8 +186,8 @@ promF5$is_multi_fast5()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_platform"></a>}}
-\if{latex}{\out{\hypertarget{method-get_platform}{}}}
+\if{html}{\out{<a id="method-Fast5-get_platform"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_platform}{}}}
 \subsection{Method \code{get_platform()}}{
 Extract the sequencing platform identified within a FAST5 file
 
@@ -213,8 +213,8 @@ promF5$get_platform()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_flowcell_id"></a>}}
-\if{latex}{\out{\hypertarget{method-get_flowcell_id}{}}}
+\if{html}{\out{<a id="method-Fast5-get_flowcell_id"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_flowcell_id}{}}}
 \subsection{Method \code{get_flowcell_id()}}{
 Extract the flowcell_id identified within a FAST5 file
 
@@ -240,8 +240,8 @@ promF5$get_flowcell_id()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_exp_start_time"></a>}}
-\if{latex}{\out{\hypertarget{method-get_exp_start_time}{}}}
+\if{html}{\out{<a id="method-Fast5-get_exp_start_time"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_exp_start_time}{}}}
 \subsection{Method \code{get_exp_start_time()}}{
 Extract the experiment start time identified within a FAST5 file
 
@@ -268,8 +268,8 @@ promF5$get_exp_start_time()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_read_count"></a>}}
-\if{latex}{\out{\hypertarget{method-get_read_count}{}}}
+\if{html}{\out{<a id="method-Fast5-get_read_count"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_read_count}{}}}
 \subsection{Method \code{get_read_count()}}{
 Extract the number of reads identified within a FAST5 file
 
@@ -294,8 +294,8 @@ promF5$get_read_count()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_flowcell_type"></a>}}
-\if{latex}{\out{\hypertarget{method-get_flowcell_type}{}}}
+\if{html}{\out{<a id="method-Fast5-get_flowcell_type"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_flowcell_type}{}}}
 \subsection{Method \code{get_flowcell_type()}}{
 Extract the flowcell type identified within a FAST5 file
 
@@ -320,8 +320,8 @@ promF5$get_flowcell_type()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_sequencing_kit"></a>}}
-\if{latex}{\out{\hypertarget{method-get_sequencing_kit}{}}}
+\if{html}{\out{<a id="method-Fast5-get_sequencing_kit"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_sequencing_kit}{}}}
 \subsection{Method \code{get_sequencing_kit()}}{
 Extract the sequencing kit identified within a FAST5 file
 
@@ -347,8 +347,8 @@ promF5$get_sequencing_kit()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_info"></a>}}
-\if{latex}{\out{\hypertarget{method-get_info}{}}}
+\if{html}{\out{<a id="method-Fast5-get_info"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-get_info}{}}}
 \subsection{Method \code{get_info()}}{
 Extract salient experimental information from a FAST5 file
 
@@ -382,8 +382,8 @@ promF5$get_info(atomic=FALSE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-Fast5-print"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-print}{}}}
 \subsection{Method \code{print()}}{
 print method to override the standard R6 printing
 \subsection{Usage}{
@@ -399,8 +399,8 @@ print method to override the standard R6 printing
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-Fast5-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-Fast5-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
