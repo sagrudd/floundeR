@@ -13,6 +13,8 @@
 #'
 #' @import R6
 #' @importFrom magrittr %>%
+#' @importFrom GenomeInfoDb seqnames
+#' @importFrom IRanges width
 #'
 #' @export
 Fasta <- R6::R6Class(
@@ -195,8 +197,8 @@ Fasta <- R6::R6Class(
       private$fasta_index <- Rsamtools::scanFaIndex(private$fasta_file)
 
       private$fasta_parsed <- tibble::tibble(
-        read_id=as.vector(seqnames(private$fasta_index)),
-        sequence_length_template=width(private$fasta_index),
+        read_id=as.vector(GenomeInfoDb::seqnames(private$fasta_index)),
+        sequence_length_template=IRanges::width(private$fasta_index),
         passes_filtering=TRUE)
       cli::cli_alert_success(
         stringr::str_interp(

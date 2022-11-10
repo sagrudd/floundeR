@@ -3,6 +3,8 @@
 #'
 #' @importFrom tidyr drop_na
 #' @importFrom magrittr %>%
+#' @importFrom dplyr across
+#' @importFrom tidyselect all_of
 #'
 #' @export
 SequencingSet <- R6::R6Class(
@@ -164,7 +166,7 @@ SequencingSet <- R6::R6Class(
     enumerate = function(value) {
       if (missing(value)) {
         enumerated_counts <- private$seqsum %>%
-          dplyr::group_by(.dots=private$keycol) %>%
+          dplyr::group_by(dplyr::across(tidyselect::all_of(private$keycol))) %>%
           dplyr::summarize(count=dplyr::n())
         plot <- Angenieux$new("1D_count", enumerated_counts)
         plot$set_title(
