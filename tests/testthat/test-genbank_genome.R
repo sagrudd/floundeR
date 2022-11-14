@@ -3,7 +3,7 @@ context("Genbank File Parsing")
 
 TB_reference = flnDr("TB_H37Rv.gb.gz")
 tb <- GenbankGenome$new(TB_reference)
-
+recA <- tb$get_cds("recA")
 
 test_that("TB_H37Rv", {
   expect_equal(tb$accession, "AL123456 BX842572-BX842584")
@@ -22,7 +22,6 @@ test_that("listcds", {
 })
 
 test_that("single cds", {
-  recA <- tb$get_cds("recA")
   # there should be a single gene
   expect_equal(length(recA), 1)
   testthat::expect_s4_class(recA, "GenomicRanges")
