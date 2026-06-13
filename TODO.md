@@ -58,7 +58,7 @@ current non-FAST5 package surface.
 - [x] Ensure `testthat` is installed/declared with a current edition.
 - [x] Add helper fixtures for sequencing summary, barcode summary, FASTQ, FASTA,
       and minimal POD5 metadata tests.
-- [ ] Ensure network-dependent ONT open-data tests are opt-in and skipped by
+- [x] Ensure network-dependent ONT open-data tests are opt-in and skipped by
       default on CRAN-like/local package checks.
 - [ ] Make tests skip cleanly when optional compiled Rust support is absent.
 - [ ] Add schema tests for public QC return values.

@@ -1,3 +1,9 @@
+# floundeR 0.0.14
+
+* Added a test helper and development guidance that keep network-dependent ONT
+  open-data/S3 tests opt-in through `FLOUNDER_RUN_NETWORK_TESTS=true` and
+  skipped by default on CRAN-like checks.
+
 # floundeR 0.0.13
 
 * Added small offline test fixtures for sequencing summaries, barcoding

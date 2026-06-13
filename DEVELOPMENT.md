@@ -49,3 +49,18 @@ Run focused tests after dependencies are available:
 ```sh
 Rscript -e 'testthat::test_local("tests/testthat")'
 ```
+
+## Network Tests
+
+Network-dependent tests are disabled by default and must remain safe for
+CRAN-like checks. Tests that touch ONT open-data, S3, downloaded POD5 files, or
+external services should call `skip_if_no_flounder_network()`.
+
+Run opt-in network tests explicitly:
+
+```sh
+FLOUNDER_RUN_NETWORK_TESTS=true Rscript -e 'testthat::test_local("tests/testthat")'
+```
+
+Network tests must still use explicit cache directories outside the repository
+and must not commit downloaded or derived POD5 files.
