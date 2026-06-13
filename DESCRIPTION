@@ -1,12 +1,14 @@
 Package: floundeR
 Title: Toolkit For Nanopore Sequence Analysis
-Version: 0.0.5
+Version: 0.0.6
 Authors@R: 
     person(given = "Stephen",
            family = "Rudd",
            role = c("aut", "cre"),
            email = "stephen@mnemosyne.co.uk",
            comment = c(ORCID = "0000-0002-0344-7487"))
+Author: Stephen Rudd [aut, cre] (<https://orcid.org/0000-0002-0344-7487>)
+Maintainer: Stephen Rudd <stephen@mnemosyne.co.uk>
 Description: FloundeR provides an update to the deprecated nanopoRe package. The
     code has been updated to adhere to TidyVerse recommendations and the
     functionality of the original code has been pared back for simpler usage.
@@ -23,22 +25,30 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     aws.s3,
+    BiocGenerics,
+    Biostrings,
     cli,
     dplyr,
     emojifont,
+    GenomeInfoDb,
+    GenomicRanges,
     ggplot2,
     ggsci,
+    IRanges,
     lubridate,
+    magick,
     magrittr,
     purrr,
     R6,
+    RColorBrewer,
     readr,
     reshape2,
     rhdf5,
     rlang,
     Rsamtools,
     ShortRead,
+    stringdist,
     stringr,
     tibble,
     tidyr,
-    Biostrings
+    tidyselect

@@ -1,3 +1,12 @@
+# floundeR 0.0.6
+
+* Started the reboot planning baseline for contemporary nanopore QC and review.
+* Documented the FAST5 retirement direction, selective Rust-in-R integration
+  with `pod5-tools`, `bamana`, and `grammateus`, ONT POD5 example-data policy,
+  and synoptikon reporting ambitions.
+* Reconciled package metadata and declared currently referenced dependencies so
+  package checks can progress beyond initial DESCRIPTION validation.
+
 # floundeR 0.0.5
 
 # floundeR 0.0.4
