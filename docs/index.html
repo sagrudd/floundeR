@@ -62,7 +62,6 @@
       <a href="articles/02_fastq_files.html">Fastq format sequence files</a>
     </li>
     <li>
-      <a href="articles/03_fast5_files.html">Fast5 format sequence files</a>
     </li>
     <li>
       <a href="articles/04_seqsum_files.html">the Nanopore `Sequencing Summary` file</a>
@@ -106,7 +105,6 @@
 <p>There are a couple of dependencies for the successful usage of the <code>floundeR</code> package.</p>
 <ul>
 <li>
-<a href="https://github.com/nanoporetech/vbz_compression/" class="uri">https://github.com/nanoporetech/vbz_compression/</a> needs to be installed on your computer if you are going to open FAST5 format files that have been compressed using the <code>VBZ</code> compression algorithm.</li>
 </ul>
 <p>You can install the released version of floundeR from <a href="https://github.com/sagrudd">github</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -115,8 +113,6 @@
 
 <span class="co"># devtools does not appear to pull in some of the bioconductor stuff ...</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="fu">BiocMananger</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"rhdf5"</span><span class="op">)</span>
-<span class="co"># please see documents below - this requires the vbz plugin</span></code></pre></div>
 </div>
 <div id="flounder-and-a-basicqc-analysis-to-assess-a-flowcell-run" class="section level2">
 <h2 class="hasAnchor">

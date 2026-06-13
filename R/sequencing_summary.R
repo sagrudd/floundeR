@@ -18,10 +18,10 @@ SequencingSummary <- R6::R6Class(
     classname = "SequencingSummary",
     public = list(
         #' @field sequencing_summary_file the file.path
-        #' to the query FAST5 file
+        #' to the query sequencing summary file
         sequencing_summary_file = NULL,
         #' @field barcoding_summary_file the file.path
-        #' to the query FAST5 file
+        #' to the query barcoding summary file
         barcoding_summary_file = NA,
 
         #' @description
@@ -34,7 +34,7 @@ SequencingSummary <- R6::R6Class(
         #' sequencing_summary file.
         #' @param barcoding_summary_file The source
         #' barcoding_summary_file file.
-        #' @return A new `Fast5` object.
+        #' @return A new `SequencingSummary` object.
         #'
         #' @examples
         #' sequencing_summary <- flnDr("sequencing_summary.txt.bz2")
@@ -181,7 +181,6 @@ SequencingSummary <- R6::R6Class(
         }
     )
 )
-
 
 
 

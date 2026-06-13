@@ -1,3 +1,9 @@
+# floundeR 0.0.11
+
+* Retired the active FAST5 API surface by removing the `Fast5` export,
+  implementation, fixtures, tests, vignette, generated reference page, and
+  `rhdf5` dependency. Raw-signal QC now points toward POD5-era integration.
+
 # floundeR 0.0.10
 
 * Added a repository-level governance check that enforces the open-source

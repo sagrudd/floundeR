@@ -1,6 +1,6 @@
 context("FASTA file testing")
 
-test_that("single.fast5", {
+test_that("cluster consensus FASTA loads", {
   
   canonical_fasta <- flnDr("cluster_cons.fasta.bgz")
   fasta <- Fasta$new(canonical_fasta)

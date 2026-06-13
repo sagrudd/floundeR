@@ -33,21 +33,22 @@ should include a semantic version bump and `NEWS.md` entry.
 
 Baseline check result on 2026-06-13: `R CMD check` now passes DESCRIPTION and
 namespace validation, then stops because the local R library lacks required
-imports/suggested packages. Missing packages include Bioconductor dependencies
-and `rhdf5`, which remains until the FAST5 retirement slice removes it.
+imports/suggested packages. The FAST5 retirement slice removed `rhdf5`; the
+remaining missing packages are CRAN and Bioconductor dependencies needed by the
+current non-FAST5 package surface.
 
 ## Slice 2: FAST5 Retirement
 
-- [ ] Remove `Fast5` from `NAMESPACE`.
-- [ ] Remove `R/fast5.R`.
-- [ ] Remove `rhdf5` from `DESCRIPTION`.
-- [ ] Remove FAST5 fixtures from `inst/extdata/`.
-- [ ] Remove `tests/testthat/test-fast5.R`.
-- [ ] Remove or replace `vignettes/03_fast5_files.Rmd`.
-- [ ] Remove generated `man/Fast5.Rd`.
-- [ ] Regenerate or clean pkgdown/docs references to FAST5.
-- [ ] Update README installation instructions to remove VBZ/rhdf5 guidance.
-- [ ] Verify `rg -i "fast5|rhdf5"` only finds accepted migration/history notes.
+- [x] Remove `Fast5` from `NAMESPACE`.
+- [x] Remove `R/fast5.R`.
+- [x] Remove `rhdf5` from `DESCRIPTION`.
+- [x] Remove FAST5 fixtures from `inst/extdata/`.
+- [x] Remove `tests/testthat/test-fast5.R`.
+- [x] Remove or replace `vignettes/03_fast5_files.Rmd`.
+- [x] Remove generated `man/Fast5.Rd`.
+- [x] Regenerate or clean pkgdown/docs references to FAST5.
+- [x] Update README installation instructions to remove VBZ/rhdf5 guidance.
+- [x] Verify `rg -i "fast5|rhdf5"` only finds accepted migration/history notes.
 
 ## Slice 3: Test Harness Revival
 
@@ -70,7 +71,7 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 - [ ] Support current Dorado/MinKNOW sequencing summary naming variants.
 - [ ] Return clear partial-result warnings for absent optional columns.
 - [ ] Add tests for old Guppy-like and current Dorado-like summaries.
-- [ ] Correct documentation that describes sequencing-summary inputs as FAST5.
+- [x] Correct documentation that describes sequencing-summary inputs as FAST5.
 
 ## Slice 5: Core QC Contracts
 

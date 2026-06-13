@@ -166,6 +166,4 @@ knitr::include_graphics(
 Please consider having a quick read on the following subjects
 
 - [The Fastq file format](./fastq_files.html)
-- [The Fast5 file format](./fast5_files.html)
 - [Angenieux and floundeR plots](./angenieux.html)
-

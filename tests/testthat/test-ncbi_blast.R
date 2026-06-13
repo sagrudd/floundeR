@@ -1,6 +1,6 @@
-context("FAST5 file testing")
+context("BLAST file testing")
 
-test_that("single.fast5", {
+test_that("BLAST results load", {
   blast_results <- flnDr("drosophila_uniref100.blastx.gz")
   blast <- Blast$new(blast_file=blast_results)
 

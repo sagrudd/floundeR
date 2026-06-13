@@ -25,10 +25,10 @@ seqsum <- SequencingSummary$new(sequencing_summary, barcodes_summary)
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
 \item{\code{sequencing_summary_file}}{the file.path
-to the query FAST5 file}
+to the query sequencing summary file}
 
 \item{\code{barcoding_summary_file}}{the file.path
-to the query FAST5 file}
+to the query barcoding summary file}
 }
 \if{html}{\out{</div>}}
 }
@@ -98,7 +98,7 @@ barcoding_summary_file file.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A new \code{Fast5} object.
+A new \code{SequencingSummary} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
