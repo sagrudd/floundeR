@@ -1,3 +1,8 @@
+# floundeR 0.0.21
+
+* Corrected POD5 manifest fixture checksum values so they remain character
+  SHA-256-like hex strings under package checks and schema tests.
+
 # floundeR 0.0.20
 
 * Added a small installed BLAST fixture and restored `Blast$count()` behavior

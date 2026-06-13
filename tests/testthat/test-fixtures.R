@@ -29,5 +29,6 @@ test_that("POD5 fixture is metadata only", {
     "sha256"
   ))
   expect_true(all(grepl("\\.pod5$", pod5_manifest$file_name)))
+  expect_true(all(grepl("^[0-9a-f]{64}$", pod5_manifest$sha256)))
   expect_false(any(file.exists(fixture_path(pod5_manifest$file_name))))
 })
