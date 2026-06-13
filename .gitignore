@@ -6,3 +6,4 @@ floundeR.Rproj
 inst/doc
 .Rbuildignore
 sequencing_summary_PAG07165_2dfda515.txt
+src/rust/target/

@@ -28,7 +28,9 @@ Rscript scripts/bootstrap-r-dependencies.R --check
 ```
 
 The bootstrap script does not install Rust tooling, private Grammateus runtime
-assets, ONT POD5 example data, or large external files.
+assets, ONT POD5 example data, or large external files. Rust source builds need
+Cargo and rustc; the development container installs them through the system
+package manager.
 
 ## Dependency Audit
 
@@ -74,9 +76,10 @@ docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
   sh scripts/check-r-release-tarball.sh
 ```
 
-The container does not bundle Rust bindings, private Grammateus runtime assets,
-ONT POD5 example data, or large derived files. Those remain explicit opt-in
-layers once the curated Rust interfaces are ready.
+The container includes Cargo and rustc so the embedded `extendr` scaffold can
+be built during package checks. It does not bundle private Grammateus runtime
+assets, ONT POD5 example data, or large derived files. Those remain explicit
+opt-in layers once the curated Rust interfaces are ready.
 
 ## Legacy RMarkdown Vignettes
 

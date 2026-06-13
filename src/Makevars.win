@@ -1,0 +1,15 @@
+CARGO ?= cargo
+CARGO_MANIFEST = rust/Cargo.toml
+CARGO_FLAGS = --manifest-path=$(CARGO_MANIFEST) --lib --release
+RUST_LIB = rust/target/release/libflounder_extendr.a
+RUST_SOURCES = rust/src/lib.rs $(CARGO_MANIFEST)
+
+PKG_LIBS = $(RUST_LIB)
+
+$(SHLIB): $(RUST_LIB)
+
+$(RUST_LIB): $(RUST_SOURCES)
+	$(CARGO) build $(CARGO_FLAGS)
+
+clean:
+	-$(CARGO) clean --manifest-path=$(CARGO_MANIFEST)

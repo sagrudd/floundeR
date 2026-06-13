@@ -1,3 +1,8 @@
+# floundeR 0.1.5
+
+* Added the initial `extendr` scaffold under `src/rust` with R package build
+  hooks and development-container Rust tooling.
+
 # floundeR 0.1.4
 
 * Recorded the Slice 6 cross-repository Rust preflight, confirming that the

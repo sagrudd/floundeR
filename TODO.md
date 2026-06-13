@@ -111,7 +111,7 @@ current non-FAST5 package surface.
 - [x] If `../porkchop` changes are needed, verify they preserve Porkchop's
       AGENTS, roadmap, Sphinx docs, JSON schema contracts, kit provenance
       rules, and score-terminology requirements before implementation.
-- [ ] Add an `extendr` scaffold and build configuration.
+- [x] Add an `extendr` scaffold and build configuration.
 - [ ] Add a minimal Rust function callable from R.
 - [ ] Add R wrappers with typed errors and test skips when Rust tooling is
       unavailable.

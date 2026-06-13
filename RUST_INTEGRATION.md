@@ -137,3 +137,20 @@ The first compiled scaffold should be deliberately minimal:
 
 Only after that scaffold is checked should `pod5_find()` become the first
 functional Rust-backed QC API.
+
+## Scaffold Layout
+
+The initial scaffold lives under `src/` so it participates in normal R source
+package builds:
+
+- `src/rust/Cargo.toml` defines the private `flounder-extendr` static library
+  crate using `extendr-api`.
+- `src/rust/src/lib.rs` defines the empty `extendr` module that later slices
+  will populate with R-callable functions.
+- `src/Makevars` and `src/Makevars.win` build the Rust static library before
+  the R shared object is linked.
+- `src/init.c` provides a conservative native registration entry point.
+
+This scaffold intentionally has no path dependencies on `../pod5-tools`,
+`../bamana`, `../porkchop`, or private Grammateus yet. Those dependencies
+should be introduced only with the first functional binding that needs them.

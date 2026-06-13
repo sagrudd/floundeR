@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
+    cargo \
     curl \
     g++ \
     gfortran \
@@ -27,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pandoc \
     pkg-config \
     qpdf \
+    rustc \
     zlib1g-dev \
   && rm -rf /var/lib/apt/lists/*
 
