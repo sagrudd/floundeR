@@ -103,12 +103,12 @@ current non-FAST5 package surface.
 - [x] Define a curation rule for Rust-backed APIs: include only functionality
       that directly supports nanopore QC, review, reporting, provenance, or
       synoptikon handoff.
-- [ ] If `../pod5-tools` changes are needed, verify they preserve the relevant
+- [x] If `../pod5-tools` changes are needed, verify they preserve the relevant
       `../mnemosyne-docs` charter and contracts before implementation.
-- [ ] If `../bamana` changes are needed, verify they preserve the Bamana
+- [x] If `../bamana` changes are needed, verify they preserve the Bamana
       charter, public JSON/schema contracts, and relevant docs before
       implementation.
-- [ ] If `../porkchop` changes are needed, verify they preserve Porkchop's
+- [x] If `../porkchop` changes are needed, verify they preserve Porkchop's
       AGENTS, roadmap, Sphinx docs, JSON schema contracts, kit provenance
       rules, and score-terminology requirements before implementation.
 - [ ] Add an `extendr` scaffold and build configuration.

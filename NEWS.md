@@ -1,3 +1,9 @@
+# floundeR 0.1.4
+
+* Recorded the Slice 6 cross-repository Rust preflight, confirming that the
+  first local `extendr` scaffold does not require adjacent changes to
+  `pod5-tools`, `bamana`, or `porkchop`.
+
 # floundeR 0.1.3
 
 * Recorded the Rust-in-R architecture decision for an embedded `extendr` crate

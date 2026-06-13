@@ -112,6 +112,20 @@ Before changing an adjacent repository, inspect and preserve:
 If an intended floundeR integration conflicts with those documents, update the
 plan rather than silently widening the integration surface.
 
+## Current Cross-Repository Preflight
+
+On 2026-06-13, the Slice 6 scaffold preflight inspected the governing
+documents listed above for pod5-tools, Bamana, Porkchop, Grammateus, and
+Mneion/Synoptikon. The first `extendr` scaffold target is a local
+capability/version function and does not require changes to `../pod5-tools`,
+`../bamana`, or `../porkchop`.
+
+Therefore, the next scaffold slice may proceed without adjacent repository
+edits. If a later functional binding requires an adjacent change, that binding
+slice must re-read the relevant governing documents, make the smallest library
+API change in that repository, run that repository's relevant checks, and
+preserve its public contract and terminology.
+
 ## First Scaffold Target
 
 The first compiled scaffold should be deliberately minimal:
