@@ -113,7 +113,7 @@ current non-FAST5 package surface.
       rules, and score-terminology requirements before implementation.
 - [x] Add an `extendr` scaffold and build configuration.
 - [x] Add a minimal Rust function callable from R.
-- [ ] Add R wrappers with typed errors and test skips when Rust tooling is
+- [x] Add R wrappers with typed errors and test skips when Rust tooling is
       unavailable.
 - [ ] Document source-install requirements for macOS, Linux, and CI.
 

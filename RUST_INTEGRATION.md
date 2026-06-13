@@ -163,5 +163,23 @@ The first Rust-to-R proof point is an internal capability function exposed as
 termination symbols before the binding policy is mature. The internal R helper
 returns a schema-versioned list with the compiled crate version and explicit
 `not_linked` status for pod5-tools, Bamana, Porkchop, and Grammateus. It is
-intentionally internal until the next slice adds public wrappers, typed R
-conditions, and skip helpers.
+kept internal so public functions can enforce a consistent R error and
+availability policy.
+
+## R Wrapper And Error Policy
+
+The public R wrapper surface now starts with `flounder_rust_capabilities()`,
+`flounder_rust_available()`, and `skip_if_no_flounder_rust()`. Package code
+should call these wrappers rather than calling `.Call()` directly. Missing
+compiled support is represented as a typed `floundeR_rust_unavailable`
+condition when a Rust-backed feature is required, or as capability metadata
+with `compiled_support = FALSE` when callers are only probing availability.
+
+Future POD5, Bamana, Porkchop, and Grammateus bindings should follow the same
+pattern:
+
+- public R functions validate inputs and return R-native objects;
+- internal native wrappers convert Rust failures into typed R conditions;
+- tests that require optional compiled or external runtime support call
+  `skip_if_no_flounder_rust()` or a more specific helper built on the same
+  capability metadata.

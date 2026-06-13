@@ -1,3 +1,8 @@
+# floundeR 0.1.7
+
+* Added public R wrappers for compiled Rust capability checks, typed
+  `floundeR_rust_unavailable` conditions, and a downstream test skip helper.
+
 # floundeR 0.1.6
 
 * Added an internal Rust capability function callable from R, proving the
