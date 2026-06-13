@@ -1,3 +1,9 @@
+# floundeR 0.0.12
+
+* Added a dry-run-first R dependency bootstrap script and development notes for
+  local checks after FAST5 retirement.
+* Configured the package for `testthat` edition 3.
+
 # floundeR 0.0.11
 
 * Retired the active FAST5 API surface by removing the `Fast5` export,

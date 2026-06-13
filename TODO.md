@@ -52,17 +52,17 @@ current non-FAST5 package surface.
 
 ## Slice 3: Test Harness Revival
 
-- [ ] Add a dependency bootstrap note or script for local development,
+- [x] Add a dependency bootstrap note or script for local development,
       including CRAN and Bioconductor dependencies needed after FAST5
       retirement is complete.
-- [ ] Ensure `testthat` is installed/declared with a current edition.
+- [x] Ensure `testthat` is installed/declared with a current edition.
 - [ ] Add helper fixtures for sequencing summary, barcode summary, FASTQ, FASTA,
       and minimal POD5 metadata tests.
 - [ ] Ensure network-dependent ONT open-data tests are opt-in and skipped by
       default on CRAN-like/local package checks.
 - [ ] Make tests skip cleanly when optional compiled Rust support is absent.
 - [ ] Add schema tests for public QC return values.
-- [ ] Add a local command note for running focused tests and full checks.
+- [x] Add a local command note for running focused tests and full checks.
 
 ## Slice 4: Sequencing Summary Modernisation
 
