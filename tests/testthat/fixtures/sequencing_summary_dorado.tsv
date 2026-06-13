@@ -1,0 +1,4 @@
+read_id	channel	start_time	duration	passes_filtering	sequence_length_template	mean_qscore_template	barcode_arrangement
+read_0001	11	0.125	2.500	TRUE	36	13.2	barcode01
+read_0002	12	3.000	1.750	TRUE	32	11.8	barcode02
+read_0003	13	5.250	4.125	FALSE	28	8.1	unclassified

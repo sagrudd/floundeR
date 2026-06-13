@@ -1,3 +1,9 @@
+# floundeR 0.0.13
+
+* Added small offline test fixtures for sequencing summaries, barcoding
+  summaries, FASTQ, FASTA, and POD5 metadata manifests without committing
+  binary POD5 files.
+
 # floundeR 0.0.12
 
 * Added a dry-run-first R dependency bootstrap script and development notes for

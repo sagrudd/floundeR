@@ -1,0 +1,4 @@
+read_id	barcode_arrangement	barcode_score	barcode_front_id	barcode_rear_id
+read_0001	barcode01	92.5	barcode01	barcode01
+read_0002	barcode02	88.0	barcode02	barcode02
+read_0003	unclassified	0.0	none	none

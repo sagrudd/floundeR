@@ -1,0 +1,6 @@
+>read_0001 sample=sample_a barcode=barcode01
+ACGTACGTACGTACGTACGTACGTACGTACGTACGT
+>read_0002 sample=sample_b barcode=barcode02
+TTGGAATTCCGGAATTCCGGAATTCCGGAATT
+>read_0003 sample=sample_c barcode=unclassified
+GGGGCCCCAAAATTTTGGGGCCCCAAAA
