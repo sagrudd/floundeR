@@ -1,3 +1,8 @@
+# floundeR 0.1.1
+
+* Added tidy, schema-versioned QC contracts for yield over time, read length
+  distribution, quality distribution, channel density, and barcode composition.
+
 # floundeR 0.1.0
 
 * Added `qc_run_summary()` as the first versioned core QC contract for

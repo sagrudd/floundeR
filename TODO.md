@@ -89,7 +89,7 @@ current non-FAST5 package surface.
 ## Slice 5: Core QC Contracts
 
 - [x] Define `qc_run_summary()` and its schema version.
-- [ ] Define tidy outputs for yield over time, read length distribution,
+- [x] Define tidy outputs for yield over time, read length distribution,
       quality distribution, channel density, and barcode composition.
 - [ ] Add `qc_report_card()` with pass/warn/fail checks.
 - [ ] Add tests for report-card thresholds and missing data.
