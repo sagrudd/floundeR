@@ -1,3 +1,8 @@
+# floundeR 0.0.15
+
+* Added a test helper and development guidance so optional compiled Rust-backed
+  tests skip cleanly until in-process bindings are available.
+
 # floundeR 0.0.14
 
 * Added a test helper and development guidance that keep network-dependent ONT

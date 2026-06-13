@@ -64,3 +64,15 @@ FLOUNDER_RUN_NETWORK_TESTS=true Rscript -e 'testthat::test_local("tests/testthat
 
 Network tests must still use explicit cache directories outside the repository
 and must not commit downloaded or derived POD5 files.
+
+## Optional Rust Tests
+
+Rust-backed tests must skip cleanly until the in-process Rust extension is
+built and available. Tests that require compiled POD5, BAM/BGZF/FASTQ,
+Porkchop, or Grammateus bindings should call `skip_if_no_flounder_rust()`.
+
+Run Rust-backed tests explicitly once the compiled bindings exist:
+
+```sh
+FLOUNDER_RUST_AVAILABLE=true Rscript -e 'testthat::test_local("tests/testthat")'
+```
