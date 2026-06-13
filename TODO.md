@@ -82,7 +82,7 @@ current non-FAST5 package surface.
 - [x] Correct POD5 manifest fixture checksum lengths.
 - [x] Decide whether legacy vignettes should execute during development checks
       or be retired behind the Grammateus reporting migration.
-- [ ] Run release-style checks from an `R CMD build` tarball to avoid
+- [x] Run release-style checks from an `R CMD build` tarball to avoid
       source-tree hidden-file noise.
 - [ ] Reconcile unused `Imports` after the legacy API surface is narrowed.
 

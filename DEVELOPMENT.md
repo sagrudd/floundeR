@@ -64,11 +64,14 @@ docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
   Rscript scripts/audit-r-dependencies.R --output=/tmp/flounder-r-dependencies.tsv
 ```
 
-Run package checks inside the container:
+Run release-style package checks inside the container. This builds a source
+tarball in a temporary directory and checks that tarball, so diagnostics reflect
+the installable package rather than repository-only files such as `.git`,
+`.github`, development scripts, and previous check output:
 
 ```sh
 docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
-  R CMD check --no-manual --no-build-vignettes .
+  sh scripts/check-r-release-tarball.sh
 ```
 
 The container does not bundle Rust bindings, private Grammateus runtime assets,
@@ -98,7 +101,7 @@ Rscript scripts/check-governance-boundaries.R
 Run the package check used during the revival:
 
 ```sh
-R CMD check --no-manual --no-build-vignettes .
+sh scripts/check-r-release-tarball.sh
 ```
 
 Run focused tests after dependencies are available:

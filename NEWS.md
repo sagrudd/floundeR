@@ -1,3 +1,12 @@
+# floundeR 0.0.23
+
+* Added a release-style package check helper that builds and checks a source
+  tarball outside the repository, avoiding diagnostics from development-only
+  files and local check output.
+* Corrected source-build ignore rules so repository governance files,
+  development scripts, `.github`, and `.dockerignore` are excluded from package
+  tarballs.
+
 # floundeR 0.0.22
 
 * Moved legacy RMarkdown vignettes to repo-only historical reference material
