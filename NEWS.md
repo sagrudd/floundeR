@@ -1,3 +1,8 @@
+# floundeR 0.0.9
+
+* Added Porkchop to the curated open-source Rust engine plan for adapter,
+  primer, barcode, kit-registry, and cDNA/library-preparation QC evidence.
+
 # floundeR 0.0.8
 
 * Documented the distribution boundary: `floundeR`, `pod5-tools`, and `bamana`

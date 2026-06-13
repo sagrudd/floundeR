@@ -1,22 +1,24 @@
 # Distribution Plan
 
-`floundeR` will remain fully open-source. `../pod5-tools` and `../bamana` will
-also remain open and available. Grammateus will remain private, so floundeR
-must not require Grammateus source code to install, check, or use the core QC
-toolbox.
+`floundeR` will remain fully open-source. `../pod5-tools`, `../bamana`, and
+`../porkchop` will also remain open and available. Grammateus will remain
+private, so floundeR must not require Grammateus source code to install, check,
+or use the core QC toolbox.
 
 ## Package Shape
 
 The public floundeR package should have three layers:
 
 1. Open-source R package core.
-2. Open-source Rust-backed QC engines from `pod5-tools` and `bamana`.
+2. Open-source Rust-backed QC engines from `pod5-tools`, `bamana`, and
+   `porkchop`.
 3. Optional private Grammateus runtime for governed HTML/PDF report rendering.
 
-Core QC, data import, POD5 metadata checks, BAM QC summaries, report-card data,
-and synoptikon payload generation should work without private Grammateus source.
-When Grammateus is unavailable, report APIs should fail with a clear typed R
-condition that explains how to install or configure the runtime.
+Core QC, data import, POD5 metadata checks, BAM QC summaries, adapter/primer
+and kit evidence, report-card data, and synoptikon payload generation should
+work without private Grammateus source. When Grammateus is unavailable, report
+APIs should fail with a clear typed R condition that explains how to install or
+configure the runtime.
 
 ## Grammateus Distribution
 
@@ -74,7 +76,7 @@ Initial GitHub distribution should provide:
 - binary package builds where practical;
 - private Grammateus runtime assets for authorized users;
 - a public floundeR release manifest that records which open-source
-  `pod5-tools` and `bamana` versions were tested;
+  `pod5-tools`, `bamana`, and `porkchop` versions were tested;
 - a private Grammateus runtime manifest that records compatible runtime builds.
 
 GitHub Actions should build and check floundeR without private Grammateus
@@ -104,8 +106,8 @@ components.
 
 ## Open Rust Dependencies
 
-`pod5-tools` and `bamana` should stay open-source and can be integrated more
-directly than Grammateus.
+`pod5-tools`, `bamana`, and `porkchop` should stay open-source and can be
+integrated more directly than Grammateus.
 
 The preferred model is to expose only curated QC/review library APIs through the
 floundeR Rust extension. Do not expose their entire command surfaces just
@@ -126,6 +128,8 @@ Report manifests should record:
 - floundeR version;
 - Grammateus runtime version and artifact hash;
 - `pod5-tools` and `bamana` versions where used;
+- `porkchop` version where adapter, primer, barcode, kit, or cDNA evidence is
+  used;
 - R version and relevant R package versions;
 - input data source hashes and external object keys;
 - generated plot/report artifact hashes.

@@ -17,6 +17,10 @@ should include a semantic version bump and `NEWS.md` entry.
 - [x] If no canonical `../mnemosyne-docs` entry exists for `bamana`, record
       `../bamana/CHARTER.md` and `../bamana/docs/project-charter.md` as the
       governing boundary for BAM integration until canonical docs are added.
+- [ ] If no canonical `../mnemosyne-docs` entry exists for `porkchop`, record
+      `../porkchop/AGENTS.md`, `../porkchop/ROADMAP.md`, `../porkchop/README.md`,
+      and relevant Sphinx docs as the governing boundary for
+      library-preparation QC integration until canonical docs are added.
 - [x] Decide and document whether generated `docs/` are committed during normal
       development or only during releases.
 - [x] Add or update CI for R package check.
@@ -80,8 +84,8 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 ## Slice 6: In-Process Rust Scaffold
 
 - [ ] Choose final Rust-in-R structure: embedded crate in `floundeR`, path
-      dependencies on `../pod5-tools`, `../bamana`, and `../grammateus`, or
-      split support packages.
+      dependencies on `../pod5-tools`, `../bamana`, `../porkchop`, and
+      `../grammateus`, or split support packages.
 - [ ] Define a curation rule for Rust-backed APIs: include only functionality
       that directly supports nanopore QC, review, reporting, provenance, or
       synoptikon handoff.
@@ -90,6 +94,9 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 - [ ] If `../bamana` changes are needed, verify they preserve the Bamana
       charter, public JSON/schema contracts, and relevant docs before
       implementation.
+- [ ] If `../porkchop` changes are needed, verify they preserve Porkchop's
+      AGENTS, roadmap, Sphinx docs, JSON schema contracts, kit provenance
+      rules, and score-terminology requirements before implementation.
 - [ ] Add an `extendr` scaffold and build configuration.
 - [ ] Add a minimal Rust function callable from R.
 - [ ] Add R wrappers with typed errors and test skips when Rust tooling is
@@ -182,10 +189,27 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 
 - [ ] Define a versioned synoptikon QC payload.
 - [ ] Implement `as_synoptikon_qc()` or `write_synoptikon_qc()`.
-- [ ] Include sequencing-summary, flowcell, barcode, POD5 integrity, and BAM QC
-      sections.
+- [ ] Include sequencing-summary, flowcell, barcode, POD5 integrity, BAM QC,
+      and library-preparation evidence sections.
 - [ ] Add validation tests against the expected `../mnemosyne` schema.
 - [ ] Add a vignette showing end-to-end handoff.
+
+## Slice 12A: Porkchop Library-Preparation QC
+
+- [ ] Audit `../porkchop` public library APIs and identify only the QC/review
+      logic that should be promoted for in-process R use.
+- [ ] Expose curated R wrappers for kit candidates, adapter/primer evidence,
+      barcode evidence, and cDNA primer-pair evidence.
+- [ ] Preserve Porkchop heuristic score terminology; do not expose scores as
+      calibrated probabilities.
+- [ ] Carry kit provenance, lifecycle status, support level, and validation
+      limitations into floundeR return values.
+- [ ] Add small FASTQ fixtures or mocked sequence records for offline tests.
+- [ ] Define report-card checks for unexpected library chemistry, adapter
+      burden, barcode ambiguity, cDNA partial/unclassified burden, and
+      unsupported or partial kit support levels.
+- [ ] Document which Porkchop capabilities are out of scope for floundeR because
+      they are preprocessing/trimming features rather than QC/review evidence.
 
 ## Slice 13: Grammateus Reporting Integration
 
@@ -214,7 +238,8 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 - [ ] Define Grammateus semantic elements for run metadata, QC summary,
       flowcell density, yield over time, quality distribution, barcode balance,
       POD5 integrity, BAM alignment summaries, BAM validation/index/sort
-      evidence, report-card findings, methods, limitations, and appendices.
+      evidence, Porkchop kit/library-preparation evidence, report-card
+      findings, methods, limitations, and appendices.
 - [ ] Encode Mnemosyne Biosciences branding and styling through Grammateus
       templates/themes.
 - [ ] Implement `qc_report()` or equivalent R API that produces HTML/PDF plus a

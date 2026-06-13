@@ -43,6 +43,23 @@ governed by:
 Only BAM/BGZF/FASTQ behavior that directly supports nanopore QC, review,
 provenance, reporting, and synoptikon handoff should be surfaced in `floundeR`.
 
+## Porkchop
+
+No canonical Porkchop product charter was found in `../mnemosyne-docs` during
+the 2026-06-13 baseline review. Until one is authored, Porkchop integration is
+governed by:
+
+- `../porkchop/AGENTS.md`
+- `../porkchop/ROADMAP.md`
+- `../porkchop/README.md`
+- `../porkchop/docs/output/json.rst`
+- `../porkchop/docs/kits/provenance.rst`
+- `../porkchop/docs/validation/index.rst`
+
+Only adapter, primer, barcode, kit-registry, cDNA, and library-preparation
+evidence that directly supports nanopore QC, review, provenance, reporting, and
+synoptikon handoff should be surfaced in `floundeR`.
+
 ## Grammateus
 
 Grammateus has canonical documentation in `../mnemosyne-docs`. Inspect at

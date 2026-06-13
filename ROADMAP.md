@@ -6,6 +6,8 @@ inside R. The package should not shell out to a Rust CLI for normal operation.
 Rust should be used as an in-process implementation layer exposed through R
 functions and R6 classes. The reboot is not exclusively focused on POD5:
 basecalled and aligned outputs, especially BAM, remain first-class QC inputs.
+Library-preparation evidence such as adapters, primers, barcodes, and kit
+identity also belongs in the QC/review surface.
 
 ## Code Review Findings
 
@@ -81,6 +83,8 @@ sequencing runs:
   manifesting, subsetting support, and provenance through `../pod5-tools`;
 - selective in-process Rust acceleration for BAM/BGZF/FASTQ QC evidence through
   `../bamana`;
+- selective in-process Rust acceleration for adapter, primer, barcode, kit, and
+  cDNA/library-preparation evidence through `../porkchop`;
 - report rendering through Grammateus semantic report contracts rather than
   RMarkdown-first documents;
 - stable JSON/data-frame contracts for synoptikon ingestion;
@@ -98,11 +102,11 @@ toolkits. `floundeR` should use them wisely as Rust implementation engines for
 the subset of behavior that directly improves nanopore sequence-data QC,
 review, reporting, and synoptikon handoff.
 
-Distribution boundary: `floundeR`, `pod5-tools`, and `bamana` are open-source.
-Grammateus remains private. `floundeR` must therefore support optional prebuilt
-Grammateus runtime/reporting artifacts for HTML/PDF generation without making
-private Grammateus source mandatory for public installation, checking, or core
-QC use.
+Distribution boundary: `floundeR`, `pod5-tools`, `bamana`, and `porkchop` are
+open-source. Grammateus remains private. `floundeR` must therefore support
+optional prebuilt Grammateus runtime/reporting artifacts for HTML/PDF generation
+without making private Grammateus source mandatory for public installation,
+checking, or core QC use.
 
 ## Rust-In-R Integration Strategy
 
@@ -118,6 +122,9 @@ Recommended shape:
 - depend on reusable logic from `../bamana` as a Rust library dependency for
   BAM, BGZF, FASTQ, ingest, sampling, summary, validation, and forensic QC
   surfaces;
+- depend on reusable logic from `../porkchop` as a Rust library dependency for
+  adapter, primer, barcode, kit-registry, cDNA, and library-preparation QC
+  evidence;
 - keep CLI-only concerns in `pod5-tools` out of the R binding surface;
 - expose R functions only where they serve QC/review workflows, such as
   `pod5_find()`, `pod5_file_info()`, `pod5_verify()`, `pod5_folder_info()`,
@@ -125,6 +132,9 @@ Recommended shape:
 - expose R functions only where they serve QC/review workflows, such as
   `bam_summary()`, `bam_verify()`, `bam_validate()`, selected EOF/index/map/sort
   and tag checks, and BAM-aware QC report-card builders;
+- expose R functions only where they serve QC/review workflows, such as
+  `library_screen()`, `kit_candidates()`, `adapter_primer_evidence()`,
+  `barcode_evidence()`, and `cdna_primer_evidence()`;
 - return tibbles/lists with stable column names, not rendered TSV/JSON strings;
 - add R6 wrappers only where they improve workflow composition.
 
@@ -163,6 +173,33 @@ No bamana-specific canonical files were found under `../mnemosyne-docs` during
 the initial review. Until such files exist, treat `../bamana/CHARTER.md`,
 `../bamana/docs/project-charter.md`, and Bamana's public JSON/schema
 documentation as the governing product boundary.
+
+## Porkchop Library-Preparation Strategy
+
+`floundeR` should link selected functionality from `../porkchop` for
+library-preparation QC. Porkchop is an open-source Rust toolkit for ONT kit
+inspection, adapter/barcode screening, trimming, cDNA workflow support, and
+benchmarking. The floundeR integration should focus on evidence and review, not
+on turning floundeR into a general trimming/preprocessing frontend.
+
+Target shape:
+
+- integrate Porkchop through in-process Rust functions callable from R;
+- do not shell out to the `porkchop` CLI for normal package APIs;
+- use Porkchop for kit-registry metadata, adapter/primer/barcode motif evidence,
+  cDNA primer-pair evidence, and library chemistry mismatch signals;
+- preserve Porkchop's explicit language that screening scores are heuristic
+  evidence scores, not calibrated probabilities;
+- preserve kit provenance, lifecycle status, support level, and validation
+  limitations in floundeR report outputs;
+- allow `../porkchop` modifications where needed to expose clean library APIs
+  for `floundeR`, while preserving Porkchop's AGENTS, roadmap, Sphinx docs,
+  JSON schema contracts, and kit provenance rules.
+
+No porkchop-specific canonical files were found under `../mnemosyne-docs` during
+the initial review. Until such files exist, treat `../porkchop/AGENTS.md`,
+`../porkchop/ROADMAP.md`, `../porkchop/README.md`, and Porkchop's Sphinx output
+contract/provenance documentation as the governing product boundary.
 
 ## Grammateus Reporting Strategy
 
@@ -206,11 +243,11 @@ bundle.
 The distribution model is documented in `DISTRIBUTION.md`.
 
 Cross-repository changes are in scope for this reboot. `../pod5-tools`,
-`../bamana`, and `../grammateus` may be modified where needed to provide clean
-library APIs for `floundeR`, but those changes must preserve the relevant
-product charters, requirements, architecture decisions, and canonical contracts
-maintained in `../mnemosyne-docs` or in the adjacent repository when no
-canonical docs exist there yet.
+`../bamana`, `../porkchop`, and `../grammateus` may be modified where needed to
+provide clean library APIs for `floundeR`, but those changes must preserve the
+relevant product charters, requirements, architecture decisions, and canonical
+contracts maintained in `../mnemosyne-docs` or in the adjacent repository when
+no canonical docs exist there yet.
 
 ## External Data Strategy
 
@@ -272,6 +309,7 @@ Deliverables:
 - capture the current exported API and deprecation plan.
 - record cross-repository constraints for `../pod5-tools`, `../grammateus`, and
   `../mnemosyne-docs`.
+- record cross-repository constraints for `../porkchop`.
 - record the open-source/private distribution boundary for floundeR,
   pod5-tools, bamana, and Grammateus.
 
@@ -386,7 +424,8 @@ Deliverables:
 - define `qc_run_summary()` returning a compact, versioned list/data frame;
 - define `qc_report_card()` for pass/warn/fail operational checks;
 - define schemas for flowcell, temporal, barcode, POD5 folder, BAM alignment,
-  BAM validation, BAM index/sort/map evidence, and manifest metrics;
+  BAM validation, BAM index/sort/map evidence, library-preparation evidence,
+  and manifest metrics;
 - add JSON export helpers for synoptikon ingestion;
 - add fixtures that represent realistic pass, warning, and failure scenarios.
 - include provenance fields for external ONT open-data object keys when
@@ -415,7 +454,8 @@ Deliverables:
 - define Grammateus semantic elements for run metadata tables, yield plots,
   flowcell density figures, barcode summaries, POD5 integrity tables, report
   card findings, BAM alignment summaries, BAM validation/index/sort evidence,
-  methods, limitations, and appendices;
+  library-preparation evidence, kit-candidate summaries, adapter/primer/barcode
+  findings, methods, limitations, and appendices;
 - encode Mnemosyne Biosciences branding and styling through Grammateus
   templates/themes;
 - reuse existing Grammateus public exports such as `ReportTable`,

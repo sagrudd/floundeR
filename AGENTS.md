@@ -4,7 +4,7 @@ This repository contains `floundeR`, an R package for tidy analysis and QC of
 Oxford Nanopore sequencing data. The reboot direction is to make `floundeR` a
 contemporary R-native QC package with POD5-aware raw-data inspection backed by
 in-process Rust code. The toolbox is not only a POD5 project; BAM/BGZF/FASTQ
-processing remains a first-class QC surface.
+processing and library-preparation evidence remain first-class QC surfaces.
 
 ## Project Direction
 
@@ -17,9 +17,11 @@ processing remains a first-class QC surface.
   and R conditions.
 - Reuse and extend `../bamana` as a Rust library for BAM, BGZF, FASTQ,
   sampling, ingest, summary, validation, and forensic QC surfaces.
-- Do not mirror every `pod5-tools` or `bamana` capability in `floundeR`.
-  Integrate only the subset that makes `floundeR` a best-in-breed nanopore QC
-  and review toolbox.
+- Reuse and extend `../porkchop` as a Rust library for adapter, primer,
+  barcode, kit-registry, and cDNA/library-preparation QC evidence.
+- Do not mirror every `pod5-tools`, `bamana`, or `porkchop` capability in
+  `floundeR`. Integrate only the subset that makes `floundeR` a
+  best-in-breed nanopore QC and review toolbox.
 - Move report rendering away from RMarkdown-first workflows and toward
   Grammateus semantic report contracts, rendered through Rust embedded inside R.
 - Keep `floundeR` fully open-source. Grammateus remains private, so it must be
@@ -32,11 +34,13 @@ processing remains a first-class QC surface.
   to provide clean Rust library APIs for `floundeR`.
 - It is permitted to modify `../bamana` when required to provide clean Rust
   library APIs for `floundeR`.
+- It is permitted to modify `../porkchop` when required to provide clean Rust
+  library APIs for `floundeR`.
 - Cross-repository changes must not break product charters, SRS material, ADRs,
   ARDs, or canonical contracts in `../mnemosyne-docs`.
-- `pod5-tools` and `bamana` are open-source integration engines; Grammateus is
-  private runtime/reporting infrastructure. Do not blur those distribution
-  boundaries.
+- `pod5-tools`, `bamana`, and `porkchop` are open-source integration engines;
+  Grammateus is private runtime/reporting infrastructure. Do not blur those
+  distribution boundaries.
 - Use ONT open-data POD5 examples for integration and documentation, especially
   `s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`, but never commit
   downloaded POD5 files.
@@ -80,6 +84,8 @@ processing remains a first-class QC surface.
   those changes deliberately and test both sides.
 - If `../bamana` needs changes to become a clean BAM-processing library
   dependency, make those changes deliberately and test both sides.
+- If `../porkchop` needs changes to become a clean library-preparation QC
+  dependency, make those changes deliberately and test both sides.
 - If `../grammateus` needs changes to become a clean report-rendering library
   dependency, make those changes deliberately and test both sides.
 - Before changing `../pod5-tools` or `../grammateus`, inspect the relevant
@@ -89,6 +95,9 @@ processing remains a first-class QC surface.
   `../bamana/docs/project-charter.md`, and the relevant public JSON/schema and
   command documentation. If canonical bamana docs later appear in
   `../mnemosyne-docs`, inspect those too.
+- Before changing `../porkchop`, inspect `../porkchop/AGENTS.md`,
+  `../porkchop/ROADMAP.md`, `../porkchop/README.md`, and relevant Sphinx
+  documentation under `../porkchop/docs/`.
 - If implementation requirements conflict with canonical docs, stop and update
   the plan rather than silently diverging.
 
@@ -107,6 +116,19 @@ processing remains a first-class QC surface.
 - Transformation operations such as filtering, subsampling, sorting, merging,
   unmapping, reheadering, and annotation must require explicit output paths and
   provenance reporting.
+
+## Porkchop Standards
+
+- Use Porkchop selectively for nanopore library-preparation evidence: kit
+  registry metadata, adapter/primer/barcode screening, cDNA primer evidence,
+  and library mismatch or contamination signals.
+- Do not turn floundeR into a trimming/preprocessing frontend unless the
+  specific operation directly supports QC, review, provenance, or report
+  generation.
+- Preserve Porkchop's distinction between heuristic scores and calibrated
+  probabilities; do not present screening scores as probabilities.
+- Preserve Porkchop kit provenance, lifecycle, support-level, and validation
+  claims in floundeR report outputs.
 
 ## Reporting Standards
 
@@ -130,6 +152,9 @@ processing remains a first-class QC surface.
 - Reports that include aligned-read evidence should include Bamana-derived BAM
   summary, validation, index, mapping, sorting, tag, and provenance sections as
   appropriate.
+- Reports that include library-preparation evidence should include
+  Porkchop-derived kit, adapter, primer, barcode, cDNA, score terminology, and
+  provenance sections as appropriate.
 - The detailed R/Grammateus interface is documented in
   `REPORTING_INTERFACE.md`; keep it current when report APIs change.
 - The distribution model for private Grammateus runtime assets is documented in

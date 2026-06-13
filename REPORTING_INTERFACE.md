@@ -166,10 +166,12 @@ The standard technical QC report structure should be:
 4. Sequencing/run summary.
 5. POD5 raw-data integrity and metadata findings where available.
 6. BAM/alignment QC findings where available.
-7. Barcode/sample findings where available.
-8. Methods and software versions.
-9. Limitations.
-10. Appendices and provenance table.
+7. Library-preparation findings where available, including Porkchop-derived
+   adapter, primer, barcode, kit, and cDNA evidence.
+8. Barcode/sample findings where available.
+9. Methods and software versions.
+10. Limitations.
+11. Appendices and provenance table.
 
 ## Enterprise Requirements
 
@@ -193,3 +195,5 @@ The standard technical QC report structure should be:
   report contracts.
 - `floundeR` should not invent an independent identity, approval, or signing
   model.
+- `floundeR` should not present Porkchop heuristic screening scores as
+  calibrated probabilities.
