@@ -1,3 +1,9 @@
+# floundeR 0.1.3
+
+* Recorded the Rust-in-R architecture decision for an embedded `extendr` crate
+  with curated path dependencies on the POD5, BAM/BGZF/FASTQ, Porkchop, and
+  optional private Grammateus engine libraries.
+
 # floundeR 0.1.2
 
 * Added `qc_report_card()` with schema-versioned pass/warn/fail checks and

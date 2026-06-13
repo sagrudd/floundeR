@@ -97,10 +97,10 @@ current non-FAST5 package surface.
 
 ## Slice 6: In-Process Rust Scaffold
 
-- [ ] Choose final Rust-in-R structure: embedded crate in `floundeR`, path
+- [x] Choose final Rust-in-R structure: embedded crate in `floundeR`, path
       dependencies on `../pod5-tools`, `../bamana`, `../porkchop`, and
       `../grammateus`, or split support packages.
-- [ ] Define a curation rule for Rust-backed APIs: include only functionality
+- [x] Define a curation rule for Rust-backed APIs: include only functionality
       that directly supports nanopore QC, review, reporting, provenance, or
       synoptikon handoff.
 - [ ] If `../pod5-tools` changes are needed, verify they preserve the relevant
