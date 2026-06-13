@@ -71,8 +71,14 @@ skip_if_no_flounder_rust <- function(feature = "compiled Rust support") {
   }
 
   parts <- strsplit(payload, "|", fixed = TRUE)[[1]]
-  if (length(parts) != 3L) {
+  if (length(parts) < 3L || length(parts) > 4L) {
     stop("Rust capability payload has an unsupported shape.")
+  }
+
+  pod5_tools <- if (length(parts) >= 4L && identical(parts[[4]], "pod5-tools")) {
+    "linked"
+  } else {
+    "not_linked"
   }
 
   list(
@@ -82,7 +88,7 @@ skip_if_no_flounder_rust <- function(feature = "compiled Rust support") {
     rust_crate_version = parts[[3]],
     extendr_api_version = "0.9.0",
     compiled_support = TRUE,
-    pod5_tools = "not_linked",
+    pod5_tools = pod5_tools,
     bamana = "not_linked",
     porkchop = "not_linked",
     grammateus = "not_linked"

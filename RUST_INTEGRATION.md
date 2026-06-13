@@ -144,27 +144,24 @@ The initial scaffold lives under `src/` so it participates in normal R source
 package builds:
 
 - `src/rust/Cargo.toml` defines the private `flounder-extendr` static library
-  crate using `extendr-api`.
-- `src/rust/src/lib.rs` defines the empty `extendr` module that later slices
-  will populate with R-callable functions.
+  crate using `extendr-api` plus curated open Rust QC dependencies.
+- `src/rust/src/lib.rs` defines registered R-callable Rust entry points.
 - `src/Makevars` and `src/Makevars.win` build the Rust static library before
   the R shared object is linked.
 - `src/init.c` provides a conservative native registration entry point.
 
-This scaffold intentionally has no path dependencies on `../pod5-tools`,
-`../bamana`, `../porkchop`, or private Grammateus yet. Those dependencies
-should be introduced only with the first functional binding that needs them.
+The extension now links the first curated POD5 dependency through the open
+`pod5-tools` Git repository. Bamana, Porkchop, and private Grammateus should be
+introduced only with the first functional binding that needs each engine.
 
 ## Minimal Callable Function
 
-The first Rust-to-R proof point is an internal capability function exposed as
-`.flounder_rust_capabilities()`. The Rust entry point uses a tiny registered
-`no_std` raw R ABI function so the release check does not inherit Rust `std`
-termination symbols before the binding policy is mature. The internal R helper
-returns a schema-versioned list with the compiled crate version and explicit
-`not_linked` status for pod5-tools, Bamana, Porkchop, and Grammateus. It is
-kept internal so public functions can enforce a consistent R error and
-availability policy.
+The first Rust-to-R proof point was an internal capability function exposed as
+`.flounder_rust_capabilities()`. The current Rust entry points are registered
+through `src/init.c`; capability metadata reports linked status for
+`pod5-tools` and explicit `not_linked` status for Bamana, Porkchop, and
+Grammateus. The internal helpers remain in place so public functions can
+enforce a consistent R error and availability policy.
 
 ## R Wrapper And Error Policy
 
@@ -214,3 +211,8 @@ in-process and convert records to a tibble/data frame, rather than invoking the
 The toolchain prerequisite is now aligned: floundeR requires Rust `1.85` or
 newer and the embedded crate uses Rust edition 2024, matching the floor needed
 to depend on the current `../pod5-tools` crate.
+
+For public source-package installs, the embedded crate pins `pod5-tools` to the
+open GitHub repository at the commit matching the inspected adjacent checkout.
+That avoids brittle release-tarball failures caused by local sibling path
+dependencies while preserving the same in-process Rust library boundary.

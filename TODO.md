@@ -122,10 +122,13 @@ current non-FAST5 package surface.
 - [x] Promote only the `pod5-tools` logic needed for floundeR QC/review into
       pure library APIs if needed.
 - [x] Align floundeR's Rust toolchain floor with `../pod5-tools` before adding
-      the path dependency for `pod5_find()`.
-- [ ] Expose `pod5_find(path)` as an R function returning a data frame.
-- [ ] Include path, file count, byte total, oldest mtime, and newest mtime.
-- [ ] Add tests for empty folders, nested folders, and mixed file extensions.
+      the source-package-safe Rust dependency for `pod5_find()`.
+- [x] Expose `pod5_find(path)` as an R function returning a data frame.
+- [x] Include path, file count, byte total, oldest mtime, and newest mtime.
+- [x] Add tests for empty folders, nested folders, and mixed file extensions.
+- [ ] Resolve or formally document the release-check compiled-code warning from
+      linking the Rust `std`/`pod5-tools` stack before Bioconductor/CRAN-facing
+      release work.
 - [ ] Add examples that do not call any external CLI process.
 - [ ] Add an opt-in example that lists the ONT Zymo fecal POD5 S3 prefix after
       explicit user consent/network availability checks.

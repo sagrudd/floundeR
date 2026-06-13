@@ -1,3 +1,10 @@
+# floundeR 0.2.0
+
+* Added `pod5_find()` as the first curated POD5 Rust-backed R API. The function
+  calls the `../pod5-tools` discovery library in-process and returns an R data
+  frame with POD5-containing folders, file counts, byte totals, and modification
+  windows.
+
 # floundeR 0.1.10
 
 * Raised the Rust toolchain floor to 1.85 and moved the embedded crate to Rust

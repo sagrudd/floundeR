@@ -163,10 +163,15 @@ docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
 ```
 
 The container includes rustup stable, Cargo, and rustc so the embedded
-`extendr` scaffold can be built during package checks and can later depend on
-Rust edition 2024 crates such as `../pod5-tools`. It does not bundle private
-Grammateus runtime assets, ONT POD5 example data, or large derived files. Those
-remain explicit opt-in layers once the curated Rust interfaces are ready.
+`extendr` scaffold can be built during package checks and can depend on Rust
+edition 2024 crates such as `pod5-tools`. The public source package pins
+`pod5-tools` to the open GitHub repository rather than a local sibling path so
+release-tarball checks and GitHub installs do not depend on a particular
+checkout layout. Local development should still inspect and coordinate with
+`../pod5-tools` before changing the curated POD5 API surface. The container
+does not bundle private Grammateus runtime assets, ONT POD5 example data, or
+large derived files. Those remain explicit opt-in layers once the curated Rust
+interfaces are ready.
 
 ## Legacy RMarkdown Vignettes
 
