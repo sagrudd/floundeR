@@ -8,64 +8,11 @@ if (do_install && do_check) {
   stop("Use either --install or --check, not both.", call. = FALSE)
 }
 
-cran_packages <- c(
-  "aws.s3",
-  "cli",
-  "dplyr",
-  "emojifont",
-  "ggplot2",
-  "ggsci",
-  "kableExtra",
-  "knitr",
-  "lubridate",
-  "magick",
-  "magrittr",
-  "purrr",
-  "R6",
-  "RColorBrewer",
-  "readr",
-  "reshape2",
-  "rlang",
-  "rmarkdown",
-  "stringdist",
-  "stringr",
-  "testthat",
-  "tibble",
-  "tidyr",
-  "tidyselect"
-)
+source("scripts/flounder-dependencies.R")
 
-bioc_packages <- c(
-  "BiocGenerics",
-  "Biostrings",
-  "GenomeInfoDb",
-  "GenomicRanges",
-  "IRanges",
-  "Rsamtools",
-  "ShortRead"
-)
-
-parse_description_packages <- function(field) {
-  packages <- trimws(unlist(strsplit(field, ",", fixed = TRUE)))
-  packages <- sub("\\s*\\(.*\\)$", "", packages)
-  packages[nzchar(packages)]
-}
-
-description <- read.dcf("DESCRIPTION")
-expected <- c(cran_packages, bioc_packages)
-declared <- unique(c(
-  parse_description_packages(description[1, "Imports"]),
-  parse_description_packages(description[1, "Suggests"])
-))
-
-missing_from_bootstrap <- setdiff(declared, expected)
-if (length(missing_from_bootstrap) > 0) {
-  stop(
-    "Bootstrap list is missing DESCRIPTION dependencies: ",
-    paste(missing_from_bootstrap, collapse = ", "),
-    call. = FALSE
-  )
-}
+cran_packages <- flounder_cran_packages()
+bioc_packages <- flounder_bioc_packages()
+flounder_validate_dependency_plan()
 
 installed <- rownames(installed.packages())
 missing_cran <- setdiff(cran_packages, installed)

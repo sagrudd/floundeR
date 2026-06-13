@@ -1,3 +1,11 @@
+# floundeR 0.0.17
+
+* Added a Docker-backed development build path and a dependency audit script for
+  assessing declared CRAN/Bioconductor package versions and support channels in
+  a clean container.
+* Recorded the current R 4.6.0/Bioconductor 3.23 dependency snapshot and the
+  package-quality failures exposed once dependencies are available.
+
 # floundeR 0.0.16
 
 * Added fixture-backed schema tests for the initial sequencing-summary,

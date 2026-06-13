@@ -1,10 +1,13 @@
 ^\\.github$
 ^AGENTS\\.md$
 ^DATASETS\\.md$
+^DEPENDENCIES\\.md$
 ^DEVELOPMENT\\.md$
 ^DISTRIBUTION\\.md$
+^Dockerfile$
 ^GOVERNANCE\\.md$
 ^REPORTING_INTERFACE\\.md$
 ^ROADMAP\\.md$
 ^scripts$
 ^TODO\\.md$
+^\\.dockerignore$

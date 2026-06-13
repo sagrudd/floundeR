@@ -55,6 +55,9 @@ current non-FAST5 package surface.
 - [x] Add a dependency bootstrap note or script for local development,
       including CRAN and Bioconductor dependencies needed after FAST5
       retirement is complete.
+- [x] Add a Docker-backed development build and dependency audit path for the
+      current R package dependency surface.
+- [x] Record current container dependency versions and support posture.
 - [x] Ensure `testthat` is installed/declared with a current edition.
 - [x] Add helper fixtures for sequencing summary, barcode summary, FASTQ, FASTA,
       and minimal POD5 metadata tests.
@@ -72,6 +75,16 @@ current non-FAST5 package surface.
 - [ ] Return clear partial-result warnings for absent optional columns.
 - [ ] Add tests for old Guppy-like and current Dorado-like summaries.
 - [x] Correct documentation that describes sequencing-summary inputs as FAST5.
+
+## Slice 4A: Check Debt Exposed By Container Build
+
+- [ ] Repair `Blast` example/test fixture resolution under `R CMD check`.
+- [ ] Correct POD5 manifest fixture checksum lengths.
+- [ ] Decide whether legacy vignettes should execute during development checks
+      or be retired behind the Grammateus reporting migration.
+- [ ] Run release-style checks from an `R CMD build` tarball to avoid
+      source-tree hidden-file noise.
+- [ ] Reconcile unused `Imports` after the legacy API surface is narrowed.
 
 ## Slice 5: Core QC Contracts
 

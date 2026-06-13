@@ -30,6 +30,51 @@ Rscript scripts/bootstrap-r-dependencies.R --check
 The bootstrap script does not install Rust tooling, private Grammateus runtime
 assets, ONT POD5 example data, or large external files.
 
+## Dependency Audit
+
+Write a tab-separated audit of declared package dependencies, their source
+channel, installed versions, R/Bioconductor context, and support notes:
+
+```sh
+Rscript scripts/audit-r-dependencies.R --output=/tmp/flounder-r-dependencies.tsv
+```
+
+The audit exits non-zero when declared dependencies are missing, which makes it
+appropriate for CI and container smoke checks.
+
+See `DEPENDENCIES.md` for the current R 4.6/Bioconductor 3.23 container
+assessment and package-version snapshot.
+
+## Docker Build
+
+The repository includes a development container that installs the known CRAN
+and Bioconductor dependencies into a clean Rocker R image. This keeps dependency
+repair reproducible while the package is being revived.
+
+Build the image:
+
+```sh
+docker build -t flounder-dev .
+```
+
+Run the dependency audit inside the container:
+
+```sh
+docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
+  Rscript scripts/audit-r-dependencies.R --output=/tmp/flounder-r-dependencies.tsv
+```
+
+Run package checks inside the container:
+
+```sh
+docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
+  R CMD check --no-manual --no-build-vignettes .
+```
+
+The container does not bundle Rust bindings, private Grammateus runtime assets,
+ONT POD5 example data, or large derived files. Those remain explicit opt-in
+layers once the curated Rust interfaces are ready.
+
 ## Local Checks
 
 Run the repository governance check:
