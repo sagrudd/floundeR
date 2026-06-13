@@ -1,3 +1,9 @@
+# floundeR 0.0.20
+
+* Added a small installed BLAST fixture and restored `Blast$count()` behavior
+  so the BLAST example and test no longer depend on a missing large UniRef
+  output file.
+
 # floundeR 0.0.19
 
 * Added conservative sequencing-summary column alias handling for current

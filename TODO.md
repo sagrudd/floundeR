@@ -78,7 +78,7 @@ current non-FAST5 package surface.
 
 ## Slice 4A: Check Debt Exposed By Container Build
 
-- [ ] Repair `Blast` example/test fixture resolution under `R CMD check`.
+- [x] Repair `Blast` example/test fixture resolution under `R CMD check`.
 - [ ] Correct POD5 manifest fixture checksum lengths.
 - [ ] Decide whether legacy vignettes should execute during development checks
       or be retired behind the Grammateus reporting migration.

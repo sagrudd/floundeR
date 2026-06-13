@@ -1,12 +1,13 @@
 context("BLAST file testing")
 
 test_that("BLAST results load", {
-  blast_results <- flnDr("drosophila_uniref100.blastx.gz")
+  blast_results <- flnDr("drosophila_uniref100.blastx.txt")
+  expect_true(file.exists(blast_results))
   blast <- Blast$new(blast_file=blast_results)
 
   expect_type(blast, "environment")
   expect_true(all(c("Blast", "FloundeR", "R6") %in% class(blast)))
 
-  expect_equal(blast$count(), 248)
+  expect_equal(blast$count(), 3)
   }
 )

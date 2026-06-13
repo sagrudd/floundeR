@@ -1,4 +1,4 @@
-# blast_results <- flnDr("drosophila_uniref100.blastx.gz")
+# blast_results <- flnDr("drosophila_uniref100.blastx.txt")
 # blast <- Blast$new(blast_file=blast_results)
 
 #' R6 Class for loading and analysing BLAST results in basic `Pairwise` format
@@ -29,7 +29,7 @@ Blast <- R6::R6Class(
     #' @return A new `Blast` object.
     #'
     #' @examples
-    #' blast_results <- flnDr("drosophila_uniref100.blastx.gz")
+    #' blast_results <- flnDr("drosophila_uniref100.blastx.txt")
     #' blast <- Blast$new(blast_file=blast_results)
     initialize = function(blast_file) {
       # first pass QC - let's ensure that this is a single FILE
@@ -53,8 +53,11 @@ Blast <- R6::R6Class(
     blast_count = NA,
 
     parse_blast_results = function() {
-      cli::cli_alert(stringr::str_interp("Parsing BLAST result file [${basename(self$blast_file)}]"))
+      cli::cli_alert(stringr::str_interp(
+        "Parsing BLAST result file [${basename(self$blast_file)}]"))
+      blast_lines <- readLines(self$blast_file, warn = FALSE)
+      query_rows <- grepl("^Query=", blast_lines)
+      private$blast_count <- sum(query_rows)
     }
   )
 )
-

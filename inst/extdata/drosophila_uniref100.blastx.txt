@@ -1,0 +1,19 @@
+BLASTX 2.16.0+
+
+Query= read_0001
+Length=120
+>UniRef100_A0A0000001 Example protein 1
+Length=300
+ Score = 42.0 bits (98), Expect = 2e-08
+
+Query= read_0002
+Length=140
+>UniRef100_A0A0000002 Example protein 2
+Length=210
+ Score = 38.5 bits (89), Expect = 4e-06
+
+Query= read_0003
+Length=160
+>UniRef100_A0A0000003 Example protein 3
+Length=410
+ Score = 51.2 bits (121), Expect = 1e-12

@@ -14,7 +14,7 @@ results within the scope of the Lodestar project.
 ## Method `Blast$new`
 ## ------------------------------------------------
 
-blast_results <- flnDr("drosophila_uniref100.blastx.gz")
+blast_results <- flnDr("drosophila_uniref100.blastx.txt")
 blast <- Blast$new(blast_file=blast_results)
 }
 \section{Super class}{
@@ -69,7 +69,7 @@ A new \code{Blast} object.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{blast_results <- flnDr("drosophila_uniref100.blastx.gz")
+\preformatted{blast_results <- flnDr("drosophila_uniref100.blastx.txt")
 blast <- Blast$new(blast_file=blast_results)
 }
 \if{html}{\out{</div>}}
