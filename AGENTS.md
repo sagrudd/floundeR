@@ -22,6 +22,9 @@ processing remains a first-class QC surface.
   and review toolbox.
 - Move report rendering away from RMarkdown-first workflows and toward
   Grammateus semantic report contracts, rendered through Rust embedded inside R.
+- Keep `floundeR` fully open-source. Grammateus remains private, so it must be
+  consumed as an optional prebuilt runtime/content bundle rather than a required
+  public source dependency.
 - Maintain Mnemosyne Biosciences branding, styling, provenance, and standard
   technical-report structure in generated reports.
 - Prioritise QC contracts needed by synoptikon via `../mnemosyne`.
@@ -31,6 +34,9 @@ processing remains a first-class QC surface.
   library APIs for `floundeR`.
 - Cross-repository changes must not break product charters, SRS material, ADRs,
   ARDs, or canonical contracts in `../mnemosyne-docs`.
+- `pod5-tools` and `bamana` are open-source integration engines; Grammateus is
+  private runtime/reporting infrastructure. Do not blur those distribution
+  boundaries.
 - Use ONT open-data POD5 examples for integration and documentation, especially
   `s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`, but never commit
   downloaded POD5 files.
@@ -105,6 +111,9 @@ processing remains a first-class QC surface.
 ## Reporting Standards
 
 - Grammateus is the target reporting engine for technical QC reports.
+- Grammateus support must be optional from the open-source package's point of
+  view: core QC should install and run without private Grammateus source or
+  private runtime assets.
 - RMarkdown may be retained only as a legacy or transitional path while
   Grammateus coverage is incomplete.
 - Reporting must support both directions of control: R can drop existing
@@ -123,6 +132,8 @@ processing remains a first-class QC surface.
   appropriate.
 - The detailed R/Grammateus interface is documented in
   `REPORTING_INTERFACE.md`; keep it current when report APIs change.
+- The distribution model for private Grammateus runtime assets is documented in
+  `DISTRIBUTION.md`; keep it current when release or install behavior changes.
 
 ## Semantic Versioning
 

@@ -1,3 +1,9 @@
+# floundeR 0.0.8
+
+* Documented the distribution boundary: `floundeR`, `pod5-tools`, and `bamana`
+  stay open-source, while Grammateus remains private and is consumed through
+  optional prebuilt runtime/reporting artifacts.
+
 # floundeR 0.0.7
 
 * Added an explicit Grammateus reporting interface plan for dropping R plots

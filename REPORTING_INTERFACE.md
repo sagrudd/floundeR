@@ -5,6 +5,11 @@ documents. R remains central for statistics and plotting, but Grammateus owns
 the report contract: semantic elements, rendering, provenance, manifests,
 branding, and trusted-report lifecycle compatibility.
 
+`floundeR` itself remains open-source. Grammateus remains private, so the public
+package must treat Grammateus as an optional prebuilt runtime/reporting bundle.
+Core QC APIs must remain usable when Grammateus is absent; only governed report
+rendering should require the private runtime.
+
 ## Goals
 
 - Let R users drop existing `ggplot2` plots into governed QC reports.
@@ -169,6 +174,10 @@ The standard technical QC report structure should be:
 ## Enterprise Requirements
 
 - The interface must work in local analyst mode and governed synoptikon mode.
+- The open-source package must not require Grammateus source code to install or
+  check.
+- Grammateus runtime discovery, version checks, and manifest/signature
+  validation must be explicit and actionable.
 - Governed mode should prefer containerized R execution through Grammateus and
   Synoptikon/Mneion execution controls.
 - R package versions, generated scripts, input data, output artifacts, stdout,

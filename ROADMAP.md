@@ -98,6 +98,12 @@ toolkits. `floundeR` should use them wisely as Rust implementation engines for
 the subset of behavior that directly improves nanopore sequence-data QC,
 review, reporting, and synoptikon handoff.
 
+Distribution boundary: `floundeR`, `pod5-tools`, and `bamana` are open-source.
+Grammateus remains private. `floundeR` must therefore support optional prebuilt
+Grammateus runtime/reporting artifacts for HTML/PDF generation without making
+private Grammateus source mandatory for public installation, checking, or core
+QC use.
+
 ## Rust-In-R Integration Strategy
 
 The right target is an in-process Rust layer, not a CLI wrapper.
@@ -191,6 +197,14 @@ registry APIs from its Rust library. Canonical product documentation lives in
 depend on the Grammateus library directly and add any missing public library
 APIs deliberately, with tests on both sides.
 
+For open-source distribution, that development-time private checkout must be
+converted into a prebuilt optional runtime interface. The public floundeR
+package should detect, validate, and use a Grammateus runtime bundle when
+available, but it must install and provide core QC functionality without that
+bundle.
+
+The distribution model is documented in `DISTRIBUTION.md`.
+
 Cross-repository changes are in scope for this reboot. `../pod5-tools`,
 `../bamana`, and `../grammateus` may be modified where needed to provide clean
 library APIs for `floundeR`, but those changes must preserve the relevant
@@ -258,6 +272,8 @@ Deliverables:
 - capture the current exported API and deprecation plan.
 - record cross-repository constraints for `../pod5-tools`, `../grammateus`, and
   `../mnemosyne-docs`.
+- record the open-source/private distribution boundary for floundeR,
+  pod5-tools, bamana, and Grammateus.
 
 Acceptance criteria:
 
@@ -392,6 +408,8 @@ Deliverables:
 - add a modern pkgdown site with examples focused on QC questions;
 - add a run QC vignette built around real sequencing-summary/POD5 metadata;
 - add Grammateus-backed technical report rendering for run QC;
+- define optional Grammateus runtime discovery, installation, validation, and
+  compatibility checks for GitHub-distributed prebuilt artifacts;
 - add a documented R/Grammateus plot interface covering R-to-Grammateus
   artifact handoff and Grammateus-to-R controlled plot generation;
 - define Grammateus semantic elements for run metadata tables, yield plots,
@@ -421,6 +439,8 @@ Acceptance criteria:
   applicable, provenance, and Mnemosyne Biosciences branding.
 - existing R plots can be dropped into reports through a documented helper, and
   semantic Grammateus plot specs can trigger controlled R/ggplot2 rendering.
+- core floundeR QC functionality remains usable without private Grammateus
+  source or runtime assets.
 
 ## Milestone 6: Release Discipline
 

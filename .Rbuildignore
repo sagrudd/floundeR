@@ -1,6 +1,7 @@
 ^\\.github$
 ^AGENTS\\.md$
 ^DATASETS\\.md$
+^DISTRIBUTION\\.md$
 ^GOVERNANCE\\.md$
 ^REPORTING_INTERFACE\\.md$
 ^ROADMAP\\.md$

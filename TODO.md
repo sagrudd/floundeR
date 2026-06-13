@@ -21,6 +21,9 @@ should include a semantic version bump and `NEWS.md` entry.
       development or only during releases.
 - [x] Add or update CI for R package check.
 - [x] Record the FAST5 retirement direction in `NEWS.md`.
+- [ ] Record and enforce the distribution boundary: floundeR, pod5-tools, and
+      bamana are open-source; Grammateus remains private and optional from the
+      public package's perspective.
 - [x] Run `R CMD check --no-manual --no-build-vignettes .` and capture any
       remaining failures as follow-up tasks.
 
@@ -201,6 +204,13 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
       execution as configured.
 - [ ] Add in-process Rust bindings from `floundeR` to Grammateus report
       rendering; do not shell out to Grammateus CLI binaries.
+- [ ] Define the prebuilt Grammateus runtime interface used by public floundeR
+      builds when private Grammateus source is unavailable.
+- [ ] Implement Grammateus runtime discovery helpers such as
+      `grammateus_runtime_available()`, `grammateus_runtime_version()`,
+      `grammateus_runtime_validate()`, and `grammateus_runtime_install()`.
+- [ ] Ensure core QC APIs and package checks do not require Grammateus runtime
+      assets.
 - [ ] Define Grammateus semantic elements for run metadata, QC summary,
       flowcell density, yield over time, quality distribution, barcode balance,
       POD5 integrity, BAM alignment summaries, BAM validation/index/sort
@@ -216,6 +226,22 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
       provenance hashes, and stable report identifiers.
 - [ ] Keep RMarkdown support only as a documented legacy/transitional path until
       Grammateus reports cover the required technical-report workflow.
+
+## Slice 13A: GitHub And Future BioConductor Distribution
+
+- [ ] Define GitHub release asset names and manifests for prebuilt Grammateus
+      runtime bundles.
+- [ ] Add checksum and signature verification for private Grammateus runtime
+      artifacts.
+- [ ] Add compatibility checks between floundeR versions and Grammateus runtime
+      versions.
+- [ ] Add CI separation: public floundeR checks without Grammateus, credentialed
+      private checks with Grammateus runtime/report rendering.
+- [ ] Document GitHub installation paths for open-source users and authorized
+      Grammateus runtime users.
+- [ ] Before any BioConductor submission, verify current policy for optional
+      external binaries, private runtime assets, downloads, and system
+      requirements.
 
 ## Slice 14: Documentation Refresh
 

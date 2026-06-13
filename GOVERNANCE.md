@@ -56,6 +56,10 @@ least:
 
 Grammateus should provide report element, provenance, rendering, and trusted
 report semantics. `floundeR` should not create a parallel report trust stack.
+Grammateus source code is private. `floundeR` must therefore interact with
+Grammateus through optional, prebuilt, verified runtime/reporting artifacts or
+through authorized private development checkouts, not by making private source a
+mandatory dependency of the open-source package.
 
 ## Synoptikon And Mneion
 
@@ -80,5 +84,5 @@ update it when public documentation is intentionally refreshed, but do not let
 stale generated pages drive source behavior.
 
 Root-level project-control files such as `AGENTS.md`, `ROADMAP.md`, `TODO.md`,
-`DATASETS.md`, and this file are repository governance files. They are excluded
-from R source package builds through `.Rbuildignore`.
+`DATASETS.md`, `DISTRIBUTION.md`, and this file are repository governance
+files. They are excluded from R source package builds through `.Rbuildignore`.
