@@ -1,3 +1,8 @@
+# floundeR 0.0.22
+
+* Moved legacy RMarkdown vignettes to repo-only historical reference material
+  while executable report workflows move to the Grammateus migration.
+
 # floundeR 0.0.21
 
 * Corrected POD5 manifest fixture checksum values so they remain character

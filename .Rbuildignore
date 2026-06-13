@@ -8,6 +8,7 @@
 ^GOVERNANCE\\.md$
 ^REPORTING_INTERFACE\\.md$
 ^ROADMAP\\.md$
+^legacy-vignettes$
 ^scripts$
 ^TODO\\.md$
 ^\\.dockerignore$

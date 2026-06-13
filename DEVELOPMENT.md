@@ -75,6 +75,18 @@ The container does not bundle Rust bindings, private Grammateus runtime assets,
 ONT POD5 example data, or large derived files. Those remain explicit opt-in
 layers once the curated Rust interfaces are ready.
 
+## Legacy RMarkdown Vignettes
+
+The historical RMarkdown vignettes are retained under `legacy-vignettes/` as
+repo-only reference material while report generation migrates to Grammateus
+semantic report contracts. They are intentionally excluded from package builds
+and checks because they contain stale plotting side effects, historical
+examples, and network-oriented workflows that should not define the rebooted QC
+package behavior.
+
+New executable tutorial/report material should be added through the Grammateus
+reporting roadmap rather than extending these legacy RMarkdown files.
+
 ## Local Checks
 
 Run the repository governance check:

@@ -80,7 +80,7 @@ current non-FAST5 package surface.
 
 - [x] Repair `Blast` example/test fixture resolution under `R CMD check`.
 - [x] Correct POD5 manifest fixture checksum lengths.
-- [ ] Decide whether legacy vignettes should execute during development checks
+- [x] Decide whether legacy vignettes should execute during development checks
       or be retired behind the Grammateus reporting migration.
 - [ ] Run release-style checks from an `R CMD build` tarball to avoid
       source-tree hidden-file noise.

@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -119,4 +120,3 @@ also parse these sequence metadata facets from the FASTQ file.
 
 
 ### Prepare a `tibble` from these Guppy based FASTQ data
-
