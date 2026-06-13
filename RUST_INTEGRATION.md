@@ -154,3 +154,14 @@ package builds:
 This scaffold intentionally has no path dependencies on `../pod5-tools`,
 `../bamana`, `../porkchop`, or private Grammateus yet. Those dependencies
 should be introduced only with the first functional binding that needs them.
+
+## Minimal Callable Function
+
+The first Rust-to-R proof point is an internal capability function exposed as
+`.flounder_rust_capabilities()`. The Rust entry point uses a tiny registered
+`no_std` raw R ABI function so the release check does not inherit Rust `std`
+termination symbols before the binding policy is mature. The internal R helper
+returns a schema-versioned list with the compiled crate version and explicit
+`not_linked` status for pod5-tools, Bamana, Porkchop, and Grammateus. It is
+intentionally internal until the next slice adds public wrappers, typed R
+conditions, and skip helpers.

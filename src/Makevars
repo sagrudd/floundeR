@@ -8,7 +8,9 @@ PKG_LIBS = $(RUST_LIB)
 
 $(SHLIB): $(RUST_LIB)
 
-$(RUST_LIB): $(RUST_SOURCES)
+.PHONY: FORCE
+
+$(RUST_LIB): FORCE $(RUST_SOURCES)
 	@command -v $(CARGO) >/dev/null 2>&1 || { \
 		echo "cargo is required to build floundeR Rust bindings"; \
 		exit 1; \

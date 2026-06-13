@@ -1,3 +1,9 @@
+# floundeR 0.1.6
+
+* Added an internal Rust capability function callable from R, proving the
+  `extendr` scaffold can return structured R data through registered native
+  symbols.
+
 # floundeR 0.1.5
 
 * Added the initial `extendr` scaffold under `src/rust` with R package build
