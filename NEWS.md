@@ -1,3 +1,8 @@
+# floundeR 0.1.0
+
+* Added `qc_run_summary()` as the first versioned core QC contract for
+  nanopore run-level summaries from normalised sequencing-summary data.
+
 # floundeR 0.0.24
 
 * Reconciled the current import surface by declaring narrow namespace imports
