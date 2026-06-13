@@ -91,9 +91,9 @@ current non-FAST5 package surface.
 - [x] Define `qc_run_summary()` and its schema version.
 - [x] Define tidy outputs for yield over time, read length distribution,
       quality distribution, channel density, and barcode composition.
-- [ ] Add `qc_report_card()` with pass/warn/fail checks.
-- [ ] Add tests for report-card thresholds and missing data.
-- [ ] Document return columns and threshold defaults.
+- [x] Add `qc_report_card()` with pass/warn/fail checks.
+- [x] Add tests for report-card thresholds and missing data.
+- [x] Document return columns and threshold defaults.
 
 ## Slice 6: In-Process Rust Scaffold
 

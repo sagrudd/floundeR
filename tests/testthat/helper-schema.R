@@ -85,6 +85,17 @@ flounder_qc_schemas <- list(
     "read_fraction",
     "bases_fraction"
   ),
+  qc_report_card = c(
+    "schema_version",
+    "check_id",
+    "check_label",
+    "status",
+    "observed_value",
+    "warn_threshold",
+    "fail_threshold",
+    "comparator",
+    "details"
+  ),
   pod5_manifest = c(
     "file_name",
     "source_bucket",

@@ -1,3 +1,8 @@
+# floundeR 0.1.2
+
+* Added `qc_report_card()` with schema-versioned pass/warn/fail checks and
+  documented default thresholds for sequencing-summary-derived QC evidence.
+
 # floundeR 0.1.1
 
 * Added tidy, schema-versioned QC contracts for yield over time, read length
