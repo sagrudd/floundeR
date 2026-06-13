@@ -195,3 +195,23 @@ The public package must not require private Grammateus source or runtime assets
 to install or check. Public CI should verify the open-source Rust scaffold and
 core QC package only; private Grammateus report rendering belongs in a separate
 credentialed check path.
+
+## POD5 Discovery Preflight
+
+Slice 7 inspected `../pod5-tools` on 2026-06-13 before adding the first
+functional POD5 binding. The existing `pod5-tools` library already exposes the
+curated discovery API floundeR needs:
+
+- `pod5_tools::find_pod5_directories(root: PathBuf)`;
+- `pod5_tools::Pod5DirectoryRecord` with path, POD5 file count, byte total,
+  oldest modification time, and newest modification time.
+
+No adjacent `pod5-tools` code promotion is required for the initial
+`pod5_find()` binding. The floundeR wrapper should call that library function
+in-process and convert records to a tibble/data frame, rather than invoking the
+`pod5-tools find` CLI or parsing TSV/JSON text.
+
+The remaining prerequisite is toolchain alignment: `pod5-tools` currently uses
+Rust edition 2024, while the floundeR scaffold still documents Rust `1.71` as
+its minimum. The next binding slice should align floundeR's Rust floor before
+adding the `../pod5-tools` path dependency.

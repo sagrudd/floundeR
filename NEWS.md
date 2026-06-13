@@ -1,3 +1,9 @@
+# floundeR 0.1.9
+
+* Recorded the POD5 discovery preflight against `../pod5-tools`, confirming
+  that the existing `find_pod5_directories()` library API is the intended
+  curated source for `pod5_find()`.
+
 # floundeR 0.1.8
 
 * Documented source-install requirements for macOS, Linux, Windows, Docker, and

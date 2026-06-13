@@ -119,8 +119,10 @@ current non-FAST5 package surface.
 
 ## Slice 7: POD5 Discovery Binding
 
-- [ ] Promote only the `pod5-tools` logic needed for floundeR QC/review into
+- [x] Promote only the `pod5-tools` logic needed for floundeR QC/review into
       pure library APIs if needed.
+- [ ] Align floundeR's Rust toolchain floor with `../pod5-tools` before adding
+      the path dependency for `pod5_find()`.
 - [ ] Expose `pod5_find(path)` as an R function returning a data frame.
 - [ ] Include path, file count, byte total, oldest mtime, and newest mtime.
 - [ ] Add tests for empty folders, nested folders, and mixed file extensions.
