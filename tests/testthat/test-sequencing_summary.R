@@ -40,6 +40,48 @@ test_that("sequencing summary parser handles legacy and Dorado-like columns", {
     expect_false("read_id" %in% names(dorado_tbl))
     expect_type(dorado_tbl$channel, "integer")
     expect_type(dorado_tbl$passes_filtering, "logical")
+
+    expect_warning(
+        dorado_reduced <- SequencingSummary$new(
+            fixture_path("sequencing_summary_dorado_reduced.tsv")),
+        "missing optional column\\(s\\): passes_filtering")
+    dorado_reduced_tbl <- dorado_reduced$as_tibble()
+
+    expect_true(all(c(
+        "channel", "start_time", "duration", "passes_filtering",
+        "sequence_length_template", "mean_qscore_template") %in%
+        names(dorado_reduced_tbl)))
+    expect_true(all(is.na(dorado_reduced_tbl$passes_filtering)))
+
+    alias_summary <- tempfile(fileext = ".tsv")
+    writeLines(
+        c(
+            paste(
+                "mean_qscore", "read_length", "duration",
+                "start_time", "channel",
+                sep = "\t"),
+            paste("12.5", "500", "1.2", "0.1", "7", sep = "\t")),
+        alias_summary)
+    expect_warning(
+        alias <- SequencingSummary$new(alias_summary),
+        "missing optional column\\(s\\): passes_filtering")
+    alias_tbl <- alias$as_tibble()
+
+    expect_equal(alias_tbl$channel[[1]], 7L)
+    expect_equal(alias_tbl$sequence_length_template[[1]], 500)
+    expect_equal(alias_tbl$mean_qscore_template[[1]], 12.5)
+
+    minknow <- SequencingSummary$new(
+        fixture_path("sequencing_summary_minknow_pod5.tsv"))
+    minknow_tbl <- minknow$as_tibble()
+
+    expect_true(all(c(
+        "channel", "start_time", "duration", "passes_filtering",
+        "sequence_length_template", "mean_qscore_template",
+        "barcode_arrangement") %in% names(minknow_tbl)))
+    expect_equal(minknow_tbl$barcode_arrangement[[1]], "barcode01")
+    expect_type(minknow_tbl$channel, "integer")
+    expect_type(minknow_tbl$passes_filtering, "logical")
 })
 
 

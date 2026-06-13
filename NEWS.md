@@ -1,3 +1,10 @@
+# floundeR 0.0.19
+
+* Added conservative sequencing-summary column alias handling for current
+  Dorado and MinKNOW/POD5-era summary shapes.
+* Allowed reduced Dorado summary files without `passes_filtering` to import as
+  partial QC inputs with an explicit warning and `NA` logical values.
+
 # floundeR 0.0.18
 
 * Replaced generated `eval(parse())` sequencing-summary column specifications

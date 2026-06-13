@@ -71,8 +71,8 @@ current non-FAST5 package surface.
 
 - [x] Replace `eval(parse())` column specification construction with structured
       `readr::cols_only()` construction.
-- [ ] Support current Dorado/MinKNOW sequencing summary naming variants.
-- [ ] Return clear partial-result warnings for absent optional columns.
+- [x] Support current Dorado/MinKNOW sequencing summary naming variants.
+- [x] Return clear partial-result warnings for absent optional columns.
 - [x] Add tests for old Guppy-like and current Dorado-like summaries.
 - [x] Correct documentation that describes sequencing-summary inputs as FAST5.
 

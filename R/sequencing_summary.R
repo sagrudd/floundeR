@@ -154,6 +154,24 @@ SequencingSummary <- R6::R6Class(
             "c", "i", "d", "d", "l", "d", "d", "c"
         ),
 
+        select_column_aliases = list(
+            read_id = c("read_id"),
+            channel = c("channel"),
+            start_time = c("start_time"),
+            duration = c("duration", "template_duration"),
+            passes_filtering = c(
+                "passes_filtering", "passed_filtering",
+                "pass", "passed"),
+            sequence_length_template = c(
+                "sequence_length_template", "read_length",
+                "sequence_length"),
+            mean_qscore_template = c(
+                "mean_qscore_template", "mean_qscore", "qscore"),
+            barcode_arrangement = c("barcode_arrangement", "barcode")
+        ),
+
+        optional_columns = c("passes_filtering"),
+
         .seqsum_col_type = function(type) {
             switch(
                 type,
@@ -167,14 +185,81 @@ SequencingSummary <- R6::R6Class(
                     call. = FALSE))
         },
 
-        .seqsum_col_spec = function(import_cols) {
+        .empty_column = function(type, n) {
+            switch(
+                type,
+                c = rep(NA_character_, n),
+                i = rep(NA_integer_, n),
+                d = rep(NA_real_, n),
+                l = rep(NA, n),
+                stop(
+                    "Unsupported sequencing summary column type: ",
+                    type,
+                    call. = FALSE))
+        },
+
+        .seqsum_col_spec = function(source_cols) {
             ctypes <- private$select_column_types[
-                match(import_cols, private$select_columns)]
+                match(source_cols$canonical, private$select_columns)]
             col_specs <- stats::setNames(
                 lapply(ctypes, private$.seqsum_col_type),
-                import_cols)
+                source_cols$source)
 
             do.call(readr::cols_only, col_specs)
+        },
+
+        .seqsum_source_columns = function(column_names) {
+            rows <- lapply(
+                private$select_columns,
+                function(canonical) {
+                    if (canonical == "read_id" &&
+                        is.na(self$barcoding_summary_file)) {
+                        return(NULL)
+                    }
+
+                    aliases <- private$select_column_aliases[[canonical]]
+                    matched <- aliases[aliases %in% column_names]
+                    if (length(matched) == 0) {
+                        return(NULL)
+                    }
+
+                    data.frame(
+                        canonical = canonical,
+                        source = matched[[1]],
+                        stringsAsFactors = FALSE)
+                })
+
+            rows <- rows[!vapply(rows, is.null, logical(1))]
+            if (length(rows) == 0) {
+                return(data.frame(
+                    canonical = character(),
+                    source = character(),
+                    stringsAsFactors = FALSE))
+            }
+
+            do.call(rbind, rows)
+        },
+
+        .warn_missing_columns = function(missing_cols) {
+            if (length(missing_cols) == 0) {
+                return(invisible())
+            }
+
+            warning(
+                "Sequencing summary is missing optional column(s): ",
+                paste(missing_cols, collapse = ", "),
+                ". Partial QC results will contain NA values for these fields.",
+                call. = FALSE)
+        },
+
+        .add_missing_columns = function(seqsum, missing_cols) {
+            for (column in missing_cols) {
+                type <- private$select_column_types[
+                    match(column, private$select_columns)]
+                seqsum[[column]] <- private$.empty_column(type, nrow(seqsum))
+            }
+
+            seqsum
         },
 
         .parse_seqsum = function() {
@@ -182,20 +267,39 @@ SequencingSummary <- R6::R6Class(
             mini_table <- readr::read_tsv(
                 file=self$sequencing_summary_file, n_max=10,
                 col_types = readr::cols())
-            # if barcoding summary not provided, clip req. for `read_id`
-            if (is.na(self$barcoding_summary_file)) {
-                mini_table <- mini_table %>% dplyr::select(-read_id)
+            source_cols <- private$.seqsum_source_columns(names(mini_table))
+            missing_optional <- setdiff(
+                private$optional_columns, source_cols$canonical)
+            private$.warn_missing_columns(missing_optional)
+
+            missing_required <- setdiff(
+                setdiff(
+                    private$select_columns,
+                    c(
+                        private$optional_columns,
+                        "read_id",
+                        "barcode_arrangement")),
+                source_cols$canonical)
+            if (!is.na(self$barcoding_summary_file) &&
+                !"read_id" %in% source_cols$canonical) {
+                missing_required <- c(missing_required, "read_id")
             }
-            import_cols <- names(mini_table)[
-                na.omit(match(private$select_columns, names(mini_table)))]
+            if (length(missing_required) > 0) {
+                stop(
+                    "Sequencing summary is missing required column(s): ",
+                    paste(missing_required, collapse = ", "),
+                    call. = FALSE)
+            }
 
             private$seqsum <- readr::read_tsv(
                 file=self$sequencing_summary_file,
-                col_types=private$.seqsum_col_spec(import_cols))
+                col_types=private$.seqsum_col_spec(source_cols))
+            colnames(private$seqsum) <- source_cols$canonical[
+                match(colnames(private$seqsum), source_cols$source)]
+            private$seqsum <- private$.add_missing_columns(
+                private$seqsum, missing_optional)
 
             return(TRUE)
         }
     )
 )
-
-
