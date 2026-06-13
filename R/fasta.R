@@ -15,6 +15,8 @@
 #' @importFrom magrittr %>%
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom IRanges width
+#' @importFrom Rsamtools bgzip indexFa scanFa scanFaIndex
+#' @importFrom tibble tibble
 #'
 #' @export
 Fasta <- R6::R6Class(

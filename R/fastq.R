@@ -9,6 +9,9 @@
 #'
 #' @import R6
 #' @importFrom magrittr %>%
+#' @importFrom Biostrings quality width
+#' @importFrom ShortRead FastqStreamer yield id sread
+#' @importFrom tibble tibble
 #'
 #' @export
 Fastq <- R6::R6Class(

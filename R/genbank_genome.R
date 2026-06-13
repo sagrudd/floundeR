@@ -8,6 +8,12 @@
 #'
 #' @import R6
 #' @importFrom magrittr %>%
+#' @importFrom BiocGenerics strand start end
+#' @importFrom Biostrings DNAString AAString translate reverseComplement getGeneticCode
+#' @importFrom GenomeInfoDb seqlengths genome
+#' @importFrom GenomicRanges makeGRangesFromDataFrame GRanges
+#' @importFrom IRanges IRanges
+#' @importFrom tibble as_tibble
 #'
 #' @export
 GenbankGenome <- R6::R6Class(
@@ -489,4 +495,3 @@ triplet2DeltaPeptide = function(triplet=Biostrings::DNAString("CCG"), peptide=Bi
     print(distances)
     print(modified_triplets[order(distances, decreasing=FALSE)])
 }
-

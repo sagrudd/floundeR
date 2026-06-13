@@ -8,6 +8,7 @@
 #' actually creating a `floundeR` instance on its own.
 #'
 #' @import R6
+#' @importFrom aws.s3 get_bucket save_object
 #'
 #' @export
 FloundeR <- R6::R6Class(

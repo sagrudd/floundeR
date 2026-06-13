@@ -1,3 +1,12 @@
+# floundeR 0.0.24
+
+* Reconciled the current import surface by declaring narrow namespace imports
+  for active FASTA, FASTQ, GenBank, plotting, and ONT open-data dependencies.
+* Removed stale RMarkdown-era packages from the development dependency
+  bootstrap list now that legacy vignettes are excluded from package checks.
+* Documented the remaining legacy `%>%` and `BamFile` exports so release-style
+  package checks can complete without warnings.
+
 # floundeR 0.0.23
 
 * Added a release-style package check helper that builds and checks a source

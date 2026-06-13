@@ -11,6 +11,8 @@
 #' @importFrom reshape2 melt
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom ggsci scale_fill_startrek scale_color_startrek
+#' @importFrom tibble is_tibble
 #' @importFrom tools file_ext
 #'
 #' @export

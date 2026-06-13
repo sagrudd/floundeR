@@ -84,7 +84,7 @@ current non-FAST5 package surface.
       or be retired behind the Grammateus reporting migration.
 - [x] Run release-style checks from an `R CMD build` tarball to avoid
       source-tree hidden-file noise.
-- [ ] Reconcile unused `Imports` after the legacy API surface is narrowed.
+- [x] Reconcile unused `Imports` after the legacy API surface is narrowed.
 
 ## Slice 5: Core QC Contracts
 

@@ -4,6 +4,8 @@
 #' @importFrom tidyr drop_na
 #' @import emojifont
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom magick image_read
+#' @importFrom tibble as_tibble
 #'
 #' @export
 Infographic <- R6::R6Class(
