@@ -17,7 +17,7 @@ should include a semantic version bump and `NEWS.md` entry.
 - [x] If no canonical `../mnemosyne-docs` entry exists for `bamana`, record
       `../bamana/CHARTER.md` and `../bamana/docs/project-charter.md` as the
       governing boundary for BAM integration until canonical docs are added.
-- [ ] If no canonical `../mnemosyne-docs` entry exists for `porkchop`, record
+- [x] If no canonical `../mnemosyne-docs` entry exists for `porkchop`, record
       `../porkchop/AGENTS.md`, `../porkchop/ROADMAP.md`, `../porkchop/README.md`,
       and relevant Sphinx docs as the governing boundary for
       library-preparation QC integration until canonical docs are added.
@@ -25,9 +25,9 @@ should include a semantic version bump and `NEWS.md` entry.
       development or only during releases.
 - [x] Add or update CI for R package check.
 - [x] Record the FAST5 retirement direction in `NEWS.md`.
-- [ ] Record and enforce the distribution boundary: floundeR, pod5-tools, and
-      bamana are open-source; Grammateus remains private and optional from the
-      public package's perspective.
+- [x] Record and enforce the distribution boundary: floundeR, pod5-tools,
+      bamana, and porkchop are open-source; Grammateus remains private and
+      optional from the public package's perspective.
 - [x] Run `R CMD check --no-manual --no-build-vignettes .` and capture any
       remaining failures as follow-up tasks.
 

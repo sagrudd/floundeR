@@ -1,3 +1,9 @@
+# floundeR 0.0.10
+
+* Added a repository-level governance check that enforces the open-source
+  boundary for floundeR, pod5-tools, bamana, and porkchop while keeping
+  Grammateus private, optional, and distributed through prebuilt runtime assets.
+
 # floundeR 0.0.9
 
 * Added Porkchop to the curated open-source Rust engine plan for adapter,

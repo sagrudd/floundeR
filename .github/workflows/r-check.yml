@@ -16,6 +16,9 @@ jobs:
         with:
           use-public-rspm: true
 
+      - name: Check governance boundaries
+        run: Rscript scripts/check-governance-boundaries.R
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
