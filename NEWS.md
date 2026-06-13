@@ -1,3 +1,8 @@
+# floundeR 0.0.16
+
+* Added fixture-backed schema tests for the initial sequencing-summary,
+  barcode-summary, and POD5-manifest QC table contracts.
+
 # floundeR 0.0.15
 
 * Added a test helper and development guidance so optional compiled Rust-backed

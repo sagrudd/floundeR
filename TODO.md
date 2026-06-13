@@ -61,7 +61,7 @@ current non-FAST5 package surface.
 - [x] Ensure network-dependent ONT open-data tests are opt-in and skipped by
       default on CRAN-like/local package checks.
 - [x] Make tests skip cleanly when optional compiled Rust support is absent.
-- [ ] Add schema tests for public QC return values.
+- [x] Add schema tests for public QC return values.
 - [x] Add a local command note for running focused tests and full checks.
 
 ## Slice 4: Sequencing Summary Modernisation
