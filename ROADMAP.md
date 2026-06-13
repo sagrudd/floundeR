@@ -170,6 +170,9 @@ Target shape:
   layer inside R;
 - do not shell out to Grammateus command-line binaries for normal report
   rendering;
+- support both directions of control: R can pass existing `ggplot2` plot
+  artifacts into Grammateus reports, and Grammateus can call controlled R plot
+  generation from semantic report specifications;
 - represent QC tables, figures, plots, images, report cards, provenance, and
   report lifecycle metadata as Grammateus semantic elements;
 - keep Mnemosyne Biosciences branding, typography, and technical-report styling
@@ -179,6 +182,7 @@ Target shape:
   plot/table hashes, and report payload hashes;
 - align trusted-report output with Synoptikon/Mnemosyne lifecycle and
   governance-signing contracts.
+- document the R-facing interface in `REPORTING_INTERFACE.md`.
 
 The local `../grammateus` checkout is source-complete and exports report
 element, rendering, provenance, trusted-report, governance, template, and
@@ -388,6 +392,8 @@ Deliverables:
 - add a modern pkgdown site with examples focused on QC questions;
 - add a run QC vignette built around real sequencing-summary/POD5 metadata;
 - add Grammateus-backed technical report rendering for run QC;
+- add a documented R/Grammateus plot interface covering R-to-Grammateus
+  artifact handoff and Grammateus-to-R controlled plot generation;
 - define Grammateus semantic elements for run metadata tables, yield plots,
   flowcell density figures, barcode summaries, POD5 integrity tables, report
   card findings, BAM alignment summaries, BAM validation/index/sort evidence,
@@ -413,6 +419,8 @@ Acceptance criteria:
   RMarkdown-only documents or external CLI calls;
 - reports include stable element identifiers, captions, alt text where
   applicable, provenance, and Mnemosyne Biosciences branding.
+- existing R plots can be dropped into reports through a documented helper, and
+  semantic Grammateus plot specs can trigger controlled R/ggplot2 rendering.
 
 ## Milestone 6: Release Discipline
 

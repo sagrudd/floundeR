@@ -1,3 +1,9 @@
+# floundeR 0.0.7
+
+* Added an explicit Grammateus reporting interface plan for dropping R plots
+  into governed HTML/PDF reports and for controlled R plot generation from
+  Grammateus report specifications.
+
 # floundeR 0.0.6
 
 * Started the reboot planning baseline for contemporary nanopore QC and review.

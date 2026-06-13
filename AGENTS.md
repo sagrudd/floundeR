@@ -107,6 +107,9 @@ processing remains a first-class QC surface.
 - Grammateus is the target reporting engine for technical QC reports.
 - RMarkdown may be retained only as a legacy or transitional path while
   Grammateus coverage is incomplete.
+- Reporting must support both directions of control: R can drop existing
+  `ggplot2` plot artifacts into a Grammateus report, and Grammateus can call
+  controlled R/ggplot2 generation from semantic plot specs.
 - Reports must use semantic elements for tables, figures, plots, images,
   provenance, methods, limitations, and appendices.
 - Tables, figures, and plots must have stable identifiers and captions.
@@ -118,6 +121,8 @@ processing remains a first-class QC surface.
 - Reports that include aligned-read evidence should include Bamana-derived BAM
   summary, validation, index, mapping, sorting, tag, and provenance sections as
   appropriate.
+- The detailed R/Grammateus interface is documented in
+  `REPORTING_INTERFACE.md`; keep it current when report APIs change.
 
 ## Semantic Versioning
 

@@ -193,6 +193,12 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 - [ ] Identify the Grammateus public library APIs needed for semantic report
       elements, rendering, manifests, provenance, branding, and trusted-report
       lifecycle metadata.
+- [ ] Implement R-to-Grammateus plot artifact handoff for existing `ggplot2`
+      plots, including deterministic SVG/PNG output, checksums, captions, alt
+      text, methods notes, and provenance.
+- [ ] Implement Grammateus-to-R controlled plot generation wrappers for
+      semantic `ReportPlot` specs, using local `Rscript` or governed container
+      execution as configured.
 - [ ] Add in-process Rust bindings from `floundeR` to Grammateus report
       rendering; do not shell out to Grammateus CLI binaries.
 - [ ] Define Grammateus semantic elements for run metadata, QC summary,
@@ -203,6 +209,9 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
       templates/themes.
 - [ ] Implement `qc_report()` or equivalent R API that produces HTML/PDF plus a
       report manifest/provenance payload.
+- [ ] Add the first QC plot helper set for yield over time, read quality, read
+      length, flowcell density, barcode balance, POD5 integrity, BAM mapping,
+      BAM MAPQ, and BAM flag summaries.
 - [ ] Add tests for report element schemas, required captions/alt text,
       provenance hashes, and stable report identifiers.
 - [ ] Keep RMarkdown support only as a documented legacy/transitional path until
@@ -218,6 +227,8 @@ and `rhdf5`, which remains until the FAST5 retirement slice removes it.
 - [ ] Use `pod5-tools`-derived subset/split POD5 artifacts for lightweight
       demonstrations where full source POD5 files are too large.
 - [ ] Add a Grammateus-backed technical report vignette.
+- [ ] Add a vignette showing both reporting directions: R plot dropped into a
+      Grammateus report, and Grammateus semantic plot spec rendered by R.
 - [ ] Update pkgdown navigation.
 - [ ] Add plot examples for report-card findings.
 
