@@ -1,3 +1,8 @@
+# floundeR 0.1.8
+
+* Documented source-install requirements for macOS, Linux, Windows, Docker, and
+  CI builds of the embedded Rust extension, and made CI set up Rust explicitly.
+
 # floundeR 0.1.7
 
 * Added public R wrappers for compiled Rust capability checks, typed

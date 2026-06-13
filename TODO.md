@@ -115,7 +115,7 @@ current non-FAST5 package surface.
 - [x] Add a minimal Rust function callable from R.
 - [x] Add R wrappers with typed errors and test skips when Rust tooling is
       unavailable.
-- [ ] Document source-install requirements for macOS, Linux, and CI.
+- [x] Document source-install requirements for macOS, Linux, and CI.
 
 ## Slice 7: POD5 Discovery Binding
 

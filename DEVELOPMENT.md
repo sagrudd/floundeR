@@ -32,6 +32,90 @@ assets, ONT POD5 example data, or large external files. Rust source builds need
 Cargo and rustc; the development container installs them through the system
 package manager.
 
+## Source Install Requirements
+
+Source installs build the embedded Rust extension in `src/rust` through
+`src/Makevars` and `src/Makevars.win`. The current minimum Rust toolchain is
+Cargo plus rustc with Rust `1.71` or newer, matching `DESCRIPTION` and
+`src/rust/Cargo.toml`. Rust-backed APIs are in-process R extension calls, not
+CLI wrappers.
+
+The package must remain installable without private Grammateus source or
+runtime assets. `../pod5-tools`, `../bamana`, and `../porkchop` are not required
+for the current scaffold build; they should become explicit Rust library
+dependencies only in the functional binding slices that need them.
+
+### macOS
+
+Install standard build tools and Rust before installing from source:
+
+```sh
+xcode-select --install
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustc --version
+cargo --version
+```
+
+For GitHub Actions on macOS, add a Rust toolchain setup step before the R
+dependency and package-check steps. The current workflow target is
+`macos-latest`; it should ensure `cargo` and `rustc` are on `PATH` before
+`R CMD INSTALL` or `R CMD check` runs.
+
+### Linux
+
+Use either the system Rust packages or `rustup`. The development Docker image
+uses the distribution packages for reproducibility:
+
+```sh
+sudo apt-get update
+sudo apt-get install -y cargo rustc make gcc g++ gfortran pkg-config
+rustc --version
+cargo --version
+```
+
+System libraries for the current R dependency surface are declared in
+`Dockerfile`. Use that file as the baseline for clean Linux source builds while
+the package still depends on native-heavy R packages such as `Rsamtools`,
+`ShortRead`, and `magick`.
+
+### Windows
+
+Windows source installs use `src/Makevars.win` and require Rtools plus Cargo
+and rustc on `PATH`. The Rust target must match the R/Rtools architecture. This
+path is documented but not yet exercised by the project Docker check, so
+Windows CI should be added before claiming first-class Windows binary support.
+
+### Docker
+
+The project Docker image is the canonical clean build environment during the
+revival:
+
+```sh
+docker build -t flounder-dev .
+docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
+  sh scripts/check-r-release-tarball.sh
+```
+
+The image installs Cargo and rustc and verifies that the embedded Rust static
+library links into the R package shared object. It intentionally does not
+include private Grammateus assets, ONT POD5 example data, or large derived
+files.
+
+### CI
+
+CI must install or activate Cargo and rustc before R dependency resolution and
+package checks. Required CI checks for Rust-bearing changes are:
+
+```sh
+cargo fmt --manifest-path=src/rust/Cargo.toml --check
+cargo build --manifest-path=src/rust/Cargo.toml --lib --release
+Rscript scripts/check-governance-boundaries.R
+sh scripts/check-r-release-tarball.sh
+```
+
+Credentialed/private CI may add Grammateus runtime checks later, but public CI
+must continue to pass without private Grammateus source or runtime downloads.
+
 ## Dependency Audit
 
 Write a tab-separated audit of declared package dependencies, their source
@@ -128,14 +212,15 @@ FLOUNDER_RUN_NETWORK_TESTS=true Rscript -e 'testthat::test_local("tests/testthat
 Network tests must still use explicit cache directories outside the repository
 and must not commit downloaded or derived POD5 files.
 
-## Optional Rust Tests
+## Rust-Backed Tests
 
-Rust-backed tests must skip cleanly until the in-process Rust extension is
-built and available. Tests that require compiled POD5, BAM/BGZF/FASTQ,
-Porkchop, or Grammateus bindings should call `skip_if_no_flounder_rust()`.
+Rust-backed tests must skip cleanly when a required compiled feature or runtime
+is unavailable. Tests that require compiled POD5, BAM/BGZF/FASTQ, Porkchop, or
+Grammateus bindings should call `skip_if_no_flounder_rust()` or a more specific
+helper built on `flounder_rust_capabilities()`.
 
-Run Rust-backed tests explicitly once the compiled bindings exist:
+Run Rust-focused tests after installing the package from source:
 
 ```sh
-FLOUNDER_RUST_AVAILABLE=true Rscript -e 'testthat::test_local("tests/testthat")'
+Rscript -e 'library(floundeR); testthat::test_file("tests/testthat/test-rust-capabilities.R")'
 ```

@@ -20,9 +20,10 @@ Verified on 2026-06-13:
 - Notable native dependency coverage: `Rsamtools` and `ShortRead` built
   successfully from source with the system libraries declared in `Dockerfile`.
 
-The image is intentionally a development/check image. It does not include Rust
-bindings, private Grammateus runtime assets, downloaded POD5 files, or derived
-large example data.
+The image is intentionally a development/check image. It includes Cargo and
+rustc so source package checks can build the embedded Rust extension. It does
+not include private Grammateus runtime assets, downloaded POD5 files, or
+derived large example data.
 
 ## Version Snapshot
 

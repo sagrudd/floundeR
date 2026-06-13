@@ -32,6 +32,10 @@ devtools::install_github("sagrudd/floundeR")
 FAST5 support has been retired. The reboot direction for raw-signal QC is POD5
 metadata and integrity inspection through Rust-backed package APIs.
 
+Source installs now build a small embedded Rust extension. Install Cargo and
+rustc first, then install the package from GitHub. Platform-specific source
+install notes for macOS, Linux, Windows, Docker, and CI are recorded in
+[`DEVELOPMENT.md`](DEVELOPMENT.md#source-install-requirements).
 
 ## `floundeR` and a BasicQC analysis to assess a flowcell run
 

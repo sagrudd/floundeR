@@ -183,3 +183,15 @@ pattern:
 - tests that require optional compiled or external runtime support call
   `skip_if_no_flounder_rust()` or a more specific helper built on the same
   capability metadata.
+
+## Source Install Requirements
+
+Source installs require Cargo and rustc because `src/Makevars` builds the
+embedded Rust static library before linking the R package shared object. The
+current minimum Rust version is `1.71`. Detailed macOS, Linux, Windows, Docker,
+and CI setup notes live in `DEVELOPMENT.md#source-install-requirements`.
+
+The public package must not require private Grammateus source or runtime assets
+to install or check. Public CI should verify the open-source Rust scaffold and
+core QC package only; private Grammateus report rendering belongs in a separate
+credentialed check path.
