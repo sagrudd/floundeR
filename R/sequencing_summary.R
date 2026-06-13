@@ -154,6 +154,29 @@ SequencingSummary <- R6::R6Class(
             "c", "i", "d", "d", "l", "d", "d", "c"
         ),
 
+        .seqsum_col_type = function(type) {
+            switch(
+                type,
+                c = readr::col_character(),
+                i = readr::col_integer(),
+                d = readr::col_double(),
+                l = readr::col_logical(),
+                stop(
+                    "Unsupported sequencing summary column type: ",
+                    type,
+                    call. = FALSE))
+        },
+
+        .seqsum_col_spec = function(import_cols) {
+            ctypes <- private$select_column_types[
+                match(import_cols, private$select_columns)]
+            col_specs <- stats::setNames(
+                lapply(ctypes, private$.seqsum_col_type),
+                import_cols)
+
+            do.call(readr::cols_only, col_specs)
+        },
+
         .parse_seqsum = function() {
 
             mini_table <- readr::read_tsv(
@@ -165,22 +188,14 @@ SequencingSummary <- R6::R6Class(
             }
             import_cols <- names(mini_table)[
                 na.omit(match(private$select_columns, names(mini_table)))]
-            ctypes = private$select_column_types[
-                match(import_cols, private$select_columns)]
-            colt = paste0(
-                "readr::cols_only(",
-                paste(paste(
-                    import_cols, "=\"", ctypes, "\"",sep=""), collapse=", "),
-                ")")
 
             private$seqsum <- readr::read_tsv(
                 file=self$sequencing_summary_file,
-                col_types=eval(parse(text=colt)))
+                col_types=private$.seqsum_col_spec(import_cols))
 
             return(TRUE)
         }
     )
 )
-
 
 

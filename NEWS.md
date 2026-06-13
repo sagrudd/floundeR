@@ -1,3 +1,10 @@
+# floundeR 0.0.18
+
+* Replaced generated `eval(parse())` sequencing-summary column specifications
+  with structured `readr::cols_only()` collector construction.
+* Added regression coverage for legacy Guppy-like and Dorado-like sequencing
+  summary fixtures.
+
 # floundeR 0.0.17
 
 * Added a Docker-backed development build path and a dependency audit script for

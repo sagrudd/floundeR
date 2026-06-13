@@ -69,11 +69,11 @@ current non-FAST5 package surface.
 
 ## Slice 4: Sequencing Summary Modernisation
 
-- [ ] Replace `eval(parse())` column specification construction with structured
+- [x] Replace `eval(parse())` column specification construction with structured
       `readr::cols_only()` construction.
 - [ ] Support current Dorado/MinKNOW sequencing summary naming variants.
 - [ ] Return clear partial-result warnings for absent optional columns.
-- [ ] Add tests for old Guppy-like and current Dorado-like summaries.
+- [x] Add tests for old Guppy-like and current Dorado-like summaries.
 - [x] Correct documentation that describes sequencing-summary inputs as FAST5.
 
 ## Slice 4A: Check Debt Exposed By Container Build
