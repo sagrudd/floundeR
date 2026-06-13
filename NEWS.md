@@ -1,3 +1,8 @@
+# floundeR 0.1.10
+
+* Raised the Rust toolchain floor to 1.85 and moved the embedded crate to Rust
+  edition 2024 so floundeR can depend on the current `../pod5-tools` library.
+
 # floundeR 0.1.9
 
 * Recorded the POD5 discovery preflight against `../pod5-tools`, confirming

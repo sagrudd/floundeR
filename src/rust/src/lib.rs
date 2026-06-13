@@ -5,14 +5,19 @@ use core::panic::PanicInfo;
 
 type SEXP = *mut c_void;
 
-extern "C" {
+unsafe extern "C" {
     fn Rf_mkString(value: *const c_char) -> SEXP;
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn flounder_rust_capabilities() -> SEXP {
     unsafe {
-        const PAYLOAD: &[u8] = b"flounder.rust_capabilities.v1|flounder-extendr|0.1.6\0";
+        const PAYLOAD: &[u8] = concat!(
+            "flounder.rust_capabilities.v1|flounder-extendr|",
+            env!("CARGO_PKG_VERSION"),
+            "\0"
+        )
+        .as_bytes();
         Rf_mkString(PAYLOAD.as_ptr().cast())
     }
 }

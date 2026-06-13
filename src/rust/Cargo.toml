@@ -1,8 +1,8 @@
 [package]
 name = "flounder-extendr"
-version = "0.1.6"
-edition = "2021"
-rust-version = "1.71"
+version = "0.1.10"
+edition = "2024"
+rust-version = "1.85"
 publish = false
 
 [lib]

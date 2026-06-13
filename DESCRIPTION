@@ -1,6 +1,6 @@
 Package: floundeR
 Title: Toolkit For Nanopore Sequence Analysis
-Version: 0.1.9
+Version: 0.1.10
 Authors@R: 
     person(given = "Stephen",
            family = "Rudd",
@@ -13,7 +13,7 @@ Description: FloundeR provides an update to the deprecated nanopoRe package. The
     code has been updated to adhere to TidyVerse recommendations and the
     functionality of the original code has been pared back for simpler usage.
 License: file LICENSE
-SystemRequirements: Cargo (Rust >= 1.71), rustc
+SystemRequirements: Cargo (Rust >= 1.85), rustc
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

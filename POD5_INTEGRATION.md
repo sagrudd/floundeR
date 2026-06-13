@@ -36,10 +36,9 @@ library function, followed by conversion to an R data frame or tibble.
 
 ## Dependency Prerequisite
 
-`../pod5-tools` is currently a Rust edition 2024 crate. floundeR still declares
-Rust `1.71` as its minimum. Before adding `../pod5-tools` as a path dependency,
-align floundeR's Rust toolchain floor with the upstream crate and update the
-source-install documentation, Docker/CI expectations, and package metadata.
+`../pod5-tools` is currently a Rust edition 2024 crate. floundeR now requires
+Rust `1.85` or newer and the embedded crate also uses Rust edition 2024, so the
+toolchain floor is aligned for the first `../pod5-tools` path dependency.
 
 ## Scope Guard
 

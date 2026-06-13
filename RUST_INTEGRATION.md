@@ -188,7 +188,7 @@ pattern:
 
 Source installs require Cargo and rustc because `src/Makevars` builds the
 embedded Rust static library before linking the R package shared object. The
-current minimum Rust version is `1.71`. Detailed macOS, Linux, Windows, Docker,
+current minimum Rust version is `1.85`. Detailed macOS, Linux, Windows, Docker,
 and CI setup notes live in `DEVELOPMENT.md#source-install-requirements`.
 
 The public package must not require private Grammateus source or runtime assets
@@ -211,7 +211,6 @@ No adjacent `pod5-tools` code promotion is required for the initial
 in-process and convert records to a tibble/data frame, rather than invoking the
 `pod5-tools find` CLI or parsing TSV/JSON text.
 
-The remaining prerequisite is toolchain alignment: `pod5-tools` currently uses
-Rust edition 2024, while the floundeR scaffold still documents Rust `1.71` as
-its minimum. The next binding slice should align floundeR's Rust floor before
-adding the `../pod5-tools` path dependency.
+The toolchain prerequisite is now aligned: floundeR requires Rust `1.85` or
+newer and the embedded crate uses Rust edition 2024, matching the floor needed
+to depend on the current `../pod5-tools` crate.

@@ -29,14 +29,13 @@ Rscript scripts/bootstrap-r-dependencies.R --check
 
 The bootstrap script does not install Rust tooling, private Grammateus runtime
 assets, ONT POD5 example data, or large external files. Rust source builds need
-Cargo and rustc; the development container installs them through the system
-package manager.
+Cargo and rustc; the development container installs them through rustup.
 
 ## Source Install Requirements
 
 Source installs build the embedded Rust extension in `src/rust` through
 `src/Makevars` and `src/Makevars.win`. The current minimum Rust toolchain is
-Cargo plus rustc with Rust `1.71` or newer, matching `DESCRIPTION` and
+Cargo plus rustc with Rust `1.85` or newer, matching `DESCRIPTION` and
 `src/rust/Cargo.toml`. Rust-backed APIs are in-process R extension calls, not
 CLI wrappers.
 
@@ -63,12 +62,14 @@ dependency and package-check steps. The current workflow target is
 
 ### Linux
 
-Use either the system Rust packages or `rustup`. The development Docker image
-uses the distribution packages for reproducibility:
+Use `rustup` or a system Rust package that provides Rust `1.85` or newer. The
+development Docker image uses rustup stable because some distribution packages
+lag the Rust edition 2024 floor required by `../pod5-tools`:
 
 ```sh
 sudo apt-get update
-sudo apt-get install -y cargo rustc make gcc g++ gfortran pkg-config
+sudo apt-get install -y curl ca-certificates make gcc g++ gfortran pkg-config
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustc --version
 cargo --version
 ```
@@ -96,8 +97,9 @@ docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
   sh scripts/check-r-release-tarball.sh
 ```
 
-The image installs Cargo and rustc and verifies that the embedded Rust static
-library links into the R package shared object. It intentionally does not
+The image installs rustup stable, Cargo, and rustc, then verifies that the
+embedded Rust static library links into the R package shared object. It
+intentionally does not
 include private Grammateus assets, ONT POD5 example data, or large derived
 files.
 
@@ -160,10 +162,11 @@ docker run --rm -v "$PWD":/workspace -w /workspace flounder-dev \
   sh scripts/check-r-release-tarball.sh
 ```
 
-The container includes Cargo and rustc so the embedded `extendr` scaffold can
-be built during package checks. It does not bundle private Grammateus runtime
-assets, ONT POD5 example data, or large derived files. Those remain explicit
-opt-in layers once the curated Rust interfaces are ready.
+The container includes rustup stable, Cargo, and rustc so the embedded
+`extendr` scaffold can be built during package checks and can later depend on
+Rust edition 2024 crates such as `../pod5-tools`. It does not bundle private
+Grammateus runtime assets, ONT POD5 example data, or large derived files. Those
+remain explicit opt-in layers once the curated Rust interfaces are ready.
 
 ## Legacy RMarkdown Vignettes
 

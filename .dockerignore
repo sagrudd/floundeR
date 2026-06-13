@@ -7,6 +7,7 @@
 docs
 renv/library
 renv/staging
+src/rust/target
 *.pod5
 *.fast5
 *.bam
