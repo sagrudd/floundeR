@@ -210,7 +210,7 @@ current non-FAST5 package surface.
 
 - [x] Define a versioned synoptikon QC payload.
 - [x] Implement `as_synoptikon_qc()` or `write_synoptikon_qc()`.
-- [ ] Include sequencing-summary, flowcell, barcode, POD5 integrity, BAM QC,
+- [x] Include sequencing-summary, flowcell, barcode, POD5 integrity, BAM QC,
       and library-preparation evidence sections.
 - [ ] Add validation tests against the expected `../mnemosyne` schema.
 - [ ] Add a vignette showing end-to-end handoff.

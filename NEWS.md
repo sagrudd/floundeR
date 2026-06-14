@@ -1,3 +1,9 @@
+# floundeR 0.11.1
+
+* Strengthened Synoptikon QC payload section handling so supplied flowcell,
+  barcode, POD5, BAM, and library-preparation evidence contributes section
+  status and is covered by offline tests.
+
 # floundeR 0.11.0
 
 * Added `as_synoptikon_qc()` and `write_synoptikon_qc()` to assemble existing

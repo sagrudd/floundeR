@@ -153,10 +153,25 @@ write_synoptikon_qc <- function(path, ..., pretty = TRUE) {
   list(
     present = present,
     schema_version = .synoptikon_schema_version(tables),
-    status = if (present) "not_checked" else "not_available",
+    status = .synoptikon_section_status(present, tables),
     summary = summary,
     tables = tables,
     artifacts = list())
+}
+
+.synoptikon_section_status <- function(present, tables) {
+  if (!present) {
+    return("not_available")
+  }
+
+  statuses <- unlist(lapply(tables, function(table) {
+    vapply(table, function(row) row$status %||% NA_character_, character(1))
+  }), use.names = FALSE)
+  statuses <- stats::na.omit(statuses)
+  if (length(statuses) == 0) {
+    return("not_checked")
+  }
+  .synoptikon_worst_status(statuses)
 }
 
 .synoptikon_tables <- function(x) {
