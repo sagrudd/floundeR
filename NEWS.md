@@ -1,3 +1,13 @@
+# floundeR 0.13.4
+
+* Identified the Grammateus public Rust APIs floundeR should use for semantic
+  tables, figures, controlled R plots, HTML/PDF rendering, trusted-report
+  manifests, provenance tables, lifecycle metadata, governance envelopes,
+  branding hooks, and optional runtime integration.
+* Recorded the Grammateus APIs that should remain out of normal floundeR
+  bindings so the reporting surface stays focused on nanopore QC and
+  Synoptikon handoff rather than becoming a general Grammateus frontend.
+
 # floundeR 0.13.3
 
 * Recorded Grammateus canonical charter, SRS, ARD, rendering-elements, and

@@ -238,7 +238,7 @@ current non-FAST5 package surface.
       before adding it as a Rust library dependency.
 - [x] Verify the Grammateus charter, SRS, ARDs, and rendering/trusted-report
       contracts in `../mnemosyne-docs` before changing `../grammateus`.
-- [ ] Identify the Grammateus public library APIs needed for semantic report
+- [x] Identify the Grammateus public library APIs needed for semantic report
       elements, rendering, manifests, provenance, branding, and trusted-report
       lifecycle metadata.
 - [ ] Implement R-to-Grammateus plot artifact handoff for existing `ggplot2`
