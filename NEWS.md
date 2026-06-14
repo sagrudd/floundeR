@@ -1,3 +1,9 @@
+# floundeR 0.21.14
+
+* Added a Grammateus technical-report vignette that builds a runtime-free
+  semantic QC report contract, governed figure wrapper, Mnemosyne theme
+  descriptor, manifest, and runtime-gated HTML/PDF rendering path.
+
 # floundeR 0.21.13
 
 * Added a focused derived-POD5 demonstration artifact guide covering the

@@ -1,0 +1,263 @@
+---
+title: "Grammateus Technical Report"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Grammateus Technical Report}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows how floundeR prepares a Grammateus-backed technical QC
+report. The package vignette is rendered with RMarkdown, but the report artifact
+it creates is not an RMarkdown report: it is a Grammateus semantic report
+contract plus a manifest, provenance, figure metadata, and Mnemosyne Biosciences
+theme references.
+
+The public open-source package can build these contracts without private
+Grammateus runtime assets. Governed HTML/PDF rendering is enabled only when an
+authorized prebuilt Grammateus runtime is installed and validated.
+
+```{r setup}
+library(floundeR)
+```
+
+## Prepare QC Evidence
+
+Start with run-level QC tables that are stable R objects and can also feed
+Synoptikon handoff.
+
+```{r qc-evidence}
+summary_file <- flnDr("sequencing_summary.txt.bz2")
+generated_at <- "2026-06-14T15:27:10Z"
+run_id <- "example-grammateus-report"
+
+run_summary <- qc_run_summary(
+  summary_file,
+  source_id = "example-sequencing-summary"
+)
+yield_over_time <- qc_yield_over_time(summary_file, resolution_minutes = 15)
+quality_distribution <- qc_quality_distribution(summary_file, bins = 5)
+flowcell_density <- qc_channel_density(summary_file)
+barcode_balance <- qc_barcode_composition(summary_file)
+run_report_card <- qc_report_card(
+  run_summary,
+  barcode_composition = barcode_balance
+)
+
+run_summary
+run_report_card[, c("check_id", "status", "observed_value", "details")]
+```
+
+POD5, BAM, and library-preparation evidence remain sectioned report inputs. This
+small vignette records POD5 open-data provenance and marks missing BAM/library
+evidence explicitly rather than inventing bundled files.
+
+```{r cross-surface-evidence}
+pod5_example <- ont_zymo_pod5_example_objects(role = "pass")
+
+pod5_integrity <- data.frame(
+  schema_version = "flounder.pod5_open_data_example.v1",
+  status = "not_downloaded",
+  role = pod5_example$role,
+  s3_uri = pod5_example$s3_uri,
+  size_bytes = pod5_example$size,
+  intended_use = pod5_example$intended_use,
+  stringsAsFactors = FALSE
+)
+
+bam_alignment_summary <- data.frame(
+  schema_version = "flounder.bam_alignment_summary.v1",
+  status = "not_checked",
+  detail = "No BAM file is bundled with this vignette fixture.",
+  stringsAsFactors = FALSE
+)
+
+library_preparation <- data.frame(
+  schema_version = "flounder.library_preparation_qc.v1",
+  status = "not_checked",
+  detail = paste(
+    "No read-level library-preparation screen is bundled with this vignette.",
+    "Porkchop-derived adapter, primer, barcode, kit, and cDNA evidence should",
+    "populate this table when available."
+  ),
+  stringsAsFactors = FALSE
+)
+```
+
+## Create A Governed Figure Wrapper
+
+Figures handed to Grammateus need stable identifiers, captions, alt text,
+artifact checksums, and provenance. This example wraps a tiny SVG fixture so the
+vignette remains dependency-light; the R-to-Grammateus plot handoff vignette
+covers `ggplot2` figure generation in more detail.
+
+```{r report-figure}
+report_dir <- file.path(tempdir(), "flounder-grammateus-report")
+unlink(report_dir, recursive = TRUE)
+dir.create(report_dir, recursive = TRUE)
+
+yield_svg <- file.path(report_dir, "yield-over-time.svg")
+writeLines(
+  c(
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"240\" height=\"120\">",
+    "  <rect width=\"240\" height=\"120\" fill=\"#ffffff\"/>",
+    "  <polyline points=\"20,95 75,72 130,48 185,34 220,24\"",
+    "    fill=\"none\" stroke=\"#237A57\" stroke-width=\"5\"/>",
+    "  <circle cx=\"220\" cy=\"24\" r=\"6\" fill=\"#237A57\"/>",
+    "</svg>"
+  ),
+  yield_svg,
+  useBytes = TRUE
+)
+
+yield_figure <- grammateus_figure_from_file(
+  path = yield_svg,
+  figure_id = "figure_yield_over_time",
+  caption = "Cumulative sequencing yield over time.",
+  alt_text = paste(
+    "Line chart icon showing cumulative sequencing yield increasing over",
+    "elapsed run time."
+  ),
+  methods_note = "Wrapped as a deterministic SVG artifact for vignette use.",
+  width_px = 240,
+  height_px = 120,
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+yield_figure$source[c("format", "checksum", "width_px", "height_px")]
+```
+
+## Assemble Semantic Report Elements
+
+`grammateus_qc_report_elements()` maps floundeR QC tables into named semantic
+technical-report elements. The Mnemosyne theme descriptor records the private
+runtime template/theme references without bundling private assets.
+
+```{r report-elements}
+run_metadata <- data.frame(
+  run_id = run_id,
+  sample_id = "example-sample",
+  project_id = "flounder-revival",
+  pod5_source = pod5_example$s3_uri,
+  stringsAsFactors = FALSE
+)
+
+limitations <- data.frame(
+  limitation_id = "example_pod5_not_downloaded",
+  severity = "info",
+  section = "pod5",
+  message = "The selected ONT POD5 object is recorded as provenance only.",
+  stringsAsFactors = FALSE
+)
+
+input_provenance <- data.frame(
+  input_id = "example-sequencing-summary",
+  kind = "sequencing_summary",
+  uri = summary_file,
+  size_bytes = unname(file.info(summary_file)$size),
+  stringsAsFactors = FALSE
+)
+
+elements <- grammateus_qc_report_elements(
+  run_metadata = run_metadata,
+  qc_summary = run_summary,
+  flowcell_density = flowcell_density,
+  yield_over_time = yield_over_time,
+  quality_distribution = quality_distribution,
+  barcode_balance = barcode_balance,
+  pod5_integrity = pod5_integrity,
+  bam_alignment_summary = bam_alignment_summary,
+  library_preparation = library_preparation,
+  report_card_findings = run_report_card,
+  methods = paste(
+    "Run-level metrics were generated from a floundeR sequencing-summary",
+    "fixture. POD5 source metadata references the canonical ONT Zymo fecal",
+    "pass example without downloading raw POD5 bytes."
+  ),
+  limitations = limitations,
+  provenance = input_provenance,
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+theme <- grammateus_mnemosyne_theme(
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+elements$element_count
+theme$brand$name
+theme$template$runtime_template_ref
+```
+
+## Write The Report Contract
+
+`qc_report()` writes a Grammateus-shaped contract and manifest. The example uses
+`render = "never"` so public vignette builds never require private runtime
+assets. Use `render = "if_available"` or `render = "require"` in authorized
+runtime environments.
+
+```{r write-report}
+report <- qc_report(
+  elements = elements,
+  figures = list(yield_figure),
+  output_dir = report_dir,
+  output = c("html", "pdf"),
+  render = "never",
+  theme = theme,
+  report_id = "report_example_nanopore_qc",
+  title = "Example nanopore sequencing QC report",
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+basename(report$contract_path)
+basename(report$manifest_path)
+report$manifest[c("schema_version", "report_id", "element_count", "figure_count")]
+vapply(report$outputs, `[[`, character(1), "status")
+```
+
+The manifest records the contract checksum, output status, theme references, and
+provenance needed for governed report lifecycle handling.
+
+```{r inspect-manifest}
+manifest <- jsonlite::fromJSON(report$manifest_path, simplifyVector = FALSE)
+
+manifest$contract[c("sha256", "byte_len")]
+manifest$theme
+manifest$runtime$status
+```
+
+## Runtime-Backed Rendering
+
+Authorized environments can request runtime-backed HTML/PDF rendering after the
+prebuilt Grammateus runtime has been installed and validated.
+
+```{r runtime-rendering, eval = FALSE}
+validation <- grammateus_runtime_validate()
+
+if (isTRUE(validation$ok)) {
+  rendered <- qc_report(
+    elements = elements,
+    figures = list(yield_figure),
+    output_dir = report_dir,
+    output = c("html", "pdf"),
+    render = "if_available",
+    report_id = "report_example_nanopore_qc",
+    title = "Example nanopore sequencing QC report",
+    produced_at_utc = generated_at,
+    run_id = run_id
+  )
+}
+```
+
+Use `render = "require"` only when a missing or invalid private runtime should
+be treated as a hard failure.

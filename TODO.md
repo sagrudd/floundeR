@@ -298,7 +298,7 @@ current non-FAST5 package surface.
       POD5 example.
 - [x] Use `pod5-tools`-derived subset/split POD5 artifacts for lightweight
       demonstrations where full source POD5 files are too large.
-- [ ] Add a Grammateus-backed technical report vignette.
+- [x] Add a Grammateus-backed technical report vignette.
 - [ ] Add a vignette showing both reporting directions: R plot dropped into a
       Grammateus report, and Grammateus semantic plot spec rendered by R.
 - [ ] Update pkgdown navigation.
