@@ -1,3 +1,9 @@
+# floundeR 0.21.12
+
+* Promoted the ONT Zymo fecal POD5 source and selected pass/fail objects as the
+  canonical opt-in real-data examples across README, dataset policy, and POD5
+  vignette guidance.
+
 # floundeR 0.21.11
 
 * Added contemporary package vignettes for POD5 QC and BAM QC, and refreshed the

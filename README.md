@@ -149,7 +149,10 @@ pod5_verify("/path/to/read_batch.pod5")
 pod5_file_info("/path/to/read_batch.pod5")
 ```
 
-`floundeR` also records a canonical opt-in real-data source from ONT open data:
+`floundeR` also records one canonical opt-in real-data POD5 source from ONT
+open data. New examples, vignettes, integration checks, and report demos should
+start from these helpers rather than choosing arbitrary objects from the public
+bucket:
 
 ```r
 ont_zymo_pod5_dataset()
@@ -164,7 +167,7 @@ large enough that downloads are always explicit and opt-in:
 
 ```r
 if (identical(tolower(Sys.getenv("FLOUNDER_RUN_NETWORK_TESTS")), "true")) {
-  object <- ont_zymo_pod5_example_objects()[1, ]
+  object <- ont_zymo_pod5_example_objects(role = "pass")
   ont_open_data_fetch(
     key = object$key,
     cache_dir = tools::R_user_dir("floundeR", "cache")

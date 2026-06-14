@@ -96,23 +96,44 @@ Rscript scripts/derive-pod5-demo-workflow.R
 
 ## Access From R
 
-`aws.s3` works for anonymous listing when the bucket region is supplied:
+`floundeR` wraps the canonical ONT Zymo POD5 source in small helpers so S3
+bucket details are not repeated across examples:
 
 ```r
-library(aws.s3)
+ont_zymo_pod5_dataset()
+ont_zymo_pod5_example_objects(role = "pass")
+ont_zymo_pod5_example_objects(role = "fail")
+```
 
-Sys.setenv(AWS_NO_SIGN_REQUEST = "true")
+The pass object is the default real-data demonstration input. The fail object is
+only for fail-state examples. Both remain opt-in downloads and must be cached
+outside the repository.
 
-objects <- aws.s3::get_bucket(
-  bucket = "ont-open-data",
-  prefix = "zymo_fecal_2025.05/raw/PAU85136/pod5/PAU85136_pass",
+Anonymous S3 listing is still available for controlled inspection:
+
+```r
+objects <- ont_open_data_list(
+  prefix = paste0(
+    flounder_ont_zymo_pod5_prefix(),
+    "PAU85136_pass"
+  ),
   max = 5,
-  region = "eu-west-1"
+  region = "eu-west-1",
+  anonymous = TRUE
 )
 ```
 
-Future package helpers should wrap this pattern in a small, explicit API such
-as `ont_open_data_list()` and `ont_open_data_fetch()`.
+Downloads must select exactly one object key:
+
+```r
+if (identical(tolower(Sys.getenv("FLOUNDER_RUN_NETWORK_TESTS")), "true")) {
+  object <- ont_zymo_pod5_example_objects(role = "pass")
+  ont_open_data_fetch(
+    key = object$key,
+    cache_dir = tools::R_user_dir("floundeR", "cache")
+  )
+}
+```
 
 ## Repository Policy
 

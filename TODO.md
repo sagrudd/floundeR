@@ -294,7 +294,7 @@ current non-FAST5 package surface.
 - [x] Rewrite README around the contemporary QC workflow.
 - [x] Add a "run health in one minute" example.
 - [x] Replace FAST5 vignette with POD5, BAM, and synoptikon QC vignettes.
-- [ ] Use the ONT Zymo fecal POD5 dataset as the canonical opt-in real-data
+- [x] Use the ONT Zymo fecal POD5 dataset as the canonical opt-in real-data
       POD5 example.
 - [ ] Use `pod5-tools`-derived subset/split POD5 artifacts for lightweight
       demonstrations where full source POD5 files are too large.

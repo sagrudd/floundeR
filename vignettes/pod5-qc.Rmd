@@ -29,7 +29,9 @@ rust_available <- flounder_rust_available()
 
 ## Canonical Open-Data Source
 
-floundeR uses a fixed ONT open-data POD5 source for opt-in real-data examples:
+floundeR uses a fixed ONT open-data POD5 source for opt-in real-data examples.
+This is the canonical real-data source for package documentation, integration
+checks, report demonstrations, and Synoptikon examples:
 `s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`.
 
 The routine pass example is
