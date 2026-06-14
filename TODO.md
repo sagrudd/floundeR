@@ -130,12 +130,12 @@ current non-FAST5 package surface.
       linking the Rust `std`/`pod5-tools` stack before Bioconductor/CRAN-facing
       release work.
 - [x] Add examples that do not call any external CLI process.
-- [ ] Add an opt-in example that lists the ONT Zymo fecal POD5 S3 prefix after
+- [x] Add an opt-in example that lists the ONT Zymo fecal POD5 S3 prefix after
       explicit user consent/network availability checks.
 
 ## Slice 7A: ONT Open-Data Helpers
 
-- [ ] Implement `ont_open_data_list()` for anonymous S3 listings using
+- [x] Implement `ont_open_data_list()` for anonymous S3 listings using
       `region = "eu-west-1"`.
 - [ ] Implement `ont_open_data_fetch()` with explicit object-key selection,
       cache directory control, and no implicit bulk downloads.

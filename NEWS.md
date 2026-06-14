@@ -1,3 +1,9 @@
+# floundeR 0.2.3
+
+* Added `ont_open_data_list()` for explicit anonymous metadata listings of the
+  selected ONT Zymo fecal POD5 S3 prefix, including an opt-in documentation
+  example that does not download POD5 files.
+
 # floundeR 0.2.2
 
 * Added an executable offline `pod5_find()` example that demonstrates
