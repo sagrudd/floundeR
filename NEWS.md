@@ -1,3 +1,9 @@
+# floundeR 0.21.17
+
+* Added report-card plot examples to the Grammateus technical-report vignette,
+  including governed status-count and per-check status figures for report
+  contracts.
+
 # floundeR 0.21.16
 
 * Added source pkgdown navigation for the rebooted documentation set, grouping

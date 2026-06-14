@@ -135,6 +135,120 @@ yield_figure <- grammateus_figure_from_file(
 yield_figure$source[c("format", "checksum", "width_px", "height_px")]
 ```
 
+## Plot Report-Card Findings
+
+Report-card findings are ordinary tidy rows, so they can be visualised before
+they are handed into Grammateus. Two useful examples are a compact status-count
+summary for dashboards and a check-level status matrix for technical reports.
+Both remain governed figures once wrapped with `grammateus_figure_from_ggplot()`.
+
+```{r report-card-plots}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  status_levels <- c("pass", "warn", "fail", "not_checked")
+  status_colours <- c(
+    pass = "#237A57",
+    warn = "#C88719",
+    fail = "#B33A3A",
+    not_checked = "#68717A"
+  )
+
+  status_counts <- as.data.frame(
+    table(
+      factor(run_report_card$status, levels = status_levels),
+      useNA = "no"
+    ),
+    stringsAsFactors = FALSE
+  )
+  names(status_counts) <- c("status", "check_count")
+  status_counts <- status_counts[status_counts$check_count > 0, , drop = FALSE]
+
+  status_count_plot <- ggplot2::ggplot(
+    status_counts,
+    ggplot2::aes(x = status, y = check_count, fill = status)
+  ) +
+    ggplot2::geom_col(width = 0.65) +
+    ggplot2::scale_fill_manual(values = status_colours, drop = FALSE) +
+    ggplot2::labs(
+      x = "Report-card status",
+      y = "Configured checks"
+    ) +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(legend.position = "none")
+
+  status_count_figure <- grammateus_figure_from_ggplot(
+    plot = status_count_plot,
+    figure_id = "figure_report_card_status_counts",
+    caption = "Report-card checks by pass, warning, and failure status.",
+    alt_text = paste(
+      "Bar chart counting report-card checks by pass, warning, failure,",
+      "or not-checked status."
+    ),
+    output_dir = report_dir,
+    formats = "png",
+    width = 120,
+    height = 75,
+    units = "mm",
+    dpi = 120,
+    methods_note = "Generated from qc_report_card() findings.",
+    source_data = run_report_card,
+    produced_at_utc = generated_at,
+    run_id = run_id
+  )
+
+  check_status_data <- run_report_card
+  check_status_data$check_label <- factor(
+    check_status_data$check_label,
+    levels = rev(check_status_data$check_label)
+  )
+
+  check_status_plot <- ggplot2::ggplot(
+    check_status_data,
+    ggplot2::aes(x = "QC checks", y = check_label, fill = status)
+  ) +
+    ggplot2::geom_tile(width = 0.65, height = 0.75) +
+    ggplot2::scale_fill_manual(values = status_colours, drop = FALSE) +
+    ggplot2::labs(
+      x = NULL,
+      y = NULL,
+      fill = "Status"
+    ) +
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_blank(),
+      panel.grid = ggplot2::element_blank()
+    )
+
+  check_status_figure <- grammateus_figure_from_ggplot(
+    plot = check_status_plot,
+    figure_id = "figure_report_card_check_status",
+    caption = "Per-check report-card status for configured run-level QC checks.",
+    alt_text = paste(
+      "Tile chart listing each report-card check with colour-coded pass,",
+      "warning, failure, or not-checked status."
+    ),
+    output_dir = report_dir,
+    formats = "png",
+    width = 130,
+    height = 90,
+    units = "mm",
+    dpi = 120,
+    methods_note = "Generated from qc_report_card() findings.",
+    source_data = run_report_card,
+    produced_at_utc = generated_at,
+    run_id = run_id
+  )
+
+  report_card_figures <- list(status_count_figure, check_status_figure)
+  vapply(report_card_figures, function(x) x$source$checksum, character(1))
+} else {
+  report_card_figures <- list()
+  data.frame(
+    status = "not_checked",
+    reason = "ggplot2 is not installed in this vignette environment."
+  )
+}
+```
+
 ## Assemble Semantic Report Elements
 
 `grammateus_qc_report_elements()` maps floundeR QC tables into named semantic
@@ -208,7 +322,7 @@ runtime environments.
 ```{r write-report}
 report <- qc_report(
   elements = elements,
-  figures = list(yield_figure),
+  figures = c(list(yield_figure), report_card_figures),
   output_dir = report_dir,
   output = c("html", "pdf"),
   render = "never",
@@ -247,7 +361,7 @@ validation <- grammateus_runtime_validate()
 if (isTRUE(validation$ok)) {
   rendered <- qc_report(
     elements = elements,
-    figures = list(yield_figure),
+    figures = c(list(yield_figure), report_card_figures),
     output_dir = report_dir,
     output = c("html", "pdf"),
     render = "if_available",
