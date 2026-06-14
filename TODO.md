@@ -208,7 +208,7 @@ current non-FAST5 package surface.
 
 ## Slice 12: Synoptikon Export
 
-- [ ] Define a versioned synoptikon QC payload.
+- [x] Define a versioned synoptikon QC payload.
 - [ ] Implement `as_synoptikon_qc()` or `write_synoptikon_qc()`.
 - [ ] Include sequencing-summary, flowcell, barcode, POD5 integrity, BAM QC,
       and library-preparation evidence sections.

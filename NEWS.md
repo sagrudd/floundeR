@@ -1,3 +1,9 @@
+# floundeR 0.10.0
+
+* Defined the first versioned Synoptikon QC payload contract and installed the
+  v1 JSON schema for downstream ingestion, review, reporting, and audit
+  handoff work.
+
 # floundeR 0.9.2
 
 * Documented Bamana capabilities that remain out of scope for floundeR so the

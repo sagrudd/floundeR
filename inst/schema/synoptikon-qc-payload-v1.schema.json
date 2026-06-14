@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mnemosyne.bio/schemas/flounder/synoptikon-qc-payload-v1.schema.json",
+  "title": "floundeR Synoptikon QC Payload v1",
+  "description": "Versioned floundeR QC evidence payload for Synoptikon/Mneion ingestion and Grammateus report construction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "payload_id",
+    "generated_at_utc",
+    "producer",
+    "run_identity",
+    "governance_context",
+    "input_provenance",
+    "qc_sections",
+    "report_cards",
+    "limitations",
+    "handoff"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "flounder.synoptikon_qc_payload.v1"
+    },
+    "payload_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "producer": {
+      "$ref": "#/$defs/producer"
+    },
+    "run_identity": {
+      "$ref": "#/$defs/run_identity"
+    },
+    "governance_context": {
+      "$ref": "#/$defs/governance_context"
+    },
+    "input_provenance": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/input_provenance"
+      }
+    },
+    "qc_sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequencing_summary",
+        "flowcell",
+        "barcode",
+        "pod5",
+        "bam",
+        "library_preparation"
+      ],
+      "properties": {
+        "sequencing_summary": {
+          "$ref": "#/$defs/qc_section"
+        },
+        "flowcell": {
+          "$ref": "#/$defs/qc_section"
+        },
+        "barcode": {
+          "$ref": "#/$defs/qc_section"
+        },
+        "pod5": {
+          "$ref": "#/$defs/qc_section"
+        },
+        "bam": {
+          "$ref": "#/$defs/qc_section"
+        },
+        "library_preparation": {
+          "$ref": "#/$defs/qc_section"
+        }
+      }
+    },
+    "report_cards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/report_card"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/limitation"
+      }
+    },
+    "handoff": {
+      "$ref": "#/$defs/handoff"
+    }
+  },
+  "$defs": {
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "const": "floundeR"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "r_version": {
+          "type": ["string", "null"]
+        },
+        "rust_capabilities_schema_version": {
+          "type": ["string", "null"]
+        },
+        "pod5_tools_version": {
+          "type": ["string", "null"]
+        },
+        "bamana_version": {
+          "type": ["string", "null"]
+        },
+        "porkchop_version": {
+          "type": ["string", "null"]
+        },
+        "grammateus_runtime_version": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "run_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "type": ["string", "null"]
+        },
+        "sample_id": {
+          "type": ["string", "null"]
+        },
+        "project_id": {
+          "type": ["string", "null"]
+        },
+        "flow_cell_id": {
+          "type": ["string", "null"]
+        },
+        "sequencing_kit": {
+          "type": ["string", "null"]
+        },
+        "library_kit": {
+          "type": ["string", "null"]
+        },
+        "instrument_id": {
+          "type": ["string", "null"]
+        },
+        "experiment_started_at_utc": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "governance_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tenant_id": {
+          "type": ["string", "null"]
+        },
+        "governance_domain_id": {
+          "type": ["string", "null"]
+        },
+        "mneion_work_request_id": {
+          "type": ["string", "null"]
+        },
+        "mneion_work_attempt_id": {
+          "type": ["string", "null"]
+        },
+        "synoptikon_project_id": {
+          "type": ["string", "null"]
+        },
+        "trusted_report_id": {
+          "type": ["string", "null"]
+        },
+        "governed_storage_ref": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "input_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_id",
+        "kind",
+        "uri",
+        "size_bytes",
+        "sha256",
+        "metadata"
+      ],
+      "properties": {
+        "input_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "sequencing_summary",
+            "barcode_summary",
+            "pod5",
+            "pod5_manifest",
+            "bam",
+            "bai",
+            "fastq",
+            "fasta",
+            "derived_artifact",
+            "report_artifact",
+            "other"
+          ]
+        },
+        "uri": {
+          "type": ["string", "null"]
+        },
+        "size_bytes": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[0-9a-f]{64}$|^[0-9a-f]{64}$"
+        },
+        "last_modified_utc": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "metadata": {
+          "$ref": "#/$defs/free_object"
+        }
+      }
+    },
+    "qc_section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "present",
+        "schema_version",
+        "status",
+        "summary",
+        "tables",
+        "artifacts"
+      ],
+      "properties": {
+        "present": {
+          "type": "boolean"
+        },
+        "schema_version": {
+          "type": ["string", "integer", "null"]
+        },
+        "status": {
+          "$ref": "#/$defs/qc_status"
+        },
+        "summary": {
+          "$ref": "#/$defs/free_object"
+        },
+        "tables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/free_object"
+            }
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        }
+      }
+    },
+    "report_card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "card_id",
+        "schema_version",
+        "scope",
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "card_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "run",
+            "pod5",
+            "bam",
+            "library_preparation",
+            "combined"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/qc_status"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/report_card_check"
+          }
+        }
+      }
+    },
+    "report_card_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "check_label",
+        "status",
+        "observed_value",
+        "warn_threshold",
+        "fail_threshold",
+        "comparator",
+        "details"
+      ],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "check_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/qc_status"
+        },
+        "observed_value": {
+          "type": ["number", "string", "boolean", "null"]
+        },
+        "warn_threshold": {
+          "type": ["number", "string", "boolean", "null"]
+        },
+        "fail_threshold": {
+          "type": ["number", "string", "boolean", "null"]
+        },
+        "comparator": {
+          "type": ["string", "null"]
+        },
+        "details": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "kind",
+        "uri",
+        "sha256",
+        "metadata"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "table",
+            "plot",
+            "image",
+            "manifest",
+            "report",
+            "provenance",
+            "other"
+          ]
+        },
+        "uri": {
+          "type": ["string", "null"]
+        },
+        "sha256": {
+          "type": ["string", "null"],
+          "pattern": "^sha256:[0-9a-f]{64}$|^[0-9a-f]{64}$"
+        },
+        "metadata": {
+          "$ref": "#/$defs/free_object"
+        }
+      }
+    },
+    "limitation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "limitation_id",
+        "severity",
+        "section",
+        "message"
+      ],
+      "properties": {
+        "limitation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warn",
+            "fail"
+          ]
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consumer",
+        "contract_version",
+        "intended_use",
+        "compatible_with_grammateus_trusted_reports"
+      ],
+      "properties": {
+        "consumer": {
+          "const": "synoptikon"
+        },
+        "contract_version": {
+          "const": "v1"
+        },
+        "intended_use": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "qc_ingestion",
+              "review",
+              "reporting",
+              "audit_evidence",
+              "workflow_handoff"
+            ]
+          },
+          "minItems": 1
+        },
+        "compatible_with_grammateus_trusted_reports": {
+          "type": "boolean"
+        }
+      }
+    },
+    "qc_status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "warn",
+        "fail",
+        "not_available",
+        "not_checked"
+      ]
+    },
+    "free_object": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
