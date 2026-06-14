@@ -78,6 +78,9 @@ flounder-runtime-compatibility-{runtime_version}.json.sig
   checksum, archive signature, manifest checksum, and expected install root.
 - compatibility manifest: floundeR-facing compatibility window and tested
   open-source engine versions for `pod5-tools`, `bamana`, and `porkchop`.
+  Installed runtimes should either place this file at
+  `flounder-runtime-compatibility-{runtime_version}.json` or declare its
+  relative path in `manifest.json` as `compatibility_file`.
 
 ## Runtime Index Shape
 

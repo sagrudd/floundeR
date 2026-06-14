@@ -1,3 +1,10 @@
+# floundeR 0.21.5
+
+* Added release-level Grammateus runtime compatibility manifest checks so
+  runtime validation fails when the compatibility asset is missing, unsigned,
+  version-mismatched, or declares a floundeR compatibility window that disagrees
+  with `manifest.json`.
+
 # floundeR 0.21.4
 
 * Tightened Grammateus runtime validation so declared private runtime signature

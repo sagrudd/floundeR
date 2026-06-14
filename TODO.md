@@ -279,7 +279,7 @@ current non-FAST5 package surface.
       runtime bundles.
 - [x] Add checksum and signature verification for private Grammateus runtime
       artifacts.
-- [ ] Add compatibility checks between floundeR versions and Grammateus runtime
+- [x] Add compatibility checks between floundeR versions and Grammateus runtime
       versions.
 - [ ] Add CI separation: public floundeR checks without Grammateus, credentialed
       private checks with Grammateus runtime/report rendering.

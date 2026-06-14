@@ -10,7 +10,10 @@ local_fake_grammateus_runtime <- function(
     corrupt_artifact_hash = FALSE,
     include_artifact_signatures = FALSE,
     corrupt_signature_hash = FALSE,
-    empty_manifest_signature = FALSE) {
+    empty_manifest_signature = FALSE,
+    omit_compatibility_manifest = FALSE,
+    incompatible_runtime_version = FALSE,
+    disagreeing_flounder_window = FALSE) {
   runtime <- tempfile("grammateus-runtime-")
   dir.create(file.path(runtime, "lib"), recursive = TRUE)
   dir.create(file.path(runtime, "templates"), recursive = TRUE)
@@ -52,6 +55,7 @@ local_fake_grammateus_runtime <- function(
     grammateus_release = "grammateus-0.6.0",
     flounder_version_min = "0.0.0",
     flounder_version_max_exclusive = "99.0.0",
+    compatibility_file = "flounder-runtime-compatibility-0.6.0.json",
     platform = R.version$platform,
     abi = list(r = as.character(getRversion()), rust = "1.85"),
     artifacts = artifact_manifest,
@@ -71,6 +75,55 @@ local_fake_grammateus_runtime <- function(
     auto_unbox = TRUE,
     pretty = TRUE
   )
+  if (!isTRUE(omit_compatibility_manifest)) {
+    compatibility <- list(
+      schema_version = "flounder.grammateus_runtime_compatibility.v1",
+      runtime_version = if (isTRUE(incompatible_runtime_version)) {
+        "0.7.0"
+      } else {
+        manifest$runtime_version
+      },
+      flounder_version_min = if (isTRUE(disagreeing_flounder_window)) {
+        "98.0.0"
+      } else {
+        manifest$flounder_version_min
+      },
+      flounder_version_max_exclusive = manifest$flounder_version_max_exclusive,
+      required_runtime_capabilities = c("render_report_html", "render_report_pdf"),
+      tested_open_engines = list(
+        pod5_tools = list(version = "fixture", source = "open-source"),
+        bamana = list(version = "fixture", source = "open-source"),
+        porkchop = list(version = "fixture", source = "open-source")
+      ),
+      notes = list("test fixture")
+    )
+    jsonlite::write_json(
+      compatibility,
+      path = file.path(runtime, manifest$compatibility_file),
+      auto_unbox = TRUE,
+      pretty = TRUE
+    )
+    compatibility$signing <- list(
+      signature_file = paste0(manifest$compatibility_file, ".sig")
+    )
+    writeLines(
+      "fixture-compatibility-signature",
+      file.path(runtime, compatibility$signing$signature_file)
+    )
+    compatibility$signing$signature_sha256 <- paste0(
+      "sha256:",
+      unname(tools::sha256sum(file.path(
+        runtime,
+        compatibility$signing$signature_file
+      )))
+    )
+    jsonlite::write_json(
+      compatibility,
+      path = file.path(runtime, manifest$compatibility_file),
+      auto_unbox = TRUE,
+      pretty = TRUE
+    )
+  }
   if (isTRUE(empty_manifest_signature)) {
     file.create(file.path(runtime, "manifest.json.sig"))
   } else {
@@ -174,6 +227,26 @@ test_that("Grammateus runtime validation verifies signature artifacts", {
   validation <- grammateus_runtime_validate(runtime)
   expect_false(validation$valid)
   expect_true("artifact_signature" %in% validation$failures$category)
+})
+
+test_that("Grammateus runtime validation checks release compatibility manifest", {
+  runtime <- local_fake_grammateus_runtime(omit_compatibility_manifest = TRUE)
+
+  validation <- grammateus_runtime_validate(runtime)
+
+  expect_true(validation$available)
+  expect_false(validation$valid)
+  expect_true("compatibility_manifest" %in% validation$failures$category)
+
+  runtime <- local_fake_grammateus_runtime(incompatible_runtime_version = TRUE)
+  validation <- grammateus_runtime_validate(runtime)
+  expect_false(validation$valid)
+  expect_true("version_incompatible" %in% validation$failures$category)
+
+  runtime <- local_fake_grammateus_runtime(disagreeing_flounder_window = TRUE)
+  validation <- grammateus_runtime_validate(runtime)
+  expect_false(validation$valid)
+  expect_true("version_incompatible" %in% validation$failures$category)
 })
 
 test_that("Grammateus runtime install copies a validated runtime into cache", {

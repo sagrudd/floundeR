@@ -61,6 +61,7 @@ Required fields:
   "grammateus_release": "0.6.0",
   "flounder_version_min": "0.16.0",
   "flounder_version_max_exclusive": "0.17.0",
+  "compatibility_file": "flounder-runtime-compatibility-0.6.0.json",
   "platform": "aarch64-apple-darwin",
   "abi": {
     "r_version_min": "4.4.0",
@@ -199,6 +200,8 @@ Typed failure categories:
 - `manifest_schema`
 - `manifest_signature`
 - `artifact_signature`
+- `compatibility_manifest`
+- `compatibility_signature`
 - `checksum_mismatch`
 - `platform_unsupported`
 - `version_incompatible`
@@ -250,6 +253,9 @@ Before governed rendering is enabled, floundeR must verify:
 - every declared artifact checksum and byte length;
 - platform and ABI compatibility;
 - floundeR/runtime version compatibility;
+- release-level compatibility manifest agreement with the installed runtime
+  manifest, including runtime version, floundeR version window, required
+  capabilities, and compatibility manifest signature;
 - required rendering and trusted-report capabilities.
 
 Rendered report manifests must record the Grammateus runtime version, runtime

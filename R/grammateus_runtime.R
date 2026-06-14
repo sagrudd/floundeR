@@ -130,6 +130,11 @@ grammateus_runtime_validate <- function(
       manifest,
       failures
     )
+    failures <- .grammateus_runtime_validate_compatibility_manifest(
+      manifest,
+      runtime_root,
+      failures
+    )
     failures <- .grammateus_runtime_validate_capabilities(
       capabilities,
       required_capabilities,
@@ -357,6 +362,148 @@ grammateus_runtime_install <- function(
       failures,
       "version_incompatible",
       "manifest.json",
+      "Runtime floundeR compatibility window does not include this package."
+    )
+  }
+  failures
+}
+
+.grammateus_runtime_validate_compatibility_manifest <- function(
+    manifest,
+    runtime_root,
+    failures) {
+  runtime_version <- manifest$runtime_version %||% NA_character_
+  compatibility_file <- manifest$compatibility_file %||%
+    paste0("flounder-runtime-compatibility-", runtime_version, ".json")
+  if (!.grammateus_runtime_safe_relative_path(compatibility_file)) {
+    return(.grammateus_runtime_add_failure(
+      failures,
+      "compatibility_manifest",
+      as.character(compatibility_file),
+      "Runtime compatibility manifest path must be relative and must not escape root."
+    ))
+  }
+  compatibility_path <- file.path(runtime_root, compatibility_file)
+  if (!file.exists(compatibility_path)) {
+    return(.grammateus_runtime_add_failure(
+      failures,
+      "compatibility_manifest",
+      compatibility_file,
+      "Runtime compatibility manifest is missing."
+    ))
+  }
+  compatibility <- tryCatch(
+    jsonlite::fromJSON(compatibility_path, simplifyVector = FALSE),
+    error = function(error) {
+      failures <<- .grammateus_runtime_add_failure(
+        failures,
+        "compatibility_manifest",
+        compatibility_file,
+        paste(
+          "Runtime compatibility manifest is not valid JSON:",
+          conditionMessage(error)
+        )
+      )
+      NULL
+    }
+  )
+  if (!is.list(compatibility)) {
+    return(failures)
+  }
+  if (!identical(
+    compatibility$schema_version,
+    "flounder.grammateus_runtime_compatibility.v1"
+  )) {
+    failures <- .grammateus_runtime_add_failure(
+      failures,
+      "compatibility_manifest",
+      compatibility_file,
+      "Runtime compatibility manifest schema_version is unsupported."
+    )
+  }
+  if (!identical(compatibility$runtime_version, runtime_version)) {
+    failures <- .grammateus_runtime_add_failure(
+      failures,
+      "version_incompatible",
+      compatibility_file,
+      "Runtime compatibility manifest version does not match manifest.json."
+    )
+  }
+  manifest_min <- manifest$flounder_version_min %||% NA_character_
+  manifest_max <- manifest$flounder_version_max_exclusive %||% NA_character_
+  if (!identical(compatibility$flounder_version_min, manifest_min) ||
+      !identical(compatibility$flounder_version_max_exclusive, manifest_max)) {
+    failures <- .grammateus_runtime_add_failure(
+      failures,
+      "version_incompatible",
+      compatibility_file,
+      "Runtime compatibility window disagrees with manifest.json."
+    )
+  }
+  failures <- .grammateus_runtime_validate_compatibility_window(
+    compatibility$flounder_version_min,
+    compatibility$flounder_version_max_exclusive,
+    compatibility_file,
+    failures
+  )
+  required <- .grammateus_runtime_character_vector(
+    compatibility$required_runtime_capabilities %||% character()
+  )
+  if (!is.character(required)) {
+    failures <- .grammateus_runtime_add_failure(
+      failures,
+      "compatibility_manifest",
+      compatibility_file,
+      "Runtime compatibility manifest required_runtime_capabilities must be a character vector."
+    )
+  } else {
+    failures <- .grammateus_runtime_validate_capabilities(
+      manifest$capabilities %||% list(),
+      required,
+      failures
+    )
+  }
+  signature_file <- compatibility$signing$signature_file %||%
+    paste0(compatibility_file, ".sig")
+  failures <- .grammateus_runtime_validate_signature_file(
+    runtime_root = runtime_root,
+    signature_file = signature_file,
+    expected_hash = compatibility$signing$signature_sha256 %||% NA_character_,
+    category = "compatibility_signature",
+    failures = failures
+  )
+  failures
+}
+
+.grammateus_runtime_character_vector <- function(value) {
+  if (is.character(value)) {
+    return(value)
+  }
+  if (is.list(value) && all(vapply(value, function(item) {
+    is.character(item) && length(item) == 1L && !is.na(item)
+  }, logical(1L)))) {
+    return(unlist(value, use.names = FALSE))
+  }
+  value
+}
+
+.grammateus_runtime_validate_compatibility_window <- function(
+    min_version,
+    max_version,
+    path,
+    failures) {
+  version <- tryCatch(
+    utils::packageVersion("floundeR"),
+    error = function(error) numeric_version("0.0.0")
+  )
+  min_version <- .grammateus_runtime_numeric_version(min_version)
+  max_version <- .grammateus_runtime_numeric_version(max_version)
+  if (is.null(min_version) || is.null(max_version) ||
+      version < min_version || version >= max_version) {
+    failures <- .grammateus_runtime_add_failure(
+      failures,
+      "version_incompatible",
+      path,
       "Runtime floundeR compatibility window does not include this package."
     )
   }

@@ -150,7 +150,8 @@ Private Grammateus runtime artifacts should be verified before use:
 - checksum verification;
 - manifest signature file verification;
 - artifact signature file verification when declared by the runtime manifest;
-- version compatibility checks against floundeR;
+- version compatibility checks against floundeR in both the runtime manifest
+  and release-level compatibility manifest;
 - platform and ABI checks;
 - clear provenance in rendered reports.
 
