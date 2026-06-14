@@ -1,5 +1,6 @@
 ^\.github$
 ^AGENTS\.md$
+^BAMANA_INTEGRATION\.md$
 ^DATASETS\.md$
 ^DEPENDENCIES\.md$
 ^DEVELOPMENT\.md$

@@ -185,7 +185,7 @@ current non-FAST5 package surface.
 
 ## Slice 11: BAM/Bamana Integration
 
-- [ ] Audit `../bamana` public library APIs and identify only the QC/review
+- [x] Audit `../bamana` public library APIs and identify only the QC/review
       command logic that must be promoted for in-process R use.
 - [ ] Expose `bam_summary(path)` through Rust-in-R with stable R-native return
       shapes.

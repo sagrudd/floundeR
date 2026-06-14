@@ -1,3 +1,9 @@
+# floundeR 0.5.2
+
+* Audited Bamana's public Rust command modules, JSON contracts, and governing
+  docs, and recorded the curated read-only BAM QC/review surface that should be
+  promoted into floundeR through in-process Rust bindings.
+
 # floundeR 0.5.1
 
 * Added an opt-in derived-POD5 demonstration workflow script that records ONT
