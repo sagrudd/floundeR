@@ -6,6 +6,21 @@ use bamana::{
         FindingScope, FindingSeverity, ValidatePayload, ValidationFinding, ValidationMode,
         ValidationSummary,
     },
+    commands::check_index::{
+        self, CheckIndexPayload, CheckIndexRequest, IndexCompatibility, IndexSupportLevel,
+    },
+    commands::check_map::{
+        self, CheckMapPayload, CheckMapRequest, ConfidenceLevel as MapConfidenceLevel,
+        EvidenceSource as MapEvidenceSource, IndexDiagnosticStatus, MappingStatus as MapStatus,
+    },
+    commands::check_sort::{
+        self, CheckSortPayload, CheckSortRequest, ConfidenceLevel as SortConfidenceLevel,
+        EvidenceStrength, ObservedOrder,
+    },
+    commands::check_tag::{
+        self, CheckTagMode, CheckTagPayload, CheckTagRequest, CheckTagResult,
+        ConfidenceLevel as TagConfidenceLevel,
+    },
     commands::summary::{
         self, ConfidenceLevel, FractionSummary, MappingStatus, RecordCountSummary, SummaryMode,
         SummaryPayload, SummaryRequest,
@@ -143,6 +158,48 @@ pub extern "C" fn flounder_bam_validate(
 #[unsafe(no_mangle)]
 pub extern "C" fn flounder_bam_check_eof(path: SEXP) -> SEXP {
     let result = bam_check_eof_response(path);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_check_index(path: SEXP, require: SEXP, prefer_csi: SEXP) -> SEXP {
+    let result = bam_check_index_response(path, require, prefer_csi);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_check_map(
+    path: SEXP,
+    sample_records: SEXP,
+    prefer_index: SEXP,
+) -> SEXP {
+    let result = bam_check_map_response(path, sample_records, prefer_index);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_check_sort(path: SEXP, sample_records: SEXP, strict: SEXP) -> SEXP {
+    let result = bam_check_sort_response(path, sample_records, strict);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_check_tag(
+    path: SEXP,
+    tag: SEXP,
+    sample_records: SEXP,
+    full_scan: SEXP,
+    require_type: SEXP,
+    count_hits: SEXP,
+) -> SEXP {
+    let result = bam_check_tag_response(
+        path,
+        tag,
+        sample_records,
+        full_scan,
+        require_type,
+        count_hits,
+    );
     unsafe { result.get() }
 }
 
@@ -687,6 +744,273 @@ fn bam_check_eof_response(path: SEXP) -> Robj {
             .into()
         }
     }
+}
+
+fn bam_check_index_response(path: SEXP, require: SEXP, prefer_csi: SEXP) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let require = unsafe { Robj::from_sexp(require) };
+    let prefer_csi = unsafe { Robj::from_sexp(prefer_csi) };
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+    let Some(require) = sexp_bool(&require) else {
+        return bam_error_response("argument", "`require` must be TRUE or FALSE.", None, None);
+    };
+    let Some(prefer_csi) = sexp_bool(&prefer_csi) else {
+        return bam_error_response(
+            "argument",
+            "`prefer_csi` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+
+    let request = CheckIndexRequest {
+        bam: PathBuf::from(path),
+        require,
+        prefer_csi,
+    };
+    let started = Instant::now();
+    let response =
+        check_index::run(request).with_analysis_wall_seconds(started.elapsed().as_secs_f64());
+
+    if let Some(payload) = response.data.as_ref() {
+        return list!(
+            ok = true,
+            data = bam_check_index_list(&response, payload),
+            command_ok = response.ok,
+            error = r!(()),
+            category = r!(())
+        )
+        .into();
+    }
+
+    let Some(error) = response.error.as_ref() else {
+        return bam_error_response(
+            "unknown",
+            "Bamana index check failed without structured error metadata.",
+            None,
+            None,
+        );
+    };
+    bam_error_response(
+        &error.code,
+        &error.message,
+        error.detail.as_deref(),
+        error.hint.as_deref(),
+    )
+}
+
+fn bam_check_map_response(path: SEXP, sample_records: SEXP, prefer_index: SEXP) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let sample_records = unsafe { Robj::from_sexp(sample_records) };
+    let prefer_index = unsafe { Robj::from_sexp(prefer_index) };
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+    let Some(sample_records) = sexp_i32(&sample_records) else {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be supplied as an integer.",
+            None,
+            None,
+        );
+    };
+    if sample_records < 0 {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be zero or a positive integer.",
+            None,
+            None,
+        );
+    }
+    let Some(prefer_index) = sexp_bool(&prefer_index) else {
+        return bam_error_response(
+            "argument",
+            "`prefer_index` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+
+    let request = CheckMapRequest {
+        bam: PathBuf::from(path),
+        sample_records: sample_records as usize,
+        full_scan: sample_records == 0,
+        prefer_index,
+        regions: Vec::new(),
+    };
+    let started = Instant::now();
+    match check_map::run(request) {
+        Ok(payload) => list!(
+            ok = true,
+            data = bam_check_map_list(path, started.elapsed().as_secs_f64(), &payload),
+            error = r!(()),
+            category = r!(())
+        )
+        .into(),
+        Err(error) => bam_app_error_response(error),
+    }
+}
+
+fn bam_check_sort_response(path: SEXP, sample_records: SEXP, strict: SEXP) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let sample_records = unsafe { Robj::from_sexp(sample_records) };
+    let strict = unsafe { Robj::from_sexp(strict) };
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+    let Some(sample_records) = sexp_i32(&sample_records) else {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be supplied as an integer.",
+            None,
+            None,
+        );
+    };
+    if sample_records < 0 {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be zero or a positive integer.",
+            None,
+            None,
+        );
+    }
+    let Some(strict) = sexp_bool(&strict) else {
+        return bam_error_response("argument", "`strict` must be TRUE or FALSE.", None, None);
+    };
+
+    let request = CheckSortRequest {
+        bam: PathBuf::from(path),
+        sample_records: sample_records as usize,
+        strict,
+    };
+    let started = Instant::now();
+    match check_sort::run(request) {
+        Ok(payload) => list!(
+            ok = true,
+            data = bam_check_sort_data_frame(path, started.elapsed().as_secs_f64(), &payload),
+            error = r!(()),
+            category = r!(())
+        )
+        .into(),
+        Err(error) => bam_app_error_response(error),
+    }
+}
+
+fn bam_check_tag_response(
+    path: SEXP,
+    tag: SEXP,
+    sample_records: SEXP,
+    full_scan: SEXP,
+    require_type: SEXP,
+    count_hits: SEXP,
+) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let tag = unsafe { Robj::from_sexp(tag) };
+    let sample_records = unsafe { Robj::from_sexp(sample_records) };
+    let full_scan = unsafe { Robj::from_sexp(full_scan) };
+    let require_type = unsafe { Robj::from_sexp(require_type) };
+    let count_hits = unsafe { Robj::from_sexp(count_hits) };
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+    let Some(tag) = tag.as_str() else {
+        return bam_error_response("argument", "`tag` must be a character scalar.", None, None);
+    };
+    let Some(sample_records) = sexp_i32(&sample_records) else {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be supplied as an integer.",
+            None,
+            None,
+        );
+    };
+    if sample_records < 0 {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be zero or a positive integer.",
+            None,
+            None,
+        );
+    }
+    let Some(full_scan) = sexp_bool(&full_scan) else {
+        return bam_error_response("argument", "`full_scan` must be TRUE or FALSE.", None, None);
+    };
+    let Some(require_type) = require_type.as_str() else {
+        return bam_error_response(
+            "argument",
+            "`require_type` must be supplied as character text from the R wrapper.",
+            None,
+            None,
+        );
+    };
+    let Some(count_hits) = sexp_bool(&count_hits) else {
+        return bam_error_response(
+            "argument",
+            "`count_hits` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+
+    let request = CheckTagRequest {
+        bam: PathBuf::from(path),
+        tag: tag.to_string(),
+        sample_records: sample_records as usize,
+        full_scan,
+        require_type: (!require_type.is_empty()).then(|| require_type.to_string()),
+        count_hits,
+    };
+    let started = Instant::now();
+    let response =
+        check_tag::run(request).with_analysis_wall_seconds(started.elapsed().as_secs_f64());
+
+    if let Some(payload) = response.data.as_ref() {
+        return list!(
+            ok = true,
+            data = bam_check_tag_data_frame(&response, payload),
+            command_ok = response.ok,
+            error = r!(()),
+            category = r!(())
+        )
+        .into();
+    }
+
+    let Some(error) = response.error.as_ref() else {
+        return bam_error_response(
+            "unknown",
+            "Bamana tag check failed without structured error metadata.",
+            None,
+            None,
+        );
+    };
+    bam_error_response(
+        &error.code,
+        &error.message,
+        error.detail.as_deref(),
+        error.hint.as_deref(),
+    )
 }
 
 fn pod5_find_data_frame(path: &str) -> Result<Robj, Box<dyn std::error::Error>> {
@@ -1519,6 +1843,340 @@ fn bam_check_eof_failure_data_frame(
     )
 }
 
+fn bam_check_index_list(
+    response: &bamana::json::CommandResponse<CheckIndexPayload>,
+    payload: &CheckIndexPayload,
+) -> Robj {
+    list!(
+        status = bam_check_index_status_data_frame(response, payload),
+        index = bam_check_index_inspection_data_frame(payload),
+        candidates = bam_check_index_candidates_data_frame(payload),
+        error = bam_validate_error_data_frame(response.error.as_ref())
+    )
+    .into()
+}
+
+fn bam_check_index_status_data_frame(
+    response: &bamana::json::CommandResponse<CheckIndexPayload>,
+    payload: &CheckIndexPayload,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec![response.command.clone()],
+        path = vec![response.path.clone().unwrap_or_default()],
+        ok = vec![response.ok],
+        analysis_wall_seconds = vec![response.analysis_wall_seconds.unwrap_or(f64::NAN)],
+        format = vec![payload.format.to_string()]
+    )
+}
+
+fn bam_check_index_inspection_data_frame(payload: &CheckIndexPayload) -> Robj {
+    let index = &payload.index;
+    data_frame!(
+        schema_version = vec![1.0],
+        present = vec![index.present],
+        selected_path = vec![index.selected_path.clone().unwrap_or_default()],
+        kind = vec![
+            index
+                .kind
+                .map(index_kind_label)
+                .unwrap_or_default()
+                .to_string()
+        ],
+        support_level = vec![index_support_level_label(index.support_level).to_string()],
+        usable = vec![index.usable],
+        syntactically_valid = vec![optional_bool_label(index.syntactically_valid).to_string()],
+        stale = vec![optional_bool_label(index.stale).to_string()],
+        bam_newer_than_index = vec![optional_bool_label(index.bam_newer_than_index).to_string()],
+        compatibility = vec![index_compatibility_label(index.compatibility).to_string()],
+        notes = vec![payload.notes.join("; ")]
+    )
+}
+
+fn bam_check_index_candidates_data_frame(payload: &CheckIndexPayload) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0; payload.candidates.len()],
+        path = payload
+            .candidates
+            .iter()
+            .map(|candidate| candidate.path.clone())
+            .collect::<Vec<_>>(),
+        kind = payload
+            .candidates
+            .iter()
+            .map(|candidate| index_kind_label(candidate.kind).to_string())
+            .collect::<Vec<_>>(),
+        support_level = payload
+            .candidates
+            .iter()
+            .map(|candidate| index_support_level_label(candidate.support_level).to_string())
+            .collect::<Vec<_>>(),
+        exists = payload
+            .candidates
+            .iter()
+            .map(|candidate| candidate.exists)
+            .collect::<Vec<_>>()
+    )
+}
+
+fn bam_check_map_list(path: &str, analysis_wall_seconds: f64, payload: &CheckMapPayload) -> Robj {
+    list!(
+        status = bam_check_map_status_data_frame(path, analysis_wall_seconds, payload),
+        index = bam_check_map_index_data_frame(payload),
+        summary = bam_check_map_summary_data_frame(payload),
+        references = bam_check_map_references_data_frame(payload)
+    )
+    .into()
+}
+
+fn bam_check_map_status_data_frame(
+    path: &str,
+    analysis_wall_seconds: f64,
+    payload: &CheckMapPayload,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec!["check_map".to_string()],
+        path = vec![path.to_string()],
+        ok = vec![true],
+        analysis_wall_seconds = vec![analysis_wall_seconds],
+        format = vec![payload.format.to_string()],
+        mapping_status = vec![map_check_mapping_status_label(payload.mapping_status).to_string()],
+        has_mapped_reads = vec![optional_bool_label(payload.has_mapped_reads).to_string()],
+        evidence_source = vec![map_evidence_source_label(payload.evidence_source).to_string()],
+        confidence = vec![map_confidence_label(payload.confidence).to_string()],
+        semantic_note = vec![payload.semantic_note.clone()]
+    )
+}
+
+fn bam_check_map_index_data_frame(payload: &CheckMapPayload) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        present = vec![payload.index.present],
+        kind = vec![
+            payload
+                .index
+                .kind
+                .map(index_kind_label)
+                .unwrap_or_default()
+                .to_string()
+        ],
+        used = vec![payload.index.used],
+        diagnostic_status =
+            vec![index_diagnostic_status_label(payload.index.diagnostic_status).to_string()],
+        diagnostic_detail = vec![payload.index.diagnostic_detail.clone().unwrap_or_default()]
+    )
+}
+
+fn bam_check_map_summary_data_frame(payload: &CheckMapPayload) -> Robj {
+    let summary = &payload.summary;
+    data_frame!(
+        schema_version = vec![1.0],
+        references_defined = vec![summary.references_defined as f64],
+        references_with_mapped_reads = vec![
+            summary
+                .references_with_mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        total_mapped_reads = vec![
+            summary
+                .total_mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        total_unmapped_reads = vec![
+            summary
+                .total_unmapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        records_examined = vec![
+            summary
+                .records_examined
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        mapped_records_observed = vec![
+            summary
+                .mapped_records_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        unmapped_records_observed = vec![
+            summary
+                .unmapped_records_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        references_with_mapped_reads_observed = vec![
+            summary
+                .references_with_mapped_reads_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        inconsistent_records_observed = vec![
+            summary
+                .inconsistent_records_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        region_records_examined = vec![
+            summary
+                .region_records_examined
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        region_mapped_records_observed = vec![
+            summary
+                .region_mapped_records_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        region_unmapped_records_observed = vec![
+            summary
+                .region_unmapped_records_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ]
+    )
+}
+
+fn bam_check_map_references_data_frame(payload: &CheckMapPayload) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0; payload.references.len()],
+        name = payload
+            .references
+            .iter()
+            .map(|reference| reference.name.clone())
+            .collect::<Vec<_>>(),
+        length = payload
+            .references
+            .iter()
+            .map(|reference| reference.length as f64)
+            .collect::<Vec<_>>(),
+        mapped_reads = payload
+            .references
+            .iter()
+            .map(|reference| reference
+                .mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN))
+            .collect::<Vec<_>>(),
+        unmapped_reads = payload
+            .references
+            .iter()
+            .map(|reference| reference
+                .unmapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN))
+            .collect::<Vec<_>>(),
+        observed = payload
+            .references
+            .iter()
+            .map(|reference| optional_bool_label(reference.observed).to_string())
+            .collect::<Vec<_>>()
+    )
+}
+
+fn bam_check_sort_data_frame(
+    path: &str,
+    analysis_wall_seconds: f64,
+    payload: &CheckSortPayload,
+) -> Robj {
+    let violation = payload.observed_sort.first_violation.as_ref();
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec!["check_sort".to_string()],
+        path = vec![path.to_string()],
+        ok = vec![true],
+        analysis_wall_seconds = vec![analysis_wall_seconds],
+        format = vec![payload.format.to_string()],
+        declared_so = vec![payload.declared_sort.so.clone().unwrap_or_default()],
+        declared_ss = vec![payload.declared_sort.ss.clone().unwrap_or_default()],
+        declared_go = vec![payload.declared_sort.go.clone().unwrap_or_default()],
+        observed_order = vec![observed_order_label(payload.observed_sort.order).to_string()],
+        observed_sub_order = vec![payload.observed_sort.sub_order.clone().unwrap_or_default()],
+        appears_sorted =
+            vec![optional_bool_label(payload.observed_sort.appears_sorted).to_string()],
+        records_examined = vec![payload.observed_sort.records_examined as f64],
+        first_violation_record_index = vec![
+            violation
+                .map(|violation| violation.record_index as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        first_violation_reason = vec![
+            violation
+                .map(|violation| violation.reason.clone())
+                .unwrap_or_default()
+        ],
+        evidence_strength =
+            vec![evidence_strength_label(payload.observed_sort.evidence_strength).to_string()],
+        header_matches_observation =
+            vec![optional_bool_label(payload.agreement.header_matches_observation).to_string()],
+        confidence = vec![sort_confidence_label(payload.confidence).to_string()],
+        semantic_note = vec![payload.semantic_note.clone()]
+    )
+}
+
+fn bam_check_tag_data_frame(
+    response: &bamana::json::CommandResponse<CheckTagPayload>,
+    payload: &CheckTagPayload,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec![response.command.clone()],
+        path = vec![response.path.clone().unwrap_or_default()],
+        ok = vec![response.ok],
+        analysis_wall_seconds = vec![response.analysis_wall_seconds.unwrap_or(f64::NAN)],
+        format = vec![payload.format.to_string()],
+        tag = vec![payload.tag.clone()],
+        required_type = vec![payload.required_type.clone().unwrap_or_default()],
+        mode = vec![check_tag_mode_label(payload.mode).to_string()],
+        result = vec![check_tag_result_label(payload.result).to_string()],
+        tag_found = vec![payload.tag_found],
+        records_examined = vec![payload.records_examined as f64],
+        records_with_tag = vec![payload.records_with_tag as f64],
+        full_file_scanned = vec![payload.full_file_scanned],
+        confidence = vec![
+            payload
+                .confidence
+                .map(tag_confidence_label)
+                .unwrap_or_default()
+                .to_string()
+        ],
+        semantic_note = vec![payload.semantic_note.clone().unwrap_or_default()],
+        error_code = vec![
+            response
+                .error
+                .as_ref()
+                .map(|error| error.code.clone())
+                .unwrap_or_default()
+        ],
+        error_message = vec![
+            response
+                .error
+                .as_ref()
+                .map(|error| error.message.clone())
+                .unwrap_or_default()
+        ],
+        error_detail = vec![
+            response
+                .error
+                .as_ref()
+                .and_then(|error| error.detail.clone())
+                .unwrap_or_default()
+        ],
+        error_hint = vec![
+            response
+                .error
+                .as_ref()
+                .and_then(|error| error.hint.clone())
+                .unwrap_or_default()
+        ]
+    )
+}
+
 fn summary_mode_label(mode: SummaryMode) -> &'static str {
     match mode {
         SummaryMode::BoundedScan => "bounded_scan",
@@ -1549,6 +2207,112 @@ fn index_kind_label(kind: IndexKind) -> &'static str {
         IndexKind::Csi => "CSI",
         IndexKind::Gzi => "GZI",
         IndexKind::Unknown => "UNKNOWN",
+    }
+}
+
+fn index_support_level_label(level: IndexSupportLevel) -> &'static str {
+    match level {
+        IndexSupportLevel::Absent => "absent",
+        IndexSupportLevel::ReadWrite => "read_write",
+        IndexSupportLevel::DetectOnly => "detect_only",
+        IndexSupportLevel::PlanningSidecar => "planning_sidecar",
+        IndexSupportLevel::Unsupported => "unsupported",
+    }
+}
+
+fn index_compatibility_label(compatibility: IndexCompatibility) -> &'static str {
+    match compatibility {
+        IndexCompatibility::Plausible => "plausible",
+        IndexCompatibility::Absent => "absent",
+        IndexCompatibility::Stale => "stale",
+        IndexCompatibility::MismatchedOrInvalid => "mismatched_or_invalid",
+        IndexCompatibility::DetectedButNotSupported => "detected_but_not_supported",
+    }
+}
+
+fn map_check_mapping_status_label(status: MapStatus) -> &'static str {
+    match status {
+        MapStatus::Mapped => "mapped",
+        MapStatus::Unmapped => "unmapped",
+        MapStatus::Indeterminate => "indeterminate",
+    }
+}
+
+fn map_evidence_source_label(source: MapEvidenceSource) -> &'static str {
+    match source {
+        MapEvidenceSource::Index => "index",
+        MapEvidenceSource::Scan => "scan",
+    }
+}
+
+fn index_diagnostic_status_label(status: IndexDiagnosticStatus) -> &'static str {
+    match status {
+        IndexDiagnosticStatus::NotChecked => "not_checked",
+        IndexDiagnosticStatus::Absent => "absent",
+        IndexDiagnosticStatus::Usable => "usable",
+        IndexDiagnosticStatus::Stale => "stale",
+        IndexDiagnosticStatus::Unsupported => "unsupported",
+        IndexDiagnosticStatus::Malformed => "malformed",
+        IndexDiagnosticStatus::MismatchedReference => "mismatched_reference",
+        IndexDiagnosticStatus::Incomplete => "incomplete",
+        IndexDiagnosticStatus::Disabled => "disabled",
+    }
+}
+
+fn map_confidence_label(confidence: MapConfidenceLevel) -> &'static str {
+    match confidence {
+        MapConfidenceLevel::High => "high",
+        MapConfidenceLevel::Medium => "medium",
+        MapConfidenceLevel::Low => "low",
+    }
+}
+
+fn sort_confidence_label(confidence: SortConfidenceLevel) -> &'static str {
+    match confidence {
+        SortConfidenceLevel::High => "high",
+        SortConfidenceLevel::Medium => "medium",
+        SortConfidenceLevel::Low => "low",
+    }
+}
+
+fn observed_order_label(order: ObservedOrder) -> &'static str {
+    match order {
+        ObservedOrder::Coordinate => "coordinate",
+        ObservedOrder::Queryname => "queryname",
+        ObservedOrder::Unsorted => "unsorted",
+        ObservedOrder::Indeterminate => "indeterminate",
+    }
+}
+
+fn evidence_strength_label(strength: EvidenceStrength) -> &'static str {
+    match strength {
+        EvidenceStrength::Strong => "strong",
+        EvidenceStrength::Moderate => "moderate",
+        EvidenceStrength::Limited => "limited",
+    }
+}
+
+fn check_tag_mode_label(mode: CheckTagMode) -> &'static str {
+    match mode {
+        CheckTagMode::BoundedScan => "bounded_scan",
+        CheckTagMode::FullScan => "full_scan",
+    }
+}
+
+fn check_tag_result_label(result: CheckTagResult) -> &'static str {
+    match result {
+        CheckTagResult::ObservedPresent => "observed_present",
+        CheckTagResult::NotFoundInExaminedRecords => "not_found_in_examined_records",
+        CheckTagResult::AbsentInFullScan => "absent_in_full_scan",
+        CheckTagResult::Indeterminate => "indeterminate",
+    }
+}
+
+fn tag_confidence_label(confidence: TagConfidenceLevel) -> &'static str {
+    match confidence {
+        TagConfidenceLevel::High => "high",
+        TagConfidenceLevel::Medium => "medium",
+        TagConfidenceLevel::Low => "low",
     }
 }
 
@@ -1755,7 +2519,7 @@ fn bam_error_category(code: &str) -> &'static str {
         | "truncated_file"
         | "unsupported_input_format" => "format",
         "invalid_index" | "missing_index" | "unsupported_index" => "index",
-        "argument" => "argument",
+        "argument" | "invalid_tag" | "invalid_tag_type" => "argument",
         _ => "unknown",
     }
 }

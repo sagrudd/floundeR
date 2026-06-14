@@ -15,6 +15,10 @@ extern SEXP flounder_bam_summary(SEXP path, SEXP sample_records, SEXP prefer_ind
 extern SEXP flounder_bam_verify(SEXP path);
 extern SEXP flounder_bam_validate(SEXP path, SEXP max_errors, SEXP max_warnings, SEXP header_only, SEXP records, SEXP fail_fast, SEXP include_warnings);
 extern SEXP flounder_bam_check_eof(SEXP path);
+extern SEXP flounder_bam_check_index(SEXP path, SEXP require, SEXP prefer_csi);
+extern SEXP flounder_bam_check_map(SEXP path, SEXP sample_records, SEXP prefer_index);
+extern SEXP flounder_bam_check_sort(SEXP path, SEXP sample_records, SEXP strict);
+extern SEXP flounder_bam_check_tag(SEXP path, SEXP tag, SEXP sample_records, SEXP full_scan, SEXP require_type, SEXP count_hits);
 
 static const R_CallMethodDef CallEntries[] = {
     {"flounder_rust_capabilities", (DL_FUNC) &flounder_rust_capabilities, 0},
@@ -29,6 +33,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"flounder_bam_verify", (DL_FUNC) &flounder_bam_verify, 1},
     {"flounder_bam_validate", (DL_FUNC) &flounder_bam_validate, 7},
     {"flounder_bam_check_eof", (DL_FUNC) &flounder_bam_check_eof, 1},
+    {"flounder_bam_check_index", (DL_FUNC) &flounder_bam_check_index, 3},
+    {"flounder_bam_check_map", (DL_FUNC) &flounder_bam_check_map, 3},
+    {"flounder_bam_check_sort", (DL_FUNC) &flounder_bam_check_sort, 3},
+    {"flounder_bam_check_tag", (DL_FUNC) &flounder_bam_check_tag, 6},
     {NULL, NULL, 0}
 };
 

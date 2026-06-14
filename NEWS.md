@@ -1,3 +1,10 @@
+# floundeR 0.8.0
+
+* Added Rust-backed `bam_check_index()`, `bam_check_map()`,
+  `bam_check_sort()`, and `bam_check_tag()` wrappers over Bamana's curated
+  read-only report-card checks for index, mapping, sorting, and aux-tag
+  evidence.
+
 # floundeR 0.7.0
 
 * Added Rust-backed `bam_verify()`, `bam_validate()`, and `bam_check_eof()`

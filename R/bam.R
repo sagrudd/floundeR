@@ -235,6 +235,214 @@ bam_check_eof <- function(path) {
   )
 }
 
+#' Check BAM index evidence for QC report cards
+#'
+#' `bam_check_index()` calls Bamana's in-process Rust index inspection path and
+#' returns stable R tables for index presence, support level, freshness, and
+#' candidate sidecars. It is read-only and does not create or repair indexes.
+#'
+#' @param path Character scalar. Local BAM file to inspect.
+#' @param require Logical scalar. Treat a missing index as a Bamana command
+#'   failure while still returning structured index evidence when available.
+#' @param prefer_csi Logical scalar. Prefer CSI over BAI when both sidecars are
+#'   present and usable.
+#'
+#' @return A named list with `status`, `index`, `candidates`, and `error` data
+#'   frames.
+#'
+#' @examples
+#' \dontrun{
+#' bam_check_index("reads.bam")
+#' }
+#'
+#' @export
+bam_check_index <- function(path, require = FALSE, prefer_csi = FALSE) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+  require <- .flounder_logical_scalar(require, "require")
+  prefer_csi <- .flounder_logical_scalar(prefer_csi, "prefer_csi")
+
+  response <- .flounder_bam_check_index_call(path, require, prefer_csi)
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM index check failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_check_index_normalise(response$data)
+}
+
+#' Check whether BAM mapping evidence is present
+#'
+#' `bam_check_map()` calls Bamana's in-process Rust mapping check. It reports
+#' whether mapped reads are evidenced by a supported index or by a bounded/full
+#' record scan, with reference-level evidence for QC review.
+#'
+#' @param path Character scalar. Local BAM file to inspect.
+#' @param sample_records Integer scalar. Use `0` for a full-file scan, or a
+#'   positive value for a bounded evidence scan.
+#' @param prefer_index Logical scalar. Prefer supported index-derived evidence
+#'   where possible.
+#'
+#' @return A named list with `status`, `index`, `summary`, and `references`
+#'   data frames.
+#'
+#' @examples
+#' \dontrun{
+#' bam_check_map("reads.bam", sample_records = 1000)
+#' }
+#'
+#' @export
+bam_check_map <- function(path, sample_records = 1000L, prefer_index = TRUE) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+  sample_records <- .flounder_nonnegative_integer_scalar(
+    sample_records,
+    "sample_records"
+  )
+  prefer_index <- .flounder_logical_scalar(prefer_index, "prefer_index")
+
+  response <- .flounder_bam_check_map_call(path, sample_records, prefer_index)
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM mapping check failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_check_map_normalise(response$data)
+}
+
+#' Check BAM sort declaration and observed sort evidence
+#'
+#' `bam_check_sort()` calls Bamana's in-process Rust sort check and returns a
+#' one-row QC table comparing declared header order with observed record order.
+#'
+#' @param path Character scalar. Local BAM file to inspect.
+#' @param sample_records Integer scalar. Use `0` for a full-file scan, or a
+#'   positive value for a bounded evidence scan.
+#' @param strict Logical scalar. Ask Bamana to use strict sort interpretation.
+#'
+#' @return A one-row data frame with declared sort order, observed evidence,
+#'   agreement, confidence, and first-violation columns.
+#'
+#' @examples
+#' \dontrun{
+#' bam_check_sort("reads.bam")
+#' }
+#'
+#' @export
+bam_check_sort <- function(path, sample_records = 1000L, strict = FALSE) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+  sample_records <- .flounder_nonnegative_integer_scalar(
+    sample_records,
+    "sample_records"
+  )
+  strict <- .flounder_logical_scalar(strict, "strict")
+
+  response <- .flounder_bam_check_sort_call(path, sample_records, strict)
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM sort check failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_check_sort_normalise(response$data)
+}
+
+#' Check BAM aux-tag evidence for library/QC review
+#'
+#' `bam_check_tag()` calls Bamana's in-process Rust aux-tag check. It is useful
+#' for QC report cards that need bounded or full-scan evidence for tags such as
+#' read groups, molecular identifiers, or alignment annotations.
+#'
+#' @param path Character scalar. Local BAM file to inspect.
+#' @param tag Character scalar. Two-character BAM aux tag to search for.
+#' @param sample_records Integer scalar. Number of records to examine when
+#'   `full_scan = FALSE`; use `0` only with `full_scan = TRUE`.
+#' @param full_scan Logical scalar. Scan the full file for absence/presence
+#'   evidence.
+#' @param require_type Optional character scalar. Bamana aux type code to
+#'   require, for example `"Z"` or `"i"`.
+#' @param count_hits Logical scalar. Count all matching records during the scan.
+#'
+#' @return A one-row data frame with tag evidence, mode, confidence, and Bamana
+#'   error metadata columns.
+#'
+#' @examples
+#' \dontrun{
+#' bam_check_tag("reads.bam", "RG", full_scan = TRUE)
+#' }
+#'
+#' @export
+bam_check_tag <- function(
+  path,
+  tag,
+  sample_records = 1000L,
+  full_scan = FALSE,
+  require_type = NULL,
+  count_hits = FALSE
+) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+  if (!is.character(tag) || length(tag) != 1L || is.na(tag)) {
+    .flounder_bam_error("`tag` must be a non-missing character scalar.",
+      category = "argument"
+    )
+  }
+  sample_records <- .flounder_nonnegative_integer_scalar(
+    sample_records,
+    "sample_records"
+  )
+  full_scan <- .flounder_logical_scalar(full_scan, "full_scan")
+  require_type <- .flounder_optional_character_scalar(require_type, "require_type")
+  count_hits <- .flounder_logical_scalar(count_hits, "count_hits")
+
+  response <- .flounder_bam_check_tag_call(
+    path,
+    tag,
+    sample_records,
+    full_scan,
+    require_type,
+    count_hits
+  )
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM tag check failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_check_tag_normalise(response$data)
+}
+
 .flounder_bam_summary_call <- function(
   path,
   sample_records,
@@ -283,6 +491,56 @@ bam_check_eof <- function(path) {
 
 .flounder_bam_check_eof_call <- function(path) {
   .Call("flounder_bam_check_eof", path, PACKAGE = "floundeR")
+}
+
+.flounder_bam_check_index_call <- function(path, require, prefer_csi) {
+  .Call(
+    "flounder_bam_check_index",
+    path,
+    require,
+    prefer_csi,
+    PACKAGE = "floundeR"
+  )
+}
+
+.flounder_bam_check_map_call <- function(path, sample_records, prefer_index) {
+  .Call(
+    "flounder_bam_check_map",
+    path,
+    as.integer(sample_records),
+    prefer_index,
+    PACKAGE = "floundeR"
+  )
+}
+
+.flounder_bam_check_sort_call <- function(path, sample_records, strict) {
+  .Call(
+    "flounder_bam_check_sort",
+    path,
+    as.integer(sample_records),
+    strict,
+    PACKAGE = "floundeR"
+  )
+}
+
+.flounder_bam_check_tag_call <- function(
+  path,
+  tag,
+  sample_records,
+  full_scan,
+  require_type,
+  count_hits
+) {
+  .Call(
+    "flounder_bam_check_tag",
+    path,
+    tag,
+    as.integer(sample_records),
+    full_scan,
+    require_type %||% "",
+    count_hits,
+    PACKAGE = "floundeR"
+  )
 }
 
 .flounder_bam_summary_normalise <- function(data) {
@@ -446,6 +704,122 @@ bam_check_eof <- function(path) {
   data
 }
 
+.flounder_bam_check_index_normalise <- function(data) {
+  if (!is.list(data)) {
+    .flounder_bam_error("BAM index check returned an unsupported payload shape.")
+  }
+
+  for (name in names(data)) {
+    data[[name]] <- as.data.frame(data[[name]], stringsAsFactors = FALSE)
+  }
+
+  data$status <- .flounder_bam_status_table_normalise(data$status)
+
+  data$index$schema_version <- as.integer(data$index$schema_version)
+  for (column in c(
+    "selected_path",
+    "kind",
+    "syntactically_valid",
+    "stale",
+    "bam_newer_than_index",
+    "notes"
+  )) {
+    data$index[[column]] <- .flounder_empty_to_na(data$index[[column]])
+  }
+
+  data$candidates$schema_version <- as.integer(data$candidates$schema_version)
+
+  data$error$schema_version <- as.integer(data$error$schema_version)
+  for (column in c("code", "message", "detail", "hint")) {
+    data$error[[column]] <- .flounder_empty_to_na(data$error[[column]])
+  }
+
+  class(data) <- c("floundeR_bam_check_index", "list")
+  data
+}
+
+.flounder_bam_check_map_normalise <- function(data) {
+  if (!is.list(data)) {
+    .flounder_bam_error("BAM mapping check returned an unsupported payload shape.")
+  }
+
+  for (name in names(data)) {
+    data[[name]] <- as.data.frame(data[[name]], stringsAsFactors = FALSE)
+  }
+
+  data$status <- .flounder_bam_status_table_normalise(data$status)
+  data$status$has_mapped_reads <- .flounder_empty_to_na(
+    data$status$has_mapped_reads
+  )
+
+  data$index$schema_version <- as.integer(data$index$schema_version)
+  data$index$kind <- .flounder_empty_to_na(data$index$kind)
+  data$index$diagnostic_detail <- .flounder_empty_to_na(
+    data$index$diagnostic_detail
+  )
+
+  data$summary$schema_version <- as.integer(data$summary$schema_version)
+  for (column in setdiff(names(data$summary), "schema_version")) {
+    data$summary[[column]] <- .flounder_nan_to_na(data$summary[[column]])
+  }
+
+  data$references$schema_version <- as.integer(data$references$schema_version)
+  for (column in c("length", "mapped_reads", "unmapped_reads")) {
+    data$references[[column]] <- .flounder_nan_to_na(data$references[[column]])
+  }
+  data$references$observed <- .flounder_empty_to_na(data$references$observed)
+
+  class(data) <- c("floundeR_bam_check_map", "list")
+  data
+}
+
+.flounder_bam_check_sort_normalise <- function(data) {
+  data <- .flounder_bam_command_table_normalise(data,
+    class = "floundeR_bam_check_sort"
+  )
+  for (column in c(
+    "declared_so",
+    "declared_ss",
+    "declared_go",
+    "observed_sub_order",
+    "appears_sorted",
+    "first_violation_reason",
+    "header_matches_observation"
+  )) {
+    data[[column]] <- .flounder_empty_to_na(data[[column]])
+  }
+  data$records_examined <- .flounder_nan_to_na(data$records_examined)
+  data$first_violation_record_index <- .flounder_nan_to_na(
+    data$first_violation_record_index
+  )
+  data
+}
+
+.flounder_bam_check_tag_normalise <- function(data) {
+  data <- .flounder_bam_command_table_normalise(data,
+    class = "floundeR_bam_check_tag"
+  )
+  for (column in c("required_type", "confidence", "semantic_note")) {
+    data[[column]] <- .flounder_empty_to_na(data[[column]])
+  }
+  data$records_examined <- .flounder_nan_to_na(data$records_examined)
+  data$records_with_tag <- .flounder_nan_to_na(data$records_with_tag)
+  data
+}
+
+.flounder_bam_status_table_normalise <- function(data) {
+  data$schema_version <- as.integer(data$schema_version)
+  data$analysis_wall_seconds <- .flounder_nan_to_na(
+    data$analysis_wall_seconds
+  )
+  for (column in c("semantic_note", "confidence")) {
+    if (column %in% names(data)) {
+      data[[column]] <- .flounder_empty_to_na(data[[column]])
+    }
+  }
+  data
+}
+
 .flounder_bam_fraction_table <- function(data) {
   data$schema_version <- as.integer(data$schema_version)
   for (column in setdiff(names(data), c("schema_version", "scope"))) {
@@ -479,6 +853,19 @@ bam_check_eof <- function(path) {
     return(NULL)
   }
   .flounder_positive_bam_integer_scalar(x, name)
+}
+
+.flounder_optional_character_scalar <- function(x, name) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  if (!is.character(x) || length(x) != 1L || is.na(x)) {
+    .flounder_bam_error(
+      paste0("`", name, "` must be NULL or a non-missing character scalar."),
+      category = "argument"
+    )
+  }
+  x
 }
 
 .flounder_logical_scalar <- function(x, name) {

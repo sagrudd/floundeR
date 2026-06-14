@@ -78,9 +78,11 @@ contracts:
 | `bam_forensic_inspect(path)` | `commands::forensic_inspect::run()` | Provenance and operational anomaly evidence, not fraud accusation. |
 | `bam_inspect_duplication(path)` | `commands::inspect_duplication::run()` | Collection-duplication evidence, distinct from PCR duplicate marking and BAM duplicate flags. |
 
-`bam_summary()`, `bam_verify()`, `bam_validate()`, and `bam_check_eof()` are the
-minimum first binding set because they satisfy the next Slice 11 TODO items and
-provide the core report-card inputs for aligned-read QC.
+`bam_summary()`, `bam_verify()`, `bam_validate()`, `bam_check_eof()`,
+`bam_check_index()`, `bam_check_map()`, `bam_check_sort()`, and
+`bam_check_tag()` are the initial read-only binding set because they provide
+the core report-card inputs for aligned-read QC without exposing Bamana's
+record-writing or transformation operations.
 
 `bam_summary()` is implemented in floundeR 0.6.0 as the first binding in this
 set. It links Bamana as an in-process Rust library dependency pinned to
@@ -99,6 +101,14 @@ validation failures with findings are returned as QC evidence rather than
 ordinary R exceptions. `bam_check_eof()` reports canonical BGZF EOF-marker
 evidence as a one-row table, including missing EOF as `complete = FALSE`
 evidence with Bamana error metadata.
+
+`bam_check_index()`, `bam_check_map()`, `bam_check_sort()`, and
+`bam_check_tag()` are implemented in floundeR 0.8.0. They expose Bamana's
+read-only report-card surfaces for index availability/freshness, mapped-read
+evidence, declared-versus-observed sort evidence, and aux-tag presence. The R
+wrappers intentionally keep the argument surface narrow and return stable
+tables for report assembly rather than mirroring Bamana's full command-line
+surface.
 
 ## R Return-Shape Guidance
 

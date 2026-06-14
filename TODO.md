@@ -191,7 +191,7 @@ current non-FAST5 package surface.
       shapes.
 - [x] Expose `bam_verify(path)`, `bam_validate(path)`, and `bam_check_eof(path)`
       through Rust-in-R.
-- [ ] Expose BAM index, mapping, sorting, and tag checks needed for QC report
+- [x] Expose BAM index, mapping, sorting, and tag checks needed for QC report
       cards.
 - [ ] Map Bamana response envelopes and errors to R conditions without losing
       command semantics.
