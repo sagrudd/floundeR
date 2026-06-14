@@ -319,15 +319,13 @@ grammateus_runtime_install <- function(
       "Runtime manifest does not declare a signature_file."
     )
   } else {
-    signature_path <- file.path(runtime_root, signature_file)
-    if (!file.exists(signature_path)) {
-      failures <- .grammateus_runtime_add_failure(
-        failures,
-        "manifest_signature",
-        signature_file,
-        "Runtime manifest signature file is missing."
-      )
-    }
+    failures <- .grammateus_runtime_validate_signature_file(
+      runtime_root = runtime_root,
+      signature_file = signature_file,
+      expected_hash = manifest$signing$signature_sha256 %||% NA_character_,
+      category = "manifest_signature",
+      failures = failures
+    )
   }
   failures
 }
@@ -452,8 +450,88 @@ grammateus_runtime_install <- function(
         "Runtime artifact byte length does not match manifest."
       )
     }
+    signature_file <- artifact$signature_file %||% artifact$signature_asset %||%
+      NA_character_
+    if (is.character(signature_file) && length(signature_file) == 1L &&
+        !is.na(signature_file) && nzchar(signature_file)) {
+      failures <- .grammateus_runtime_validate_signature_file(
+        runtime_root = runtime_root,
+        signature_file = signature_file,
+        expected_hash = artifact$signature_sha256 %||% NA_character_,
+        category = "artifact_signature",
+        failures = failures
+      )
+    }
   }
   list(failures = failures, count = length(artifacts), hashes = hashes)
+}
+
+.grammateus_runtime_validate_signature_file <- function(
+    runtime_root,
+    signature_file,
+    expected_hash,
+    category,
+    failures) {
+  if (!.grammateus_runtime_safe_relative_path(signature_file)) {
+    return(.grammateus_runtime_add_failure(
+      failures,
+      category,
+      as.character(signature_file),
+      "Runtime signature path must be relative and must not escape root."
+    ))
+  }
+  signature_path <- file.path(runtime_root, signature_file)
+  if (!file.exists(signature_path)) {
+    return(.grammateus_runtime_add_failure(
+      failures,
+      category,
+      signature_file,
+      "Runtime signature file is missing."
+    ))
+  }
+  normalized_root <- normalizePath(runtime_root, winslash = "/", mustWork = TRUE)
+  normalized_signature <- normalizePath(
+    signature_path,
+    winslash = "/",
+    mustWork = TRUE
+  )
+  if (!startsWith(normalized_signature, paste0(normalized_root, "/"))) {
+    return(.grammateus_runtime_add_failure(
+      failures,
+      category,
+      signature_file,
+      "Runtime signature resolves outside the runtime root."
+    ))
+  }
+  signature_bytes <- unname(file.info(signature_path)$size)
+  if (is.na(signature_bytes) || signature_bytes <= 0) {
+    failures <- .grammateus_runtime_add_failure(
+      failures,
+      category,
+      signature_file,
+      "Runtime signature file is empty."
+    )
+  }
+  if (is.character(expected_hash) && length(expected_hash) == 1L &&
+      !is.na(expected_hash) && nzchar(expected_hash)) {
+    actual_hash <- paste0(
+      "sha256:",
+      tolower(unname(tools::sha256sum(signature_path)))
+    )
+    expected_hash <- tolower(expected_hash)
+    if (!grepl("^sha256:", expected_hash)) {
+      expected_hash <- paste0("sha256:", expected_hash)
+    }
+    if (!identical(actual_hash, expected_hash)) {
+      failures <- .grammateus_runtime_add_failure(
+        failures,
+        "checksum_mismatch",
+        signature_file,
+        "Runtime signature SHA-256 does not match manifest."
+      )
+    }
+  }
+  failures
 }
 
 .grammateus_runtime_safe_relative_path <- function(path) {

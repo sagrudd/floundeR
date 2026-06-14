@@ -7,7 +7,10 @@ local_fake_grammateus_runtime <- function(
       render_element_html = TRUE,
       render_element_pdf = TRUE
     ),
-    corrupt_artifact_hash = FALSE) {
+    corrupt_artifact_hash = FALSE,
+    include_artifact_signatures = FALSE,
+    corrupt_signature_hash = FALSE,
+    empty_manifest_signature = FALSE) {
   runtime <- tempfile("grammateus-runtime-")
   dir.create(file.path(runtime, "lib"), recursive = TRUE)
   dir.create(file.path(runtime, "templates"), recursive = TRUE)
@@ -29,6 +32,19 @@ local_fake_grammateus_runtime <- function(
       byte_len = unname(file.info(full_path)$size)
     )
   })
+  if (isTRUE(include_artifact_signatures)) {
+    artifact_manifest <- Map(function(artifact, path) {
+      signature_file <- paste0(path, ".sig")
+      writeLines(paste("fixture-signature-for", path),
+                 file.path(runtime, signature_file))
+      artifact$signature_file <- signature_file
+      artifact$signature_sha256 <- paste0(
+        "sha256:",
+        unname(tools::sha256sum(file.path(runtime, signature_file)))
+      )
+      artifact
+    }, artifact_manifest, artifacts)
+  }
   manifest <- list(
     schema_version = "flounder.grammateus_runtime_manifest.v1",
     runtime_name = "grammateus-runtime",
@@ -55,7 +71,24 @@ local_fake_grammateus_runtime <- function(
     auto_unbox = TRUE,
     pretty = TRUE
   )
-  writeLines("fixture-signature", file.path(runtime, "manifest.json.sig"))
+  if (isTRUE(empty_manifest_signature)) {
+    file.create(file.path(runtime, "manifest.json.sig"))
+  } else {
+    writeLines("fixture-signature", file.path(runtime, "manifest.json.sig"))
+  }
+  manifest$signing$signature_sha256 <- paste0(
+    "sha256:",
+    unname(tools::sha256sum(file.path(runtime, "manifest.json.sig")))
+  )
+  if (isTRUE(corrupt_signature_hash)) {
+    manifest$signing$signature_sha256 <- paste0("sha256:", strrep("1", 64L))
+  }
+  jsonlite::write_json(
+    manifest,
+    path = file.path(runtime, "manifest.json"),
+    auto_unbox = TRUE,
+    pretty = TRUE
+  )
   runtime
 }
 
@@ -85,7 +118,7 @@ test_that("Grammateus runtime validation reports absent runtimes cleanly", {
 })
 
 test_that("Grammateus runtime validation accepts a complete local runtime", {
-  runtime <- local_fake_grammateus_runtime()
+  runtime <- local_fake_grammateus_runtime(include_artifact_signatures = TRUE)
 
   validation <- grammateus_runtime_validate(runtime)
 
@@ -114,6 +147,33 @@ test_that("Grammateus runtime validation reports manifest and artifact failures"
   expect_false(validation$valid)
   expect_true("capability_missing" %in% validation$failures$category)
   expect_true("checksum_mismatch" %in% validation$failures$category)
+})
+
+test_that("Grammateus runtime validation verifies signature artifacts", {
+  runtime <- local_fake_grammateus_runtime(
+    include_artifact_signatures = TRUE,
+    corrupt_signature_hash = TRUE
+  )
+
+  validation <- grammateus_runtime_validate(runtime)
+
+  expect_true(validation$available)
+  expect_false(validation$valid)
+  expect_true("checksum_mismatch" %in% validation$failures$category)
+
+  runtime <- local_fake_grammateus_runtime(
+    include_artifact_signatures = TRUE,
+    empty_manifest_signature = TRUE
+  )
+  validation <- grammateus_runtime_validate(runtime)
+  expect_false(validation$valid)
+  expect_true("manifest_signature" %in% validation$failures$category)
+
+  runtime <- local_fake_grammateus_runtime(include_artifact_signatures = TRUE)
+  unlink(file.path(runtime, "lib/libgrammateus_runtime.dylib.sig"))
+  validation <- grammateus_runtime_validate(runtime)
+  expect_false(validation$valid)
+  expect_true("artifact_signature" %in% validation$failures$category)
 })
 
 test_that("Grammateus runtime install copies a validated runtime into cache", {

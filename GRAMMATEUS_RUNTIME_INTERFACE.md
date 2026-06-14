@@ -198,6 +198,7 @@ Typed failure categories:
 - `manifest_missing`
 - `manifest_schema`
 - `manifest_signature`
+- `artifact_signature`
 - `checksum_mismatch`
 - `platform_unsupported`
 - `version_incompatible`
@@ -243,7 +244,9 @@ Before governed rendering is enabled, floundeR must verify:
 
 - runtime root path safety;
 - manifest schema;
-- manifest signature or governance envelope where available;
+- manifest signature or governance envelope declaration;
+- manifest and artifact signature file presence, path safety, non-empty content,
+  and declared SHA-256 checksums where provided;
 - every declared artifact checksum and byte length;
 - platform and ABI compatibility;
 - floundeR/runtime version compatibility;

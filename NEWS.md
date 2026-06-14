@@ -1,3 +1,9 @@
+# floundeR 0.21.4
+
+* Tightened Grammateus runtime validation so declared private runtime signature
+  files are path-safe, present, non-empty, and checksum-verified when manifests
+  provide signature SHA-256 values.
+
 # floundeR 0.21.3
 
 * Defined the GitHub/private release asset names, platform identifiers, runtime

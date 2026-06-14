@@ -277,7 +277,7 @@ current non-FAST5 package surface.
 
 - [x] Define GitHub release asset names and manifests for prebuilt Grammateus
       runtime bundles.
-- [ ] Add checksum and signature verification for private Grammateus runtime
+- [x] Add checksum and signature verification for private Grammateus runtime
       artifacts.
 - [ ] Add compatibility checks between floundeR versions and Grammateus runtime
       versions.

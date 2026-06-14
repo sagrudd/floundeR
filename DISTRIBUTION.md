@@ -148,7 +148,8 @@ because the libraries are available.
 Private Grammateus runtime artifacts should be verified before use:
 
 - checksum verification;
-- manifest signature verification where available;
+- manifest signature file verification;
+- artifact signature file verification when declared by the runtime manifest;
 - version compatibility checks against floundeR;
 - platform and ABI checks;
 - clear provenance in rendered reports.
