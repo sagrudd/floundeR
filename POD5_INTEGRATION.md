@@ -125,3 +125,19 @@ floundeR should keep exposing only read-only POD5 functions that directly
 support QC, review, provenance, reporting, demonstration datasets, or synoptikon
 handoff. Write-capable POD5 subdivision stays out of the R API until read-only
 planning and provenance contracts are stable.
+
+## Derived Demonstration Workflow
+
+The maintained example-preparation workflow is
+`scripts/derive-pod5-demo-workflow.R`. It is deliberately opt-in and writes
+workflow artifacts outside the repository by default under the user cache. The
+script records the selected ONT source object, a `demo-workflow.json` manifest,
+and `source-metadata.tsv`. When supplied with a local source POD5 through
+`FLOUNDER_DERIVED_POD5_SOURCE`, it also writes read-only `pod5_subdivide_plan()`
+and `pod5_manifest()` tables.
+
+The workflow does not write derived POD5 files, copy source POD5 files into the
+repository, or invoke a POD5 CLI as part of the normal floundeR API. Future
+write-capable subset materialisation should remain explicit, provenance-rich,
+and backed by `../pod5-tools` library APIs once those write contracts are stable
+enough for demonstration artifact production.

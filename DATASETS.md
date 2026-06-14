@@ -59,6 +59,10 @@ Rules for derived subsets:
 - Keep generated demonstration POD5 files as small as practical.
 - Plan candidate splits first with `pod5_subdivide_plan()` and record the
   resulting plan table before creating any derived artifact.
+- Use `scripts/derive-pod5-demo-workflow.R` as the maintained opt-in workflow
+  for example preparation. By default it writes source metadata, a workflow
+  manifest, and, when a local source POD5 is supplied, read-only plan/manifest
+  tables outside the repository. It does not write derived POD5 files.
 - Record the source bucket, source key, source object size, source timestamp,
   `pod5-tools` version, subdivision strategy, target values, selected relative
   paths, output file size, and output checksum.
@@ -66,6 +70,29 @@ Rules for derived subsets:
   the package repository.
 - Commit only tiny derived fixtures if they are intentionally created for unit
   tests and are small enough for normal package distribution.
+
+Example metadata-only dry run:
+
+```sh
+Rscript scripts/derive-pod5-demo-workflow.R --dry-run
+```
+
+Example local-source planning run:
+
+```sh
+FLOUNDER_DERIVE_POD5_DEMO=true \
+FLOUNDER_DERIVED_POD5_SOURCE=/path/to/PAU85136_pass_279c9095_68316534_8289.pod5 \
+Rscript scripts/derive-pod5-demo-workflow.R
+```
+
+Example explicit source download and planning run:
+
+```sh
+FLOUNDER_DERIVE_POD5_DEMO=true \
+FLOUNDER_RUN_NETWORK_TESTS=true \
+FLOUNDER_DERIVE_POD5_DEMO_DOWNLOAD=true \
+Rscript scripts/derive-pod5-demo-workflow.R
+```
 
 ## Access From R
 

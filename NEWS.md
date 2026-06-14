@@ -1,3 +1,9 @@
+# floundeR 0.5.1
+
+* Added an opt-in derived-POD5 demonstration workflow script that records ONT
+  source metadata, read-only subdivision plans, and provenance manifests outside
+  the repository without writing or committing derived POD5 files.
+
 # floundeR 0.5.0
 
 * Added read-only Rust-backed `pod5_subdivide_plan()` for deterministic POD5

@@ -180,7 +180,7 @@ current non-FAST5 package surface.
 - [x] Define the demonstration subset policy for `pod5-tools`-derived POD5
       splits, including source provenance, subsetting parameters, output
       checksums, and artifact storage location.
-- [ ] Add a small derived-POD5 workflow for examples once the read-only binding
+- [x] Add a small derived-POD5 workflow for examples once the read-only binding
       and provenance contracts are stable.
 
 ## Slice 11: BAM/Bamana Integration
