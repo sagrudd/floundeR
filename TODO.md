@@ -241,7 +241,7 @@ current non-FAST5 package surface.
 - [x] Identify the Grammateus public library APIs needed for semantic report
       elements, rendering, manifests, provenance, branding, and trusted-report
       lifecycle metadata.
-- [ ] Implement R-to-Grammateus plot artifact handoff for existing `ggplot2`
+- [x] Implement R-to-Grammateus plot artifact handoff for existing `ggplot2`
       plots, including deterministic SVG/PNG output, checksums, captions, alt
       text, methods notes, and provenance.
 - [ ] Implement Grammateus-to-R controlled plot generation wrappers for

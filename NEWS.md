@@ -1,3 +1,11 @@
+# floundeR 0.14.0
+
+* Added `grammateus_figure_from_ggplot()` and
+  `grammateus_figure_from_file()` so existing `ggplot2` plots and PNG/SVG
+  artifacts can be handed to the Grammateus reporting path as governed figure
+  objects with deterministic artifact paths, SHA-256 checksums, captions, alt
+  text, methods notes, dimensions, and provenance.
+
 # floundeR 0.13.4
 
 * Identified the Grammateus public Rust APIs floundeR should use for semantic

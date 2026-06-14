@@ -20,6 +20,7 @@ flounder_cran_packages <- function() {
     "rmarkdown",
     "stringdist",
     "stringr",
+    "svglite",
     "testthat",
     "tibble",
     "tidyr",
