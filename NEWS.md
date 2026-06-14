@@ -1,3 +1,9 @@
+# floundeR 0.9.0
+
+* Added `bam_qc_report_card()` and `bam_qc_report_card_thresholds()` to convert
+  Bamana-derived summary, index, sort, tag, EOF, validation, and provenance
+  evidence into the standard floundeR pass/warn/fail report-card schema.
+
 # floundeR 0.8.1
 
 * Documented and tested Bamana response-envelope semantics: payload-bearing

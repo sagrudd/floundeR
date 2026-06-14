@@ -197,7 +197,7 @@ current non-FAST5 package surface.
       command semantics.
 - [x] Add small BAM fixtures and offline tests for summary/verify/validate
       wrappers.
-- [ ] Define BAM QC report-card checks for mapping fraction, duplicate
+- [x] Define BAM QC report-card checks for mapping fraction, duplicate
       fraction, QC-fail fraction, MAPQ zero burden, stale/missing index,
       sorting mismatch, missing expected tags, EOF absence, validation
       findings, and provenance anomalies.

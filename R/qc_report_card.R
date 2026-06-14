@@ -15,6 +15,28 @@ qc_report_card_thresholds <- function() {
   )
 }
 
+#' Default BAM report-card thresholds
+#'
+#' @return A named list of warn/fail thresholds used by
+#'   `bam_qc_report_card()`.
+#'
+#' @export
+bam_qc_report_card_thresholds <- function() {
+  list(
+    mapping_fraction_min = c(warn = 0.80, fail = 0.50),
+    duplicate_fraction_max = c(warn = 0.20, fail = 0.40),
+    qc_fail_fraction_max = c(warn = 0.05, fail = 0.15),
+    mapq_zero_fraction_max = c(warn = 0.10, fail = 0.25),
+    missing_or_unusable_index_max = c(warn = 0, fail = 0),
+    stale_index_max = c(warn = 0, fail = 0),
+    sorting_mismatch_max = c(warn = 0, fail = 0),
+    missing_expected_tags_max = c(warn = 0, fail = 0),
+    eof_absence_max = c(warn = 0, fail = 0),
+    validation_finding_count_max = c(warn = 0, fail = 0),
+    provenance_anomaly_count_max = c(warn = 0, fail = 0)
+  )
+}
+
 #' Build a run-level QC report card
 #'
 #' `qc_report_card()` evaluates a run summary against pass/warn/fail threshold
@@ -108,12 +130,373 @@ qc_report_card <- function(
   ))
 }
 
+#' Build a BAM QC report card
+#'
+#' `bam_qc_report_card()` evaluates Bamana-derived BAM evidence against
+#' pass/warn/fail checks for alignment QC and reporting. It consumes the
+#' R-native objects returned by `bam_summary()`, `bam_check_index()`,
+#' `bam_check_sort()`, `bam_check_tag()`, `bam_check_eof()`, and
+#' `bam_validate()`; it does not call Bamana directly.
+#'
+#' @param summary Optional `bam_summary()` result.
+#' @param index Optional `bam_check_index()` result.
+#' @param mapping Optional `bam_check_map()` result used as a fallback for
+#'   mapping-fraction evidence when `summary` is absent.
+#' @param sorting Optional `bam_check_sort()` result.
+#' @param tags Optional `bam_check_tag()` data frame or list of such data
+#'   frames.
+#' @param eof Optional `bam_check_eof()` data frame.
+#' @param validation Optional `bam_validate()` result.
+#' @param provenance_anomalies Optional numeric anomaly count or data frame of
+#'   provenance findings from a future Bamana provenance/forensic surface.
+#' @param expected_tags Character vector of BAM aux tags expected to be present.
+#' @param thresholds Named threshold list. Defaults to
+#'   `bam_qc_report_card_thresholds()`.
+#' @param schema_version Schema version label to attach to the returned table.
+#'
+#' @return A tibble using the standard report-card schema:
+#'   `schema_version`, `check_id`, `check_label`, `status`, `observed_value`,
+#'   `warn_threshold`, `fail_threshold`, `comparator`, and `details`.
+#'
+#' @examples
+#' \dontrun{
+#' bam <- bam_summary("reads.bam")
+#' bam_qc_report_card(summary = bam)
+#' }
+#'
+#' @export
+bam_qc_report_card <- function(
+    summary = NULL,
+    index = NULL,
+    mapping = NULL,
+    sorting = NULL,
+    tags = NULL,
+    eof = NULL,
+    validation = NULL,
+    provenance_anomalies = NULL,
+    expected_tags = character(),
+    thresholds = bam_qc_report_card_thresholds(),
+    schema_version = "flounder.bam_qc_report_card.v1") {
+  if (!is.character(expected_tags) || any(is.na(expected_tags))) {
+    stop("`expected_tags` must be a character vector without NA values.",
+         call. = FALSE)
+  }
+
+  .qc_bind_rows(list(
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_mapping_fraction",
+      check_label = "BAM mapped-read fraction",
+      observed_value = .bam_card_mapping_fraction(summary, mapping),
+      threshold = thresholds$mapping_fraction_min,
+      comparator = "minimum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_duplicate_fraction",
+      check_label = "BAM duplicate-record fraction",
+      observed_value = .bam_card_summary_fraction(summary, "fraction_duplicate"),
+      threshold = thresholds$duplicate_fraction_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_qc_fail_fraction",
+      check_label = "BAM QC-fail-record fraction",
+      observed_value = .bam_card_summary_fraction(summary, "fraction_qc_fail"),
+      threshold = thresholds$qc_fail_fraction_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_mapq_zero_fraction",
+      check_label = "BAM MAPQ-zero fraction",
+      observed_value = .bam_card_mapq_zero_fraction(summary),
+      threshold = thresholds$mapq_zero_fraction_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_missing_or_unusable_index",
+      check_label = "Missing or unusable BAM index",
+      observed_value = .bam_card_missing_or_unusable_index(index),
+      threshold = thresholds$missing_or_unusable_index_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_stale_index",
+      check_label = "Stale BAM index",
+      observed_value = .bam_card_stale_index(index),
+      threshold = thresholds$stale_index_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_sorting_mismatch",
+      check_label = "BAM sorting mismatch",
+      observed_value = .bam_card_sorting_mismatch(sorting),
+      threshold = thresholds$sorting_mismatch_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_missing_expected_tags",
+      check_label = "Missing expected BAM aux tags",
+      observed_value = .bam_card_missing_expected_tags(tags, expected_tags),
+      threshold = thresholds$missing_expected_tags_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_eof_absence",
+      check_label = "Missing BGZF EOF marker",
+      observed_value = .bam_card_eof_absence(eof),
+      threshold = thresholds$eof_absence_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_validation_findings",
+      check_label = "BAM validation findings",
+      observed_value = .bam_card_validation_finding_count(validation),
+      threshold = thresholds$validation_finding_count_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "bam_provenance_anomalies",
+      check_label = "BAM provenance anomalies",
+      observed_value = .bam_card_provenance_anomaly_count(provenance_anomalies),
+      threshold = thresholds$provenance_anomaly_count_max,
+      comparator = "maximum")
+  ))
+}
+
 .qc_report_card_summary <- function(x) {
   if (.qc_is_run_summary(x)) {
     return(tibble::as_tibble(x))
   }
 
   qc_run_summary(x)
+}
+
+.bam_card_summary_fraction <- function(summary, column) {
+  if (is.null(summary) || is.null(summary$fractions) ||
+      !column %in% names(summary$fractions)) {
+    return(NA_real_)
+  }
+
+  fractions <- summary$fractions
+  if ("scope" %in% names(fractions) && any(fractions$scope == "full_file")) {
+    fractions <- fractions[fractions$scope == "full_file", , drop = FALSE]
+  }
+
+  as.numeric(fractions[[column]][[1]])
+}
+
+.bam_card_mapping_fraction <- function(summary, mapping) {
+  fraction <- .bam_card_summary_fraction(summary, "fraction_mapped")
+  if (!is.na(fraction)) {
+    return(fraction)
+  }
+
+  if (is.null(mapping) || is.null(mapping$summary)) {
+    return(NA_real_)
+  }
+
+  mapped <- .bam_card_first_numeric(mapping$summary, "total_mapped_reads")
+  unmapped <- .bam_card_first_numeric(mapping$summary, "total_unmapped_reads")
+  if (is.na(mapped) || is.na(unmapped) || mapped + unmapped == 0) {
+    mapped <- .bam_card_first_numeric(mapping$summary, "mapped_records_observed")
+    unmapped <- .bam_card_first_numeric(mapping$summary, "unmapped_records_observed")
+  }
+  if (is.na(mapped) || is.na(unmapped) || mapped + unmapped == 0) {
+    return(NA_real_)
+  }
+
+  mapped / (mapped + unmapped)
+}
+
+.bam_card_mapq_zero_fraction <- function(summary) {
+  if (is.null(summary) || is.null(summary$mapq) || is.null(summary$counts)) {
+    return(NA_real_)
+  }
+
+  zero_count <- .bam_card_first_numeric(summary$mapq, "zero_count")
+  records <- .bam_card_first_numeric(summary$counts, "records_examined")
+  if (is.na(zero_count) || is.na(records) || records == 0) {
+    return(NA_real_)
+  }
+
+  zero_count / records
+}
+
+.bam_card_missing_or_unusable_index <- function(index) {
+  if (is.null(index) || is.null(index$index)) {
+    return(NA_real_)
+  }
+
+  present <- .bam_card_first_logical(index$index, "present")
+  usable <- .bam_card_first_logical(index$index, "usable")
+  if (is.na(present) || is.na(usable)) {
+    return(NA_real_)
+  }
+
+  as.numeric(!present || !usable)
+}
+
+.bam_card_stale_index <- function(index) {
+  if (is.null(index) || is.null(index$index)) {
+    return(NA_real_)
+  }
+
+  stale <- .bam_card_first_bool_label(index$index, "stale")
+  bam_newer <- .bam_card_first_bool_label(index$index, "bam_newer_than_index")
+  compatibility <- .bam_card_first_character(index$index, "compatibility")
+  if (is.na(stale) && is.na(bam_newer) && is.na(compatibility)) {
+    return(NA_real_)
+  }
+
+  as.numeric(
+    identical(stale, TRUE) ||
+      identical(bam_newer, TRUE) ||
+      identical(compatibility, "stale"))
+}
+
+.bam_card_sorting_mismatch <- function(sorting) {
+  if (is.null(sorting)) {
+    return(NA_real_)
+  }
+
+  header_match <- .bam_card_first_bool_label(sorting, "header_matches_observation")
+  appears_sorted <- .bam_card_first_bool_label(sorting, "appears_sorted")
+  violation <- .bam_card_first_character(sorting, "first_violation_reason")
+  if (is.na(header_match) && is.na(appears_sorted) && is.na(violation)) {
+    return(NA_real_)
+  }
+
+  as.numeric(
+    identical(header_match, FALSE) ||
+      identical(appears_sorted, FALSE) ||
+      !is.na(violation))
+}
+
+.bam_card_missing_expected_tags <- function(tags, expected_tags) {
+  expected_tags <- unique(expected_tags)
+  if (length(expected_tags) == 0) {
+    return(0)
+  }
+  if (is.null(tags)) {
+    return(NA_real_)
+  }
+
+  tag_table <- .bam_card_tag_table(tags)
+  if (nrow(tag_table) == 0 || !"tag" %in% names(tag_table) ||
+      !"tag_found" %in% names(tag_table)) {
+    return(NA_real_)
+  }
+
+  found <- unique(tag_table$tag[tag_table$tag %in% expected_tags &
+    tag_table$tag_found %in% TRUE])
+  length(setdiff(expected_tags, found))
+}
+
+.bam_card_eof_absence <- function(eof) {
+  if (is.null(eof) || !"complete" %in% names(eof)) {
+    return(NA_real_)
+  }
+
+  complete <- eof$complete[[1]]
+  if (is.na(complete)) {
+    return(NA_real_)
+  }
+
+  as.numeric(!complete)
+}
+
+.bam_card_validation_finding_count <- function(validation) {
+  if (is.null(validation)) {
+    return(NA_real_)
+  }
+  if (!is.null(validation$findings)) {
+    return(nrow(validation$findings))
+  }
+  if (is.null(validation$summary)) {
+    return(NA_real_)
+  }
+
+  sum(
+    .bam_card_first_numeric(validation$summary, "errors"),
+    .bam_card_first_numeric(validation$summary, "warnings"),
+    .bam_card_first_numeric(validation$summary, "infos"),
+    na.rm = TRUE)
+}
+
+.bam_card_provenance_anomaly_count <- function(provenance_anomalies) {
+  if (is.null(provenance_anomalies)) {
+    return(NA_real_)
+  }
+  if (is.numeric(provenance_anomalies) && length(provenance_anomalies) == 1L) {
+    return(as.numeric(provenance_anomalies))
+  }
+  if (is.data.frame(provenance_anomalies)) {
+    return(nrow(provenance_anomalies))
+  }
+
+  NA_real_
+}
+
+.bam_card_tag_table <- function(tags) {
+  if (is.data.frame(tags)) {
+    return(tags)
+  }
+  if (is.list(tags)) {
+    frames <- tags[vapply(tags, is.data.frame, logical(1))]
+    if (length(frames) == 0) {
+      return(data.frame())
+    }
+    return(tibble::as_tibble(do.call(rbind, frames)))
+  }
+
+  data.frame()
+}
+
+.bam_card_first_numeric <- function(data, column) {
+  if (is.null(data) || !column %in% names(data) || length(data[[column]]) == 0) {
+    return(NA_real_)
+  }
+
+  as.numeric(data[[column]][[1]])
+}
+
+.bam_card_first_character <- function(data, column) {
+  if (is.null(data) || !column %in% names(data) || length(data[[column]]) == 0) {
+    return(NA_character_)
+  }
+
+  value <- as.character(data[[column]][[1]])
+  if (is.na(value) || identical(value, "")) {
+    return(NA_character_)
+  }
+  value
+}
+
+.bam_card_first_logical <- function(data, column) {
+  if (is.null(data) || !column %in% names(data) || length(data[[column]]) == 0) {
+    return(NA)
+  }
+
+  value <- data[[column]][[1]]
+  if (is.na(value)) {
+    return(NA)
+  }
+  as.logical(value)
+}
+
+.bam_card_first_bool_label <- function(data, column) {
+  value <- .bam_card_first_character(data, column)
+  if (is.na(value)) {
+    return(NA)
+  }
+  if (tolower(value) == "true") {
+    return(TRUE)
+  }
+  if (tolower(value) == "false") {
+    return(FALSE)
+  }
+
+  NA
 }
 
 .qc_is_run_summary <- function(x) {

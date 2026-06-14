@@ -143,6 +143,16 @@ Envelope semantics are part of the floundeR contract:
   `floundeR_bam_argument_error`, so invalid caller input is separated from file,
   format, and index evidence.
 
+`bam_qc_report_card()` is implemented in floundeR 0.9.0 as the first
+Bamana-derived report-card contract. It does not call Bamana directly; instead
+it consumes the stable R-native evidence tables returned by the curated BAM
+wrappers. The first check set covers mapped-read fraction, duplicate-record
+fraction, QC-fail fraction, MAPQ-zero burden, missing or unusable index, stale
+index, sorting mismatch, missing expected aux tags, missing BGZF EOF marker,
+validation finding count, and provenance anomaly count. Categorical checks are
+encoded as 0/1 indicators so they fit the same pass/warn/fail schema used by
+sequencing-summary report cards.
+
 ## Transformation Boundary
 
 The following Bamana capabilities are useful but should not be exposed in
