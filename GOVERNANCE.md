@@ -14,6 +14,7 @@ governing local files are:
 - `ROADMAP.md`
 - `TODO.md`
 - `DATASETS.md`
+- `DERIVED_POD5_DEMOS.md`
 - `DISTRIBUTION.md`
 - `BIOCONDUCTOR_POLICY.md`
 - `GITHUB_INSTALLATION.md`
@@ -108,7 +109,7 @@ update it when public documentation is intentionally refreshed, but do not let
 stale generated pages drive source behavior.
 
 Root-level project-control files such as `AGENTS.md`, `ROADMAP.md`, `TODO.md`,
-`DATASETS.md`, `DISTRIBUTION.md`, `BIOCONDUCTOR_POLICY.md`,
+`DATASETS.md`, `DERIVED_POD5_DEMOS.md`, `DISTRIBUTION.md`, `BIOCONDUCTOR_POLICY.md`,
 `GITHUB_INSTALLATION.md`,
 `REPORTING_INTERFACE.md`,
 `GRAMMATEUS_RUNTIME_INTERFACE.md`, `GRAMMATEUS_RELEASE_ASSETS.md`,

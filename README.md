@@ -177,7 +177,9 @@ if (identical(tolower(Sys.getenv("FLOUNDER_RUN_NETWORK_TESTS")), "true")) {
 
 Downloaded POD5 files and large derived POD5 artifacts must not be committed to
 this repository. Dataset policy and provenance requirements are documented in
-[`DATASETS.md`](DATASETS.md).
+[`DATASETS.md`](DATASETS.md). Lightweight derived demonstration preparation is
+documented in [`DERIVED_POD5_DEMOS.md`](DERIVED_POD5_DEMOS.md), with
+`scripts/derive-pod5-demo-workflow.R` as the maintained opt-in workflow.
 
 ## BAM And Library-Preparation QC
 

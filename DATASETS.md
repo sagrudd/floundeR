@@ -53,6 +53,8 @@ in every demonstration. `../pod5-tools` may be used to create smaller POD5
 subsets or split outputs for documentation, tests, report examples, and
 synoptikon demos.
 
+The detailed preparation contract is maintained in `DERIVED_POD5_DEMOS.md`.
+
 Rules for derived subsets:
 
 - Derive subsets from the selected pass/fail source files by default.

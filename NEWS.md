@@ -1,3 +1,10 @@
+# floundeR 0.21.13
+
+* Added a focused derived-POD5 demonstration artifact guide covering the
+  maintained opt-in workflow, produced provenance metadata, repository policy,
+  and Synoptikon/reporting use of `pod5-tools`-derived subset or split
+  artifacts.
+
 # floundeR 0.21.12
 
 * Promoted the ONT Zymo fecal POD5 source and selected pass/fail objects as the

@@ -144,6 +144,7 @@ if (rust_available) {
 Actual subset or split file creation remains an explicit derived-data workflow:
 record the source URI, checksum, command/runtime provenance, and generated
 manifest, then keep the derived POD5 artifact outside the package repository.
+The maintained preparation contract is documented in `DERIVED_POD5_DEMOS.md`.
 
 ## QC Handoff Shape
 
