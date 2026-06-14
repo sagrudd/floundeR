@@ -1,0 +1,270 @@
+---
+title: "Grammateus Plot Directions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Grammateus Plot Directions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows the two supported plot directions in floundeR's Grammateus
+reporting interface:
+
+- an analyst-owned R `ggplot2` plot is dropped into a Grammateus report contract;
+- a Grammateus semantic plot specification is rendered by controlled R code and
+  then included in a report contract.
+
+The vignette itself is RMarkdown documentation. The report artifacts it creates
+are Grammateus-shaped semantic contracts and manifests, and governed HTML/PDF
+rendering remains optional through the private prebuilt Grammateus runtime.
+
+```{r setup}
+library(floundeR)
+```
+
+## Prepare Shared QC Evidence
+
+Both directions start with ordinary floundeR QC tables. They are stable R
+objects, so they can be inspected interactively, exported to Synoptikon, or
+assembled into Grammateus report elements.
+
+```{r qc-evidence}
+summary_file <- flnDr("sequencing_summary.txt.bz2")
+generated_at <- "2026-06-14T15:42:10Z"
+run_id <- "example-grammateus-plot-directions"
+
+report_dir <- file.path(tempdir(), "flounder-grammateus-plot-directions")
+unlink(report_dir, recursive = TRUE)
+dir.create(report_dir, recursive = TRUE)
+
+run_summary <- qc_run_summary(
+  summary_file,
+  source_id = "example-sequencing-summary"
+)
+yield_over_time <- qc_yield_over_time(summary_file, resolution_minutes = 15)
+run_report_card <- qc_report_card(run_summary)
+
+elements <- grammateus_qc_report_elements(
+  qc_summary = run_summary,
+  yield_over_time = yield_over_time,
+  report_card_findings = run_report_card,
+  methods = paste(
+    "Run-level QC was generated from the bundled sequencing-summary fixture.",
+    "Plot artifacts were produced through the floundeR Grammateus reporting",
+    "interface without requiring private runtime assets."
+  ),
+  provenance = data.frame(
+    input_id = "example-sequencing-summary",
+    kind = "sequencing_summary",
+    uri = summary_file,
+    size_bytes = unname(file.info(summary_file)$size),
+    stringsAsFactors = FALSE
+  ),
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+theme <- grammateus_mnemosyne_theme(
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+run_summary
+```
+
+## Direction 1: R Plot Dropped Into A Report
+
+Use this path when an analyst has already produced a `ggplot2` plot in R and
+needs to hand it to the governed report pipeline with stable identifiers,
+captions, alt text, artifact checksums, and source-data provenance.
+
+```{r r-to-grammateus}
+if (requireNamespace("ggplot2", quietly = TRUE)) {
+  yield_plot <- ggplot2::ggplot(
+    yield_over_time,
+    ggplot2::aes(
+      x = bin_end_minutes,
+      y = cumulative_bases,
+      colour = passes_filtering,
+      group = passes_filtering
+    )
+  ) +
+    ggplot2::geom_line(linewidth = 0.7) +
+    ggplot2::labs(
+      x = "Elapsed time (minutes)",
+      y = "Cumulative bases",
+      colour = "Passes filtering"
+    ) +
+    ggplot2::theme_minimal(base_size = 11)
+
+  r_owned_figure <- grammateus_figure_from_ggplot(
+    plot = yield_plot,
+    figure_id = "figure_r_owned_yield_over_time",
+    caption = "Cumulative sequencing yield over time from an analyst R plot.",
+    alt_text = paste(
+      "Line plot showing cumulative sequencing bases over elapsed run time,",
+      "split by whether reads passed filtering."
+    ),
+    output_dir = report_dir,
+    formats = "png",
+    width = 140,
+    height = 90,
+    units = "mm",
+    dpi = 120,
+    methods_note = "Generated in R with ggplot2 and wrapped for Grammateus.",
+    source_data = yield_over_time,
+    produced_at_utc = generated_at,
+    run_id = run_id
+  )
+
+  r_owned_figure$source[c("format", "path", "checksum")]
+} else {
+  r_owned_figure <- NULL
+  data.frame(
+    status = "not_checked",
+    reason = "ggplot2 is not installed in this vignette environment."
+  )
+}
+```
+
+The figure can be inserted into a report contract without private runtime
+assets. `render = "never"` deliberately writes the semantic contract and
+manifest only; authorized environments can switch to `render = "if_available"`
+or `render = "require"` after validating a private Grammateus runtime.
+
+```{r r-owned-report}
+if (!is.null(r_owned_figure)) {
+  r_owned_report <- qc_report(
+    elements = elements,
+    figures = list(r_owned_figure),
+    output_dir = file.path(report_dir, "r-owned-report"),
+    output = c("html", "pdf"),
+    render = "never",
+    theme = theme,
+    report_id = "report_r_owned_plot_handoff",
+    title = "Example QC report with an R-owned plot",
+    produced_at_utc = generated_at,
+    run_id = run_id
+  )
+
+  r_owned_report$manifest[c(
+    "schema_version",
+    "report_id",
+    "element_count",
+    "figure_count"
+  )]
+}
+```
+
+## Direction 2: Grammateus Plot Spec Rendered By R
+
+Use this path when a report template, governed workflow, or Synoptikon-facing
+process owns the plot definition. floundeR builds a backend-neutral semantic
+plot specification from tidy QC data, then the controlled R backend renders the
+requested image artifacts in a deterministic run directory.
+
+```{r grammateus-to-r}
+plot_spec <- qc_plot_yield_over_time(
+  yield_over_time,
+  output = list(
+    width_mm = 140,
+    height_mm = 90,
+    dpi = 120,
+    formats = "png"
+  ),
+  produced_at_utc = generated_at,
+  run_id = run_id
+)
+
+plot_spec[c("schema_version", "plot_id", "plot_type", "caption")]
+plot_spec$mappings
+```
+
+The render step needs local R plot dependencies and an `Rscript` executable. It
+does not need the private Grammateus HTML/PDF runtime because this is the
+controlled R plot backend, not final report rendering.
+
+```{r render-plot-spec}
+can_render_plot <- requireNamespace("ggplot2", quietly = TRUE) &&
+  requireNamespace("jsonlite", quietly = TRUE) &&
+  requireNamespace("scales", quietly = TRUE) &&
+  requireNamespace("viridisLite", quietly = TRUE) &&
+  nzchar(Sys.which("Rscript"))
+
+if (can_render_plot) {
+  plot_run <- grammateus_render_plot(
+    plot_spec,
+    execution = "local_rscript",
+    run_root = file.path(report_dir, "plot-runs"),
+    required_packages = c("ggplot2", "jsonlite", "scales", "viridisLite")
+  )
+
+  spec_rendered_figure <- plot_run$artifacts$png$figure
+
+  list(
+    run_dir = plot_run$run_dir,
+    script_sha256 = plot_run$script_sha256,
+    figure_checksum = spec_rendered_figure$source$checksum
+  )
+} else {
+  plot_run <- NULL
+  spec_rendered_figure <- NULL
+  data.frame(
+    status = "not_checked",
+    reason = paste(
+      "The controlled R plotting backend needs ggplot2, jsonlite, scales,",
+      "viridisLite, and Rscript."
+    )
+  )
+}
+```
+
+The rendered figure uses the same `flounder_grammateus_figure` wrapper as an
+analyst-supplied R plot, so downstream report assembly does not need a second
+figure contract.
+
+```{r spec-owned-report}
+if (!is.null(spec_rendered_figure)) {
+  spec_owned_report <- qc_report(
+    elements = elements,
+    figures = list(spec_rendered_figure),
+    output_dir = file.path(report_dir, "spec-owned-report"),
+    output = "html",
+    render = "never",
+    theme = theme,
+    report_id = "report_spec_owned_plot_render",
+    title = "Example QC report with a Grammateus-owned plot spec",
+    produced_at_utc = generated_at,
+    run_id = run_id
+  )
+
+  spec_owned_report$manifest[c(
+    "schema_version",
+    "report_id",
+    "element_count",
+    "figure_count"
+  )]
+}
+```
+
+## Practical Boundary
+
+The two plot directions are deliberately symmetrical at report assembly time:
+both produce semantic figure metadata with stable identifiers, captions, alt
+text, checksums, source-data hashes, and run provenance. The difference is who
+owns the plot definition:
+
+- R-owned plots are best for interactive analyst work and specialized
+  exploratory figures.
+- Grammateus-owned plot specs are best for reproducible technical reports,
+  governed templates, and Synoptikon report lifecycle handoff.
+
+Neither path downloads data, shells out to a Grammateus CLI, or requires private
+Grammateus source code during public package checks.

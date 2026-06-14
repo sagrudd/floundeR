@@ -1,3 +1,9 @@
+# floundeR 0.21.15
+
+* Added a two-direction Grammateus plot vignette showing analyst-owned R
+  `ggplot2` figures being wrapped into report contracts and Grammateus semantic
+  plot specs being rendered by the controlled R backend.
+
 # floundeR 0.21.14
 
 * Added a Grammateus technical-report vignette that builds a runtime-free
