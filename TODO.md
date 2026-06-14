@@ -203,7 +203,7 @@ current non-FAST5 package surface.
       findings, and provenance anomalies.
 - [x] Document which Bamana operations are read-only QC surfaces and which are
       transformations requiring explicit output paths.
-- [ ] Explicitly document which Bamana capabilities are out of scope for
+- [x] Explicitly document which Bamana capabilities are out of scope for
       floundeR because they do not serve nanopore QC/review directly.
 
 ## Slice 12: Synoptikon Export

@@ -1,3 +1,9 @@
+# floundeR 0.9.2
+
+* Documented Bamana capabilities that remain out of scope for floundeR so the
+  BAM surface stays curated around nanopore QC, review, provenance, reporting,
+  and synoptikon handoff rather than becoming a wholesale Bamana mirror.
+
 # floundeR 0.9.1
 
 * Documented the Bamana read-only versus transformation boundary, including

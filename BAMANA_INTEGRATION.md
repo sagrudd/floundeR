@@ -202,6 +202,32 @@ it must:
 - keep transformation outputs separate from read-only QC evidence in reports
   and synoptikon payloads.
 
+## Out-Of-Scope Bamana Capabilities
+
+Bamana is intentionally broader than floundeR's BAM surface. The following
+capabilities should stay out of the normal floundeR API unless a later roadmap
+slice gives them a direct nanopore QC, review, provenance, reporting, or
+synoptikon handoff purpose.
+
+| Capability | floundeR posture | Reason |
+| --- | --- | --- |
+| `benchmark` command wrappers | out of scope | Benchmarking supports Bamana engineering and comparator claims; it is not routine sequencing-run QC evidence. |
+| Whole-CLI pass-through helpers | out of scope | floundeR APIs must be R-native and curated, not a generic Bamana command launcher or argument mirror. |
+| General samtools/htslib replacement features | out of scope | Bamana may pursue fast focused alternatives, but floundeR should expose only outputs needed for nanopore QC and review. |
+| Interactive or graphical BAM exploration | out of scope | Bamana's charter excludes GUI/exploratory features, and floundeR should provide reportable QC objects rather than interactive BAM browsers. |
+| Broad statistical reporting beyond operational QC | out of scope | floundeR report cards should stay tied to run trust, alignment health, provenance, and review thresholds, not generic downstream analysis. |
+| Direct CRAM/SAM/FASTA/BED/GFF parity surfaces | out of scope | Adjacent format support belongs in governed Bamana ingest or future contracts; floundeR should not widen its public data model without a QC contract. |
+| FASTQ.GZ enumeration and indexing as standalone utilities | out of scope for now | These are useful Bamana planning primitives, but floundeR should surface them only when they feed BAM/POD5/library-preparation QC evidence. |
+| Record-writing transformations as convenience helpers | out of scope by default | Sorting, merging, filtering, subsampling, selection, unmapping, reheadering, read-group annotation, and deduplication must not appear as casual helper calls. |
+| Biological duplicate marking or PCR duplicate interpretation | out of scope | Bamana's collection-duplication inspection/remediation is operational provenance evidence and must not be recast as molecular duplicate analysis. |
+| Fraud or misconduct classification | out of scope | `forensic_inspect` can provide operational anomaly evidence, but floundeR must not convert those signals into accusation labels. |
+| Comparator mismatch adjudication | out of scope | Unsupported comparator cases and semantic equivalence assumptions belong in Bamana benchmark reports, not routine floundeR QC reports. |
+
+Candidate read-only functions such as `bam_checksum()`, `bam_header()`,
+`bam_forensic_inspect()`, and `bam_inspect_duplication()` remain in scope only
+as future QC/provenance evidence surfaces. They should not be promoted merely
+because Bamana already implements the corresponding command.
+
 ## Report And Synoptikon Use
 
 Bamana-derived floundeR report sections should include:
