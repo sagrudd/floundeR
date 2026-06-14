@@ -308,9 +308,9 @@ current non-FAST5 package surface.
 
 - [x] Bump version according to semantic versioning.
 - [x] Update `NEWS.md`.
-- [ ] Run full tests.
-- [ ] Run `R CMD check`.
-- [ ] Build documentation.
-- [ ] Commit and push changes after explicit prompt or as required by the active
+- [x] Run full tests.
+- [x] Run `R CMD check`.
+- [x] Build documentation.
+- [x] Commit and push changes after explicit prompt or as required by the active
       agent instructions.
-- [ ] Defer tagging/release until explicit approval.
+- [x] Defer tagging/release until explicit approval.

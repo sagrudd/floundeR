@@ -1,3 +1,10 @@
+# floundeR 0.21.19
+
+* Added `scales` to the dependency bootstrap inventory so clean development
+  containers and dependency audits match the package `DESCRIPTION` metadata,
+  repaired Grammateus report-contract expectations for the current `testthat`
+  release, and added package URL metadata for clean pkgdown builds.
+
 # floundeR 0.21.18
 
 * Started the release-preparation checkpoint after completing the reboot

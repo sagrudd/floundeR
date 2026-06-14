@@ -1,11 +1,13 @@
-pandoc: 2.14.0.3
-pkgdown: 1.6.1
+pandoc: '3.10'
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  01_fasta_files: 01_fasta_files.html
-  02_fastq_files: 02_fastq_files.html
-  04_seqsum_files: 04_seqsum_files.html
-  05_blast_files: 05_blast_files.html
-  genbank_parsing: genbank_parsing.html
-last_built: 2021-11-29T15:50Z
-
+  bam-qc: bam-qc.html
+  grammateus-plot-directions: grammateus-plot-directions.html
+  grammateus-technical-report: grammateus-technical-report.html
+  pod5-qc: pod5-qc.html
+  synoptikon-handoff: synoptikon-handoff.html
+last_built: 2026-06-14T16:56Z
+urls:
+  reference: https://sagrudd.github.io/floundeR/reference
+  article: https://sagrudd.github.io/floundeR/articles

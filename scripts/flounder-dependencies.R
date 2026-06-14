@@ -18,6 +18,7 @@ flounder_cran_packages <- function() {
     "reshape2",
     "rlang",
     "rmarkdown",
+    "scales",
     "stringdist",
     "stringr",
     "svglite",

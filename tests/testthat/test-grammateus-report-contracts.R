@@ -32,15 +32,15 @@ write_contract_svg <- function(path) {
 }
 
 expect_sha256 <- function(value, label = deparse(substitute(value))) {
-  expect_type(value, "character", info = label)
-  expect_length(value, 1L, info = label)
-  expect_match(value, "^sha256:[0-9a-f]{64}$", info = label)
+  expect_true(is.character(value), label = label)
+  expect_length(value, 1L)
+  expect_match(value, "^sha256:[0-9a-f]{64}$")
 }
 
 expect_non_empty_scalar <- function(value, label = deparse(substitute(value))) {
-  expect_type(value, "character", info = label)
-  expect_length(value, 1L, info = label)
-  expect_true(nzchar(trimws(value)), info = label)
+  expect_true(is.character(value), label = label)
+  expect_length(value, 1L)
+  expect_true(nzchar(trimws(value)), label = label)
 }
 
 expect_report_element_contract <- function(element) {
@@ -50,7 +50,7 @@ expect_report_element_contract <- function(element) {
   prefix_ok <- startsWith(element$element_id, paste0(element$element_type, "_"))
   prefix_ok <- prefix_ok || (element$element_type == "table" &&
     startsWith(element$element_id, "table_"))
-  expect_true(prefix_ok, info = element$element_id)
+  expect_true(prefix_ok, label = element$element_id)
   expect_non_empty_scalar(element$title, paste(element$element_id, "title"))
   if (element$element_type %in%
       c("table", "methods", "limitations", "appendix", "provenance")) {
@@ -123,11 +123,12 @@ test_that("standard QC report element bundles satisfy Grammateus contracts", {
   expect_equal(bundle$schema_version,
                "flounder.grammateus_report_element_bundle.v1")
   expect_equal(bundle$element_count, length(bundle$elements))
-  expect_false(anyDuplicated(vapply(
+  element_ids <- vapply(
     bundle$elements,
     function(element) element$element_id,
     character(1)
-  )))
+  )
+  expect_identical(anyDuplicated(element_ids), 0L)
   invisible(lapply(bundle$elements, expect_report_element_contract))
 })
 
@@ -229,10 +230,10 @@ test_that("written qc_report contracts preserve stable identifiers and hashes", 
       function(element) element$element_id,
       character(1)
     )
-    expect_equal(ids, c(
-      table_run_metadata = "table_run_metadata",
-      table_qc_summary = "table_qc_summary",
-      methods_qc_workflow = "methods_qc_workflow"
+    expect_equal(unname(ids), c(
+      "table_run_metadata",
+      "table_qc_summary",
+      "methods_qc_workflow"
     ))
     invisible(lapply(contract$themed_report$elements, function(element) {
       expect_non_empty_scalar(element$caption)

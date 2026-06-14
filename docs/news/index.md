@@ -1,0 +1,714 @@
+# Changelog
+
+## floundeR 0.21.19
+
+- Added `scales` to the dependency bootstrap inventory so clean
+  development containers and dependency audits match the package
+  `DESCRIPTION` metadata, repaired Grammateus report-contract
+  expectations for the current `testthat` release, and added package URL
+  metadata for clean pkgdown builds.
+
+## floundeR 0.21.18
+
+- Started the release-preparation checkpoint after completing the reboot
+  documentation refresh, with version and NEWS metadata aligned before
+  the remaining test, check, and documentation-build tasks.
+
+## floundeR 0.21.17
+
+- Added report-card plot examples to the Grammateus technical-report
+  vignette, including governed status-count and per-check status figures
+  for report contracts.
+
+## floundeR 0.21.16
+
+- Added source pkgdown navigation for the rebooted documentation set,
+  grouping contemporary POD5, BAM, Synoptikon, Grammateus, Rust, and
+  library-preparation reference surfaces ahead of retained legacy
+  helpers.
+
+## floundeR 0.21.15
+
+- Added a two-direction Grammateus plot vignette showing analyst-owned R
+  `ggplot2` figures being wrapped into report contracts and Grammateus
+  semantic plot specs being rendered by the controlled R backend.
+
+## floundeR 0.21.14
+
+- Added a Grammateus technical-report vignette that builds a
+  runtime-free semantic QC report contract, governed figure wrapper,
+  Mnemosyne theme descriptor, manifest, and runtime-gated HTML/PDF
+  rendering path.
+
+## floundeR 0.21.13
+
+- Added a focused derived-POD5 demonstration artifact guide covering the
+  maintained opt-in workflow, produced provenance metadata, repository
+  policy, and Synoptikon/reporting use of `pod5-tools`-derived subset or
+  split artifacts.
+
+## floundeR 0.21.12
+
+- Promoted the ONT Zymo fecal POD5 source and selected pass/fail objects
+  as the canonical opt-in real-data examples across README, dataset
+  policy, and POD5 vignette guidance.
+
+## floundeR 0.21.11
+
+- Added contemporary package vignettes for POD5 QC and BAM QC, and
+  refreshed the Synoptikon handoff vignette so the active tutorial set
+  covers POD5 provenance, curated Bamana-backed BAM evidence, and
+  sectioned QC JSON handoff without restoring retired FAST5 workflows.
+
+## floundeR 0.21.10
+
+- Added an offline “run health in one minute” README example that
+  produces a run summary, report-card counts, and Synoptikon payload
+  schema check from a sequencing-summary input.
+
+## floundeR 0.21.9
+
+- Rewrote the README around the contemporary nanopore QC workflow,
+  covering sequencing-summary contracts, POD5 evidence, BAM QC,
+  library-preparation evidence, Synoptikon handoff, and optional
+  Grammateus reporting boundaries.
+
+## floundeR 0.21.8
+
+- Verified and recorded the current Bioconductor policy posture for
+  optional Grammateus runtime assets, external system requirements,
+  downloads, data, tests, and future submission blockers.
+
+## floundeR 0.21.7
+
+- Documented the GitHub installation paths for public open-source
+  floundeR users and authorized users configuring optional prebuilt
+  Grammateus runtime assets.
+
+## floundeR 0.21.6
+
+- Added disabled GitHub Actions templates that separate public floundeR
+  checks without Grammateus from manual credentialed Grammateus
+  runtime/report-rendering checks, preserving the temporary
+  Actions-disabled posture during code churn.
+
+## floundeR 0.21.5
+
+- Added release-level Grammateus runtime compatibility manifest checks
+  so runtime validation fails when the compatibility asset is missing,
+  unsigned, version-mismatched, or declares a floundeR compatibility
+  window that disagrees with `manifest.json`.
+
+## floundeR 0.21.4
+
+- Tightened Grammateus runtime validation so declared private runtime
+  signature files are path-safe, present, non-empty, and
+  checksum-verified when manifests provide signature SHA-256 values.
+
+## floundeR 0.21.3
+
+- Defined the GitHub/private release asset names, platform identifiers,
+  runtime index, compatibility manifest, and publication rules for
+  prebuilt Grammateus runtime bundles.
+
+## floundeR 0.21.2
+
+- Documented the legacy RMarkdown boundary: RMarkdown is retained for
+  package vignettes and transitional documentation only, while
+  production QC reports must use Grammateus semantic report contracts
+  and runtime rendering.
+
+## floundeR 0.21.1
+
+- Added report-contract regression coverage for Grammateus element
+  schemas, required captions and alt text, provenance hashes, stable
+  identifiers, and serialized
+  [`qc_report()`](https://sagrudd.github.io/floundeR/reference/qc_report.md)
+  contract/manifest handoff fields.
+
+## floundeR 0.21.0
+
+- Added the first Grammateus QC plot helper set for yield over time,
+  read quality, read length, flowcell density, barcode balance, POD5
+  integrity, BAM mapping, BAM MAPQ, and BAM flag summaries.
+
+## floundeR 0.20.0
+
+- Added
+  [`qc_report()`](https://sagrudd.github.io/floundeR/reference/qc_report.md)
+  to assemble Grammateus-backed nanopore QC report contracts, manifests,
+  Mnemosyne theme metadata, governed figures, requested HTML/PDF output
+  status, and provenance while keeping private Grammateus runtime
+  rendering optional.
+
+## floundeR 0.19.0
+
+- Added
+  [`grammateus_mnemosyne_theme()`](https://sagrudd.github.io/floundeR/reference/grammateus_mnemosyne_theme.md)
+  and
+  [`grammateus_apply_theme()`](https://sagrudd.github.io/floundeR/reference/grammateus_mnemosyne_theme.md)
+  to encode Mnemosyne Biosciences Grammateus template/theme metadata,
+  style policy, and themed report assembly without bundling private
+  Grammateus runtime assets.
+
+## floundeR 0.18.0
+
+- Added
+  [`grammateus_report_element()`](https://sagrudd.github.io/floundeR/reference/grammateus_report_element.md)
+  and
+  [`grammateus_qc_report_elements()`](https://sagrudd.github.io/floundeR/reference/grammateus_report_element.md)
+  to define the first runtime-free Grammateus semantic element contracts
+  for QC report assembly.
+
+## floundeR 0.17.1
+
+- Added regression coverage confirming core QC APIs, Synoptikon export,
+  and package checks remain usable without private Grammateus runtime
+  assets.
+
+## floundeR 0.17.0
+
+- Added Grammateus runtime discovery, manifest parsing, validation,
+  version, availability, and cache-install helpers for optional private
+  prebuilt runtime bundles. Core floundeR remains installable without
+  Grammateus assets.
+
+## floundeR 0.16.1
+
+- Defined the prebuilt Grammateus runtime interface for public floundeR
+  builds, including the runtime bundle layout, manifest schema,
+  discovery order, validation categories, security checks, and Rust
+  response envelope expected when private Grammateus source is
+  unavailable.
+
+## floundeR 0.16.0
+
+- Added
+  [`grammateus_render_element()`](https://sagrudd.github.io/floundeR/reference/grammateus_render_element.md),
+  [`grammateus_render_figure_html()`](https://sagrudd.github.io/floundeR/reference/grammateus_render_element.md),
+  and
+  [`grammateus_render_figure_pdf()`](https://sagrudd.github.io/floundeR/reference/grammateus_render_element.md)
+  as the first in-process Rust boundary for Grammateus report rendering.
+  Public builds keep the private renderer unlinked and raise a typed
+  `flounder_grammateus_runtime_unavailable` condition rather than
+  shelling out to a Grammateus CLI.
+- Made Rust capability parsing feature-set based so optional engines
+  such as Porkchop and Grammateus can be reported independently of their
+  order in the native capability payload.
+
+## floundeR 0.15.0
+
+- Added
+  [`grammateus_plot_spec()`](https://sagrudd.github.io/floundeR/reference/grammateus_plot_spec.md)
+  and
+  [`grammateus_render_plot()`](https://sagrudd.github.io/floundeR/reference/grammateus_plot_spec.md)
+  to support Grammateus-to-R controlled plot generation from semantic
+  `ReportPlot`-shaped specs, including deterministic run directories,
+  generated R scripts, plot/data/script hashes, backend session capture,
+  and PNG/SVG artifact metadata.
+
+## floundeR 0.14.0
+
+- Added
+  [`grammateus_figure_from_ggplot()`](https://sagrudd.github.io/floundeR/reference/grammateus_figure_from_file.md)
+  and
+  [`grammateus_figure_from_file()`](https://sagrudd.github.io/floundeR/reference/grammateus_figure_from_file.md)
+  so existing `ggplot2` plots and PNG/SVG artifacts can be handed to the
+  Grammateus reporting path as governed figure objects with
+  deterministic artifact paths, SHA-256 checksums, captions, alt text,
+  methods notes, dimensions, and provenance.
+
+## floundeR 0.13.4
+
+- Identified the Grammateus public Rust APIs floundeR should use for
+  semantic tables, figures, controlled R plots, HTML/PDF rendering,
+  trusted-report manifests, provenance tables, lifecycle metadata,
+  governance envelopes, branding hooks, and optional runtime
+  integration.
+- Recorded the Grammateus APIs that should remain out of normal floundeR
+  bindings so the reporting surface stays focused on nanopore QC and
+  Synoptikon handoff rather than becoming a general Grammateus frontend.
+
+## floundeR 0.13.3
+
+- Recorded Grammateus canonical charter, SRS, ARD, rendering-elements,
+  and trusted-report contract verification before report-binding work,
+  including the constraints floundeR must preserve for internal-only
+  branding, deterministic semantic elements, provenance,
+  Synoptikon/Mneion trust reuse, and optional private runtime
+  distribution.
+
+## floundeR 0.13.2
+
+- Recorded the Grammateus checkout preflight for Slice 13: the private
+  local `../grammateus` source checkout was clean, current with
+  `origin/main`, and not added as a public floundeR build dependency.
+
+## floundeR 0.13.1
+
+- Documented the Porkchop capabilities that remain out of scope for
+  normal floundeR APIs, including read trimming, transformed FASTQ
+  output, barcode demultiplexing, cDNA rescue, benchmarking, terminal
+  dashboards, standalone HTML reports, custom ungoverned motif
+  registries, and raw CLI passthrough.
+
+## floundeR 0.13.0
+
+- Added
+  [`library_preparation_report_card()`](https://sagrudd.github.io/floundeR/reference/library_preparation_report_card.md)
+  and
+  [`library_preparation_report_card_thresholds()`](https://sagrudd.github.io/floundeR/reference/library_preparation_report_card_thresholds.md)
+  to convert Porkchop-derived kit, adapter/primer, barcode/flank, and
+  cDNA primer evidence into the standard floundeR report-card schema for
+  QC review and reporting.
+
+## floundeR 0.12.0
+
+- Added in-process Porkchop-backed R wrappers for library kit
+  candidates, adapter/primer evidence, barcode/flank evidence, and cDNA
+  primer-pair evidence. Until Porkchop is public, default source builds
+  keep that engine unlinked and the wrappers fail with typed R
+  conditions; local sibling-checkout builds can enable the
+  `porkchop-integration` feature.
+- Porkchop evidence preserves heuristic score terminology, kit
+  provenance, lifecycle/support status, and validation limitations while
+  keeping trimming and preprocessing out of the normal floundeR API.
+
+## floundeR 0.11.4
+
+- Added the Porkchop integration audit for curated library-preparation
+  QC surfaces, preserving heuristic score terminology and excluding
+  trimming-first APIs from the normal floundeR surface.
+
+## floundeR 0.11.3
+
+- Added an executable Synoptikon QC handoff vignette covering run QC
+  evidence, ONT POD5 provenance, reserved BAM/library-preparation
+  sections, and JSON payload writing.
+- Updated the release-tarball check to build and check package
+  vignettes.
+
+## floundeR 0.11.2
+
+- Added offline Synoptikon QC payload JSON-schema validation tests and
+  fixed nested provenance metadata plus report-card check schema
+  compatibility.
+
+## floundeR 0.11.1
+
+- Strengthened Synoptikon QC payload section handling so supplied
+  flowcell, barcode, POD5, BAM, and library-preparation evidence
+  contributes section status and is covered by offline tests.
+
+## floundeR 0.11.0
+
+- Added
+  [`as_synoptikon_qc()`](https://sagrudd.github.io/floundeR/reference/as_synoptikon_qc.md)
+  and
+  [`write_synoptikon_qc()`](https://sagrudd.github.io/floundeR/reference/as_synoptikon_qc.md)
+  to assemble existing floundeR QC evidence into the v1 Synoptikon
+  payload contract and write it as JSON for downstream ingestion.
+
+## floundeR 0.10.0
+
+- Defined the first versioned Synoptikon QC payload contract and
+  installed the v1 JSON schema for downstream ingestion, review,
+  reporting, and audit handoff work.
+
+## floundeR 0.9.2
+
+- Documented Bamana capabilities that remain out of scope for floundeR
+  so the BAM surface stays curated around nanopore QC, review,
+  provenance, reporting, and synoptikon handoff rather than becoming a
+  wholesale Bamana mirror.
+
+## floundeR 0.9.1
+
+- Documented the Bamana read-only versus transformation boundary,
+  including which operations may feed QC evidence directly and which
+  write-capable operations require explicit output paths and provenance
+  manifests.
+
+## floundeR 0.9.0
+
+- Added
+  [`bam_qc_report_card()`](https://sagrudd.github.io/floundeR/reference/bam_qc_report_card.md)
+  and
+  [`bam_qc_report_card_thresholds()`](https://sagrudd.github.io/floundeR/reference/bam_qc_report_card_thresholds.md)
+  to convert Bamana-derived summary, index, sort, tag, EOF, validation,
+  and provenance evidence into the standard floundeR pass/warn/fail
+  report-card schema.
+
+## floundeR 0.8.1
+
+- Documented and tested Bamana response-envelope semantics:
+  payload-bearing QC failures remain structured evidence, while
+  no-payload failures become typed R conditions carrying Bamana code,
+  detail, and hint metadata.
+
+## floundeR 0.8.0
+
+- Added Rust-backed
+  [`bam_check_index()`](https://sagrudd.github.io/floundeR/reference/bam_check_index.md),
+  [`bam_check_map()`](https://sagrudd.github.io/floundeR/reference/bam_check_map.md),
+  [`bam_check_sort()`](https://sagrudd.github.io/floundeR/reference/bam_check_sort.md),
+  and
+  [`bam_check_tag()`](https://sagrudd.github.io/floundeR/reference/bam_check_tag.md)
+  wrappers over Bamana’s curated read-only report-card checks for index,
+  mapping, sorting, and aux-tag evidence.
+
+## floundeR 0.7.0
+
+- Added Rust-backed
+  [`bam_verify()`](https://sagrudd.github.io/floundeR/reference/bam_verify.md),
+  [`bam_validate()`](https://sagrudd.github.io/floundeR/reference/bam_validate.md),
+  and
+  [`bam_check_eof()`](https://sagrudd.github.io/floundeR/reference/bam_check_eof.md)
+  wrappers over Bamana’s read-only verification, validation, and BGZF
+  EOF evidence surfaces, with stable R-native return shapes and offline
+  BAM fixture coverage.
+
+## floundeR 0.6.0
+
+- Added Rust-backed
+  [`bam_summary()`](https://sagrudd.github.io/floundeR/reference/bam_summary.md)
+  as the first curated Bamana integration, returning stable R-native QC
+  tables for command status, evidence scope, header metadata, counts,
+  fractions, MAPQ, mapping state, flags, references, index-derived
+  evidence, and optional MAPQ histograms.
+
+## floundeR 0.5.2
+
+- Audited Bamana’s public Rust command modules, JSON contracts, and
+  governing docs, and recorded the curated read-only BAM QC/review
+  surface that should be promoted into floundeR through in-process Rust
+  bindings.
+
+## floundeR 0.5.1
+
+- Added an opt-in derived-POD5 demonstration workflow script that
+  records ONT source metadata, read-only subdivision plans, and
+  provenance manifests outside the repository without writing or
+  committing derived POD5 files.
+
+## floundeR 0.5.0
+
+- Added read-only Rust-backed
+  [`pod5_subdivide_plan()`](https://sagrudd.github.io/floundeR/reference/pod5_subdivide_plan.md)
+  for deterministic POD5 file-count, sample-label, elapsed-time, and
+  read-count planning without writing derived POD5 files.
+
+## floundeR 0.4.1
+
+- Recorded upstream mocked-reader coverage for mixed-flow-cell POD5
+  folder aggregation and clarified that public R mixed-flow-cell tests
+  require the future parser-backed `pod5-tools` reader.
+
+## floundeR 0.4.0
+
+- Added Rust-backed
+  [`pod5_folder_info()`](https://sagrudd.github.io/floundeR/reference/pod5_folder_info.md),
+  [`pod5_manifest()`](https://sagrudd.github.io/floundeR/reference/pod5_manifest.md),
+  and
+  [`pod5_compare()`](https://sagrudd.github.io/floundeR/reference/pod5_compare.md)
+  wrappers for run-tree POD5 QC, versioned collection manifests, and
+  operational handoff comparisons.
+
+## floundeR 0.3.0
+
+- Added Rust-backed
+  [`pod5_verify()`](https://sagrudd.github.io/floundeR/reference/pod5_verify.md)
+  and
+  [`pod5_file_info()`](https://sagrudd.github.io/floundeR/reference/pod5_file_info.md)
+  wrappers that return R-native data frames while preserving the current
+  `pod5-tools` fast extension/signature verification semantics and typed
+  POD5 error conditions.
+
+## floundeR 0.2.6
+
+- Documented the no-commit policy for downloaded POD5 files and added
+  repository ignore guardrails for local ONT open-data caches while
+  preserving an explicit path for intentionally tiny test fixtures.
+
+## floundeR 0.2.5
+
+- Added no-network ONT Zymo fecal POD5 dataset and selected pass/fail
+  example object helpers so documentation, downloads, and future reports
+  share stable source metadata.
+
+## floundeR 0.2.4
+
+- Added
+  [`ont_open_data_fetch()`](https://sagrudd.github.io/floundeR/reference/ont_open_data_fetch.md)
+  for explicit single-object ONT open-data downloads into
+  caller-controlled cache directories with returned provenance metadata.
+
+## floundeR 0.2.3
+
+- Added
+  [`ont_open_data_list()`](https://sagrudd.github.io/floundeR/reference/ont_open_data_list.md)
+  for explicit anonymous metadata listings of the selected ONT Zymo
+  fecal POD5 S3 prefix, including an opt-in documentation example that
+  does not download POD5 files.
+
+## floundeR 0.2.2
+
+- Added an executable offline
+  [`pod5_find()`](https://sagrudd.github.io/floundeR/reference/pod5_find.md)
+  example that demonstrates in-process Rust-backed folder discovery
+  without invoking an external CLI or requiring network/downloaded POD5
+  data.
+
+## floundeR 0.2.1
+
+- Documented the current `R CMD check` compiled-code warning introduced
+  by linking the Rust `std`/`pod5-tools` stack, including the release
+  posture for GitHub builds and the requirement to resolve or obtain
+  policy acceptance before Bioconductor/CRAN-facing release work.
+
+## floundeR 0.2.0
+
+- Added
+  [`pod5_find()`](https://sagrudd.github.io/floundeR/reference/pod5_find.md)
+  as the first curated POD5 Rust-backed R API. The function calls the
+  `../pod5-tools` discovery library in-process and returns an R data
+  frame with POD5-containing folders, file counts, byte totals, and
+  modification windows.
+
+## floundeR 0.1.10
+
+- Raised the Rust toolchain floor to 1.85 and moved the embedded crate
+  to Rust edition 2024 so floundeR can depend on the current
+  `../pod5-tools` library.
+
+## floundeR 0.1.9
+
+- Recorded the POD5 discovery preflight against `../pod5-tools`,
+  confirming that the existing `find_pod5_directories()` library API is
+  the intended curated source for
+  [`pod5_find()`](https://sagrudd.github.io/floundeR/reference/pod5_find.md).
+
+## floundeR 0.1.8
+
+- Documented source-install requirements for macOS, Linux, Windows,
+  Docker, and CI builds of the embedded Rust extension, and made CI set
+  up Rust explicitly.
+
+## floundeR 0.1.7
+
+- Added public R wrappers for compiled Rust capability checks, typed
+  `floundeR_rust_unavailable` conditions, and a downstream test skip
+  helper.
+
+## floundeR 0.1.6
+
+- Added an internal Rust capability function callable from R, proving
+  the `extendr` scaffold can return structured R data through registered
+  native symbols.
+
+## floundeR 0.1.5
+
+- Added the initial `extendr` scaffold under `src/rust` with R package
+  build hooks and development-container Rust tooling.
+
+## floundeR 0.1.4
+
+- Recorded the Slice 6 cross-repository Rust preflight, confirming that
+  the first local `extendr` scaffold does not require adjacent changes
+  to `pod5-tools`, `bamana`, or `porkchop`.
+
+## floundeR 0.1.3
+
+- Recorded the Rust-in-R architecture decision for an embedded `extendr`
+  crate with curated path dependencies on the POD5, BAM/BGZF/FASTQ,
+  Porkchop, and optional private Grammateus engine libraries.
+
+## floundeR 0.1.2
+
+- Added
+  [`qc_report_card()`](https://sagrudd.github.io/floundeR/reference/qc_report_card.md)
+  with schema-versioned pass/warn/fail checks and documented default
+  thresholds for sequencing-summary-derived QC evidence.
+
+## floundeR 0.1.1
+
+- Added tidy, schema-versioned QC contracts for yield over time, read
+  length distribution, quality distribution, channel density, and
+  barcode composition.
+
+## floundeR 0.1.0
+
+- Added
+  [`qc_run_summary()`](https://sagrudd.github.io/floundeR/reference/qc_run_summary.md)
+  as the first versioned core QC contract for nanopore run-level
+  summaries from normalised sequencing-summary data.
+
+## floundeR 0.0.24
+
+- Reconciled the current import surface by declaring narrow namespace
+  imports for active FASTA, FASTQ, GenBank, plotting, and ONT open-data
+  dependencies.
+- Removed stale RMarkdown-era packages from the development dependency
+  bootstrap list now that legacy vignettes are excluded from package
+  checks.
+- Documented the remaining legacy `%>%` and `BamFile` exports so
+  release-style package checks can complete without warnings.
+
+## floundeR 0.0.23
+
+- Added a release-style package check helper that builds and checks a
+  source tarball outside the repository, avoiding diagnostics from
+  development-only files and local check output.
+- Corrected source-build ignore rules so repository governance files,
+  development scripts, `.github`, and `.dockerignore` are excluded from
+  package tarballs.
+
+## floundeR 0.0.22
+
+- Moved legacy RMarkdown vignettes to repo-only historical reference
+  material while executable report workflows move to the Grammateus
+  migration.
+
+## floundeR 0.0.21
+
+- Corrected POD5 manifest fixture checksum values so they remain
+  character SHA-256-like hex strings under package checks and schema
+  tests.
+
+## floundeR 0.0.20
+
+- Added a small installed BLAST fixture and restored `Blast$count()`
+  behavior so the BLAST example and test no longer depend on a missing
+  large UniRef output file.
+
+## floundeR 0.0.19
+
+- Added conservative sequencing-summary column alias handling for
+  current Dorado and MinKNOW/POD5-era summary shapes.
+- Allowed reduced Dorado summary files without `passes_filtering` to
+  import as partial QC inputs with an explicit warning and `NA` logical
+  values.
+
+## floundeR 0.0.18
+
+- Replaced generated `eval(parse())` sequencing-summary column
+  specifications with structured
+  [`readr::cols_only()`](https://readr.tidyverse.org/reference/cols.html)
+  collector construction.
+- Added regression coverage for legacy Guppy-like and Dorado-like
+  sequencing summary fixtures.
+
+## floundeR 0.0.17
+
+- Added a Docker-backed development build path and a dependency audit
+  script for assessing declared CRAN/Bioconductor package versions and
+  support channels in a clean container.
+- Recorded the current R 4.6.0/Bioconductor 3.23 dependency snapshot and
+  the package-quality failures exposed once dependencies are available.
+
+## floundeR 0.0.16
+
+- Added fixture-backed schema tests for the initial sequencing-summary,
+  barcode-summary, and POD5-manifest QC table contracts.
+
+## floundeR 0.0.15
+
+- Added a test helper and development guidance so optional compiled
+  Rust-backed tests skip cleanly until in-process bindings are
+  available.
+
+## floundeR 0.0.14
+
+- Added a test helper and development guidance that keep
+  network-dependent ONT open-data/S3 tests opt-in through
+  `FLOUNDER_RUN_NETWORK_TESTS=true` and skipped by default on CRAN-like
+  checks.
+
+## floundeR 0.0.13
+
+- Added small offline test fixtures for sequencing summaries, barcoding
+  summaries, FASTQ, FASTA, and POD5 metadata manifests without
+  committing binary POD5 files.
+
+## floundeR 0.0.12
+
+- Added a dry-run-first R dependency bootstrap script and development
+  notes for local checks after FAST5 retirement.
+- Configured the package for `testthat` edition 3.
+
+## floundeR 0.0.11
+
+- Retired the active FAST5 API surface by removing the `Fast5` export,
+  implementation, fixtures, tests, vignette, generated reference page,
+  and `rhdf5` dependency. Raw-signal QC now points toward POD5-era
+  integration.
+
+## floundeR 0.0.10
+
+- Added a repository-level governance check that enforces the
+  open-source boundary for floundeR, pod5-tools, bamana, and porkchop
+  while keeping Grammateus private, optional, and distributed through
+  prebuilt runtime assets.
+
+## floundeR 0.0.9
+
+- Added Porkchop to the curated open-source Rust engine plan for
+  adapter, primer, barcode, kit-registry, and cDNA/library-preparation
+  QC evidence.
+
+## floundeR 0.0.8
+
+- Documented the distribution boundary: `floundeR`, `pod5-tools`, and
+  `bamana` stay open-source, while Grammateus remains private and is
+  consumed through optional prebuilt runtime/reporting artifacts.
+
+## floundeR 0.0.7
+
+- Added an explicit Grammateus reporting interface plan for dropping R
+  plots into governed HTML/PDF reports and for controlled R plot
+  generation from Grammateus report specifications.
+
+## floundeR 0.0.6
+
+- Started the reboot planning baseline for contemporary nanopore QC and
+  review.
+- Documented the FAST5 retirement direction, selective Rust-in-R
+  integration with `pod5-tools`, `bamana`, and `grammateus`, ONT POD5
+  example-data policy, and synoptikon reporting ambitions.
+- Reconciled package metadata and declared currently referenced
+  dependencies so package checks can progress beyond initial DESCRIPTION
+  validation.
+
+## floundeR 0.0.5
+
+## floundeR 0.0.4
+
+- inclusion of a basic Rsamtools derived FASTA R6 class (lodestar
+  dependency)
+- starting to ensure that methods are also available through documented
+  magrittr %\>% pipes for legibility of code
+- robust Angenieux decorations and demonstration of more comprehensive
+  plots
+- integrating Angenieux with ggsave for cleaner Rmarkdown usage
+
+## floundeR 0.0.3
+
+- pkgdown documentation for the github pages
+- creation of angenieux prototype; code linking and POC
+- creation of the R6 object called FlowCell
+- Sequencing summary push …
+- simplified FAST5.is_multi_F5 logic; there were some issues with
+  different version of the hdf5 api - tested on Windows and macOS.
+
+## floundeR 0.0.2
+
+- starting to populate content
+- inclusion of FAST5 parsing content, vignette and test data
+
+## floundeR 0.0.1
+
+- tagged a first version
+
+## floundeR 0.0.0.9000
+
+- Added a `NEWS.md` file to track changes to the package.
