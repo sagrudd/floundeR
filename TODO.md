@@ -193,7 +193,7 @@ current non-FAST5 package surface.
       through Rust-in-R.
 - [x] Expose BAM index, mapping, sorting, and tag checks needed for QC report
       cards.
-- [ ] Map Bamana response envelopes and errors to R conditions without losing
+- [x] Map Bamana response envelopes and errors to R conditions without losing
       command semantics.
 - [x] Add small BAM fixtures and offline tests for summary/verify/validate
       wrappers.

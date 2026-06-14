@@ -1,3 +1,9 @@
+# floundeR 0.8.1
+
+* Documented and tested Bamana response-envelope semantics: payload-bearing
+  QC failures remain structured evidence, while no-payload failures become
+  typed R conditions carrying Bamana code, detail, and hint metadata.
+
 # floundeR 0.8.0
 
 * Added Rust-backed `bam_check_index()`, `bam_check_map()`,

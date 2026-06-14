@@ -128,6 +128,21 @@ The R layer should not present Bamana validation, mapping, checksum, or forensic
 results as biological truth. It should carry Bamana's own semantic notes into
 report elements and synoptikon payloads.
 
+Envelope semantics are part of the floundeR contract:
+
+- Bamana responses with a structured payload are returned to R even when the
+  Bamana command envelope has `ok = FALSE`. The returned R object preserves the
+  command status in `status$ok` or `ok`, and carries any Bamana error metadata
+  in an `error` table or `error_*` columns. This applies to QC evidence such as
+  missing required indexes, validation findings, and missing BGZF EOF evidence.
+- Bamana failures without a structured payload become typed R conditions in the
+  `floundeR_bam_error` family. The condition preserves Bamana `code`,
+  `message`, `detail`, and `hint` fields so callers can branch on stable
+  metadata rather than parsing console text.
+- R-side argument validation uses the same condition family with
+  `floundeR_bam_argument_error`, so invalid caller input is separated from file,
+  format, and index evidence.
+
 ## Transformation Boundary
 
 The following Bamana capabilities are useful but should not be exposed in
