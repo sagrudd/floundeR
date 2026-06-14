@@ -164,8 +164,9 @@ current non-FAST5 package surface.
 - [x] Expose `pod5_manifest(path)` with a versioned schema.
 - [x] Expose `pod5_compare(left, right)` for operational handoff checks.
 - [x] Add tests for duplicate file names, failed files, and changed manifests.
-- [ ] Add parser-backed or mocked-reader tests for mixed flow cells once
-      `pod5-tools` exposes real POD5 metadata through the floundeR binding.
+- [x] Add mocked-reader coverage for mixed flow cells at the `pod5-tools`
+      reader-abstraction layer and record that public floundeR R tests require
+      the future parser-backed reader.
 - [x] Document how these outputs feed synoptikon.
 
 ## Slice 10: Subdivision And Playback Planning

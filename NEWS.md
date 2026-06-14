@@ -1,3 +1,9 @@
+# floundeR 0.4.1
+
+* Recorded upstream mocked-reader coverage for mixed-flow-cell POD5 folder
+  aggregation and clarified that public R mixed-flow-cell tests require the
+  future parser-backed `pod5-tools` reader.
+
 # floundeR 0.4.0
 
 * Added Rust-backed `pod5_folder_info()`, `pod5_manifest()`, and

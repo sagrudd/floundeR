@@ -68,6 +68,14 @@ manifests, and operational drift checks. They do not expose POD5 rewriting,
 subdivision writing, playback emission, or general ONT tool replacement
 behavior.
 
+Mixed flow-cell and mixed sequencing-kit aggregation is covered in
+`pod5-tools` by a path-aware mocked `Pod5MetadataReader` test. The public
+floundeR R binding currently uses `FilesystemPod5MetadataReader`, which cannot
+recover real flow-cell or kit metadata from POD5 internals. Public R-level
+mixed-flow-cell tests should be added when the parser-backed reader is exposed
+through the same binding; until then, `pod5_folder_info()` reports unavailable
+metadata explicitly in `flow_cell_ids`, `sequencing_kits`, and `warnings`.
+
 ## Synoptikon Handoff
 
 The POD5 collection outputs are designed to feed Synoptikon/Mnemosyne QC
