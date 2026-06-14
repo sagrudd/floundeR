@@ -228,6 +228,30 @@ should not silently transform reads.
 | terminal dashboard and HTML screen report | out of normal floundeR API | floundeR reports should go through Grammateus semantic elements. |
 | whole-CLI passthrough | out of scope | floundeR must remain R-native and curated, not a generic Porkchop launcher. |
 
+## Out-Of-Scope Capability Decisions
+
+The following Porkchop capabilities must not be promoted into normal floundeR
+APIs during the current reboot. They either mutate reads, make workflow claims
+outside QC evidence, duplicate future Grammateus reporting, or belong to
+Porkchop's own engineering/validation lifecycle.
+
+| Capability | Why it is out of scope for floundeR | Allowed floundeR evidence |
+| --- | --- | --- |
+| FASTQ/FASTQ.GZ writing from `porkchop clean` | It emits transformed reads and therefore belongs to preprocessing, not passive QC/review. | Report the adapter, primer, barcode, flank, and support-level evidence that would justify a user reviewing trimming externally. |
+| Automatic read trimming or retained-range application | It changes sequence and quality strings and requires explicit output-path, checksum, and provenance controls. | Summarise detected terminal motif burden, unsafe or ambiguous evidence, and possible trim-context caveats. |
+| Header annotation rewriting such as `trim=start..end` | It mutates FASTQ identifiers and is a Porkchop compatibility surface, not a floundeR QC contract. | Preserve original read IDs in floundeR evidence tables and report any observed Porkchop annotations as provenance if supplied as input. |
+| Barcode demultiplexing or sample assignment | Porkchop documentation says screening and barcode evidence do not prove demultiplexing confidence or resolve collision thresholds. | Report barcode/flank observations, ambiguity fraction, expected barcode-family context, and support-level caveats. |
+| cDNA rescue, UMI-aware barcode handling, or full biological certification | Porkchop marks these as incomplete or workflow-specific limitations; floundeR should not overclaim full-length or rescued status. | Report primer-pair class vocabulary, full-length/partial/unclassified burden, and known limitations. |
+| Custom adapter/user motif registry editing | User-supplied motifs need provenance, support-matrix, validation, and registry lifecycle rules before they can be authoritative. | Accept only governed, provenance-rich motif evidence once a future contract exists; until then, document custom motifs as external evidence. |
+| Porkchop benchmark execution and performance dashboards | Benchmarks are Porkchop engineering evidence and not routine sequencing-run QC. | Cite Porkchop version and validation/support level in methods when Porkchop-derived evidence is used. |
+| Porkchop terminal dashboards or standalone HTML reports | floundeR reports should be Grammateus semantic reports with stable elements, manifests, and Mnemosyne styling. | Convert curated evidence into floundeR report-card rows and future Grammateus elements. |
+| Raw CLI passthrough for `screen`, `clean`, `benchmark`, or future commands | A passthrough would make floundeR a generic frontend rather than an R-native QC package with stable return shapes. | Add explicit, typed R wrappers only for curated read-only evidence APIs. |
+
+These boundaries are not a criticism of Porkchop. They keep ownership clean:
+Porkchop remains the preprocessing, trimming, screening, benchmarking, and
+kit-registry engine; floundeR consumes the subset of evidence needed for
+nanopore QC, reporting, provenance, and synoptikon handoff.
+
 If a future write-capable helper is approved, it must require explicit output
 paths, record input/output checksums, keep Porkchop/floundeR versions, preserve
 the exact kit and threshold settings, and return a provenance manifest distinct

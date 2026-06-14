@@ -229,7 +229,7 @@ current non-FAST5 package surface.
 - [x] Define report-card checks for unexpected library chemistry, adapter
       burden, barcode ambiguity, cDNA partial/unclassified burden, and
       unsupported or partial kit support levels.
-- [ ] Document which Porkchop capabilities are out of scope for floundeR because
+- [x] Document which Porkchop capabilities are out of scope for floundeR because
       they are preprocessing/trimming features rather than QC/review evidence.
 
 ## Slice 13: Grammateus Reporting Integration

@@ -1,3 +1,10 @@
+# floundeR 0.13.1
+
+* Documented the Porkchop capabilities that remain out of scope for normal
+  floundeR APIs, including read trimming, transformed FASTQ output, barcode
+  demultiplexing, cDNA rescue, benchmarking, terminal dashboards, standalone
+  HTML reports, custom ungoverned motif registries, and raw CLI passthrough.
+
 # floundeR 0.13.0
 
 * Added `library_preparation_report_card()` and
