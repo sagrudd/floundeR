@@ -270,7 +270,7 @@ current non-FAST5 package surface.
       BAM MAPQ, and BAM flag summaries.
 - [x] Add tests for report element schemas, required captions/alt text,
       provenance hashes, and stable report identifiers.
-- [ ] Keep RMarkdown support only as a documented legacy/transitional path until
+- [x] Keep RMarkdown support only as a documented legacy/transitional path until
       Grammateus reports cover the required technical-report workflow.
 
 ## Slice 13A: GitHub And Future BioConductor Distribution

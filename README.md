@@ -32,6 +32,11 @@ devtools::install_github("sagrudd/floundeR")
 FAST5 support has been retired. The reboot direction for raw-signal QC is POD5
 metadata and integrity inspection through Rust-backed package APIs.
 
+Report rendering is moving to Grammateus semantic report contracts rather than
+RMarkdown-first production reports. RMarkdown remains only for package
+vignettes and transitional documentation; the boundary is documented in
+[`LEGACY_REPORTING.md`](LEGACY_REPORTING.md).
+
 Source installs now build a small embedded Rust extension. Install Cargo and
 rustc first, then install the package from GitHub. Platform-specific source
 install notes for macOS, Linux, Windows, Docker, and CI are recorded in

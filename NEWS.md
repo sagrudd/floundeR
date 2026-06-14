@@ -1,3 +1,9 @@
+# floundeR 0.21.2
+
+* Documented the legacy RMarkdown boundary: RMarkdown is retained for package
+  vignettes and transitional documentation only, while production QC reports
+  must use Grammateus semantic report contracts and runtime rendering.
+
 # floundeR 0.21.1
 
 * Added report-contract regression coverage for Grammateus element schemas,

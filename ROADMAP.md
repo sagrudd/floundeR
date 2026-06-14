@@ -207,6 +207,12 @@ Report rendering should move away from RMarkdown as the primary report
 mechanism. RMarkdown can remain as a temporary compatibility path while the
 package adopts Grammateus fully.
 
+The retained RMarkdown boundary is now explicit: RMarkdown is allowed for
+package vignettes, migrated tutorials, and transitional examples, but not for
+production QC report generation, Mnemosyne Biosciences branded technical
+reports, or Synoptikon trusted-report lifecycle artifacts. The operational
+policy is documented in `LEGACY_REPORTING.md`.
+
 Target shape:
 
 - use Grammateus as an in-process Rust report-rendering and report-contract

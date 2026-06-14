@@ -10,6 +10,13 @@ package must treat Grammateus as an optional prebuilt runtime/reporting bundle.
 Core QC APIs must remain usable when Grammateus is absent; only governed report
 rendering should require the private runtime.
 
+RMarkdown is a legacy/transitional documentation path only. Package vignettes
+may continue to use `knitr::rmarkdown` while they teach open-source API usage,
+but production QC reports, Mnemosyne Biosciences branded reports, and
+Synoptikon trusted-report artifacts must be expressed through Grammateus
+semantic elements, figures, manifests, provenance, and optional runtime
+rendering. The explicit boundary is maintained in `LEGACY_REPORTING.md`.
+
 ## Goals
 
 - Let R users drop existing `ggplot2` plots into governed QC reports.
@@ -258,5 +265,6 @@ The standard technical QC report structure should be:
   report contracts.
 - `floundeR` should not invent an independent identity, approval, or signing
   model.
+- `floundeR` should not add new RMarkdown-first production report APIs.
 - `floundeR` should not present Porkchop heuristic screening scores as
   calibrated probabilities.
