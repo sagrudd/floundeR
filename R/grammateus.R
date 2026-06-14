@@ -441,6 +441,65 @@ grammateus_render_plot <- function(
   run
 }
 
+#' Render Grammateus report elements through the Rust binding
+#'
+#' `grammateus_render_element()` sends a prepared floundeR Grammateus semantic
+#' element to the compiled Rust report-rendering boundary. `format = "html"`
+#' returns rendered HTML as a character scalar, while `format = "pdf"` returns
+#' PDF bytes as a raw vector. Public floundeR builds do not bundle the private
+#' Grammateus runtime; when it is not linked these functions fail with a typed
+#' `flounder_grammateus_runtime_unavailable` condition.
+#'
+#' @param element A Grammateus semantic element prepared by floundeR, currently
+#'   a `flounder_grammateus_figure`.
+#' @param format Output format: `html` or `pdf`.
+#'
+#' @return Rendered HTML as a character scalar for `format = "html"`, or PDF
+#'   bytes as a raw vector for `format = "pdf"`.
+#'
+#' @export
+grammateus_render_element <- function(element, format = c("html", "pdf")) {
+  format <- match.arg(format)
+  if (inherits(element, "flounder_grammateus_figure")) {
+    if (identical(format, "html")) {
+      return(grammateus_render_figure_html(element))
+    }
+    return(grammateus_render_figure_pdf(element))
+  }
+
+  .grammateus_abort(
+    paste(
+      "Unsupported Grammateus element class:",
+      paste(class(element), collapse = ", ")
+    ),
+    "flounder_grammateus_unsupported_element"
+  )
+}
+
+#' @rdname grammateus_render_element
+#' @export
+grammateus_render_figure_html <- function(element) {
+  element <- .grammateus_validate_figure(element)
+  response <- .Call(
+    "flounder_grammateus_render_figure_html",
+    element,
+    PACKAGE = "floundeR"
+  )
+  .grammateus_render_response(response, "character")
+}
+
+#' @rdname grammateus_render_element
+#' @export
+grammateus_render_figure_pdf <- function(element) {
+  element <- .grammateus_validate_figure(element)
+  response <- .Call(
+    "flounder_grammateus_render_figure_pdf",
+    element,
+    PACKAGE = "floundeR"
+  )
+  .grammateus_render_response(response, "raw")
+}
+
 .grammateus_existing_file <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path) || path == "") {
     stop("path must be a non-empty character scalar.", call. = FALSE)
@@ -1102,6 +1161,82 @@ grammateus_render_plot <- function(
   })
   names(artifacts) <- plot_spec$output$formats
   artifacts
+}
+
+.grammateus_validate_figure <- function(figure) {
+  if (!inherits(figure, "flounder_grammateus_figure")) {
+    stop("element must be a flounder_grammateus_figure.", call. = FALSE)
+  }
+  figure$figure_id <- .grammateus_figure_id(figure$figure_id)
+  figure$caption <- .grammateus_required_text(figure$caption, "caption")
+  figure$alt_text <- .grammateus_required_text(figure$alt_text, "alt_text")
+  if (!is.list(figure$source)) {
+    stop("figure source must be a list.", call. = FALSE)
+  }
+  figure$source$kind <- .grammateus_required_text(
+    figure$source$kind,
+    "figure source kind"
+  )
+  if (!identical(figure$source$kind, "image")) {
+    stop("figure source kind must be `image`.", call. = FALSE)
+  }
+  figure$source$format <- match.arg(figure$source$format, c("png", "svg"))
+  figure$source$path <- .grammateus_existing_file(figure$source$path)
+  figure$source$checksum <- .grammateus_normalize_sha256(
+    figure$source$checksum,
+    "figure source checksum"
+  )
+  if (!is.list(figure$provenance)) {
+    stop("figure provenance must be a list.", call. = FALSE)
+  }
+  figure$provenance$source_hash <- .grammateus_normalize_sha256(
+    figure$provenance$source_hash,
+    "figure provenance source_hash"
+  )
+  figure
+}
+
+.grammateus_render_response <- function(response, expected_type) {
+  if (!is.list(response) || is.null(response$ok)) {
+    .grammateus_abort(
+      "Grammateus Rust renderer returned an invalid response envelope.",
+      "flounder_grammateus_render_error"
+    )
+  }
+  if (isTRUE(response$ok)) {
+    data <- response$data
+    if (identical(expected_type, "character")) {
+      if (!is.character(data) || length(data) != 1L || is.na(data)) {
+        .grammateus_abort(
+          "Grammateus Rust renderer did not return HTML text.",
+          "flounder_grammateus_render_error"
+        )
+      }
+      return(data)
+    }
+    if (!is.raw(data)) {
+      .grammateus_abort(
+        "Grammateus Rust renderer did not return PDF bytes.",
+        "flounder_grammateus_render_error"
+      )
+    }
+    return(data)
+  }
+
+  category <- response$category
+  if (!is.character(category) || length(category) != 1L || is.na(category)) {
+    category <- "render"
+  }
+  class <- if (identical(category, "runtime_unavailable")) {
+    "flounder_grammateus_runtime_unavailable"
+  } else {
+    "flounder_grammateus_render_error"
+  }
+  message <- response$error
+  if (!is.character(message) || length(message) != 1L || is.na(message)) {
+    message <- "Grammateus Rust renderer failed."
+  }
+  .grammateus_abort(message, class)
 }
 
 .grammateus_r_plot_backend_script <- function(required_packages) {

@@ -23,6 +23,8 @@ extern SEXP flounder_library_kit_candidates(SEXP reads, SEXP read_ids);
 extern SEXP flounder_library_adapter_primer_evidence(SEXP reads, SEXP read_ids, SEXP kit_id);
 extern SEXP flounder_library_barcode_evidence(SEXP reads, SEXP read_ids, SEXP kit_id);
 extern SEXP flounder_library_cdna_primer_evidence(SEXP reads, SEXP read_ids, SEXP kit_id);
+extern SEXP flounder_grammateus_render_figure_html(SEXP figure);
+extern SEXP flounder_grammateus_render_figure_pdf(SEXP figure);
 
 static const R_CallMethodDef CallEntries[] = {
     {"flounder_rust_capabilities", (DL_FUNC) &flounder_rust_capabilities, 0},
@@ -45,6 +47,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"flounder_library_adapter_primer_evidence", (DL_FUNC) &flounder_library_adapter_primer_evidence, 3},
     {"flounder_library_barcode_evidence", (DL_FUNC) &flounder_library_barcode_evidence, 3},
     {"flounder_library_cdna_primer_evidence", (DL_FUNC) &flounder_library_cdna_primer_evidence, 3},
+    {"flounder_grammateus_render_figure_html", (DL_FUNC) &flounder_grammateus_render_figure_html, 1},
+    {"flounder_grammateus_render_figure_pdf", (DL_FUNC) &flounder_grammateus_render_figure_pdf, 1},
     {NULL, NULL, 0}
 };
 

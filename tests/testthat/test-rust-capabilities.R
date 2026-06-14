@@ -36,3 +36,23 @@ test_that("Rust capability wrapper raises a typed unavailable condition", {
     class = "floundeR_rust_unavailable"
   )
 })
+
+test_that("Rust capability parser handles optional engines as a feature set", {
+  capabilities <- floundeR:::.flounder_parse_rust_capabilities(
+    paste(
+      "flounder.rust_capabilities.v1",
+      "flounder-extendr",
+      "0.3.0",
+      "bamana",
+      "grammateus",
+      "pod5-tools",
+      "porkchop",
+      sep = "|"
+    )
+  )
+
+  expect_identical(capabilities$pod5_tools, "linked")
+  expect_identical(capabilities$bamana, "linked")
+  expect_identical(capabilities$porkchop, "linked")
+  expect_identical(capabilities$grammateus, "linked")
+})

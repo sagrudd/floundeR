@@ -273,6 +273,33 @@ pub extern "C" fn flounder_library_cdna_primer_evidence(
     unsafe { result.get() }
 }
 
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_grammateus_render_figure_html(figure: SEXP) -> SEXP {
+    let result = grammateus_render_response(figure, "figure_html");
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_grammateus_render_figure_pdf(figure: SEXP) -> SEXP {
+    let result = grammateus_render_response(figure, "figure_pdf");
+    unsafe { result.get() }
+}
+
+fn grammateus_render_response(_element: SEXP, operation: &str) -> Robj {
+    list!(
+        ok = false,
+        data = r!(()),
+        error = format!(
+            "The private Grammateus report renderer is not linked into this floundeR build. \
+             Install or build floundeR with an authorized Grammateus runtime before calling {}.",
+            operation
+        ),
+        category = "runtime_unavailable",
+        operation = operation
+    )
+    .into()
+}
+
 #[cfg(feature = "porkchop-integration")]
 fn library_kit_candidates_response(reads: SEXP, read_ids: SEXP) -> Robj {
     let reads = unsafe { Robj::from_sexp(reads) };

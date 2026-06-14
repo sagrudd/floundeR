@@ -247,7 +247,7 @@ current non-FAST5 package surface.
 - [x] Implement Grammateus-to-R controlled plot generation wrappers for
       semantic `ReportPlot` specs, using local `Rscript` or governed container
       execution as configured.
-- [ ] Add in-process Rust bindings from `floundeR` to Grammateus report
+- [x] Add in-process Rust bindings from `floundeR` to Grammateus report
       rendering; do not shell out to Grammateus CLI binaries.
 - [ ] Define the prebuilt Grammateus runtime interface used by public floundeR
       builds when private Grammateus source is unavailable.

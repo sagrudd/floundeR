@@ -1,3 +1,14 @@
+# floundeR 0.16.0
+
+* Added `grammateus_render_element()`, `grammateus_render_figure_html()`, and
+  `grammateus_render_figure_pdf()` as the first in-process Rust boundary for
+  Grammateus report rendering. Public builds keep the private renderer
+  unlinked and raise a typed `flounder_grammateus_runtime_unavailable`
+  condition rather than shelling out to a Grammateus CLI.
+* Made Rust capability parsing feature-set based so optional engines such as
+  Porkchop and Grammateus can be reported independently of their order in the
+  native capability payload.
+
 # floundeR 0.15.0
 
 * Added `grammateus_plot_spec()` and `grammateus_render_plot()` to support

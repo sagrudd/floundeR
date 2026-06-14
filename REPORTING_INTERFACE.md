@@ -53,7 +53,9 @@ The R wrapper should:
 - compute artifact checksums;
 - collect source-data provenance;
 - construct a Grammateus `ReportFigure` or `ReportPlot` equivalent;
-- call the embedded Grammateus Rust renderer through R;
+- call the embedded Grammateus Rust renderer through R with
+  `grammateus_render_element()`, `grammateus_render_figure_html()`, or
+  `grammateus_render_figure_pdf()`;
 - return output paths plus a manifest/provenance payload.
 
 This path is best when an analyst is already working in R and wants to add
@@ -103,6 +105,14 @@ The generated artifact metadata includes SHA-256 hashes and
 `flounder_grammateus_figure` wrappers so the outputs can be handed into the
 reporting path consistently.
 
+The first render-binding surface is now present in floundeR:
+`grammateus_render_element()`, `grammateus_render_figure_html()`, and
+`grammateus_render_figure_pdf()` call registered Rust functions inside the R
+extension. Public builds do not link the private Grammateus renderer and return
+a typed `flounder_grammateus_runtime_unavailable` condition. Authorized builds
+can replace that Rust response path with private Grammateus library/runtime
+calls without changing the R report-element API.
+
 This path is best when a report template or synoptikon workflow owns the report
 definition and wants reproducible plot generation from canonical tidy data.
 
@@ -120,6 +130,10 @@ R helpers:
   artifact as a governed figure.
 - `grammateus_render_plot()`: ask Grammateus to run its controlled R backend for
   a semantic plot spec.
+- `grammateus_render_element()`: render a prepared semantic element through the
+  registered Rust report-rendering boundary.
+- `grammateus_render_figure_html()` and `grammateus_render_figure_pdf()`:
+  figure-specific HTML/PDF render bindings for report assembly.
 - `grammateus_report_element()`: low-level conversion for advanced users.
 - `qc_report()`: high-level floundeR report builder that emits HTML, PDF, and
   manifest/provenance outputs.
