@@ -29,7 +29,7 @@ test_that("POD5 manifest fixture matches QC schema", {
     stringsAsFactors = FALSE
   )
 
-  expect_flounder_schema(pod5_manifest, "pod5_manifest")
+  expect_flounder_schema(pod5_manifest, "ont_pod5_manifest")
   expect_equal(pod5_manifest$source_bucket, rep("ont-open-data", 2))
   expect_true(all(grepl("\\.pod5$", pod5_manifest$file_name)))
   expect_true(all(nchar(pod5_manifest$sha256) == 64))

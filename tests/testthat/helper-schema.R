@@ -96,7 +96,7 @@ flounder_qc_schemas <- list(
     "comparator",
     "details"
   ),
-  pod5_manifest = c(
+  ont_pod5_manifest = c(
     "file_name",
     "source_bucket",
     "source_key",
@@ -126,6 +126,40 @@ flounder_qc_schemas <- list(
     "pod5_version",
     "integrity_status",
     "integrity_reason"
+  ),
+  pod5_folder_info = c(
+    "path",
+    "pod5_file_count",
+    "total_bytes",
+    "total_reads",
+    "flow_cell_ids",
+    "sequencing_kits",
+    "acquisition_start_utc",
+    "acquisition_end_utc",
+    "integrity_status",
+    "integrity_reason",
+    "failed_file_count",
+    "verification_failed_count",
+    "duplicate_file_names",
+    "warnings"
+  ),
+  pod5_manifest = c(
+    "schema_version",
+    "source",
+    "relative_path",
+    "path",
+    "size_bytes",
+    "verification_status",
+    "verification_failed_checks"
+  ),
+  pod5_compare = c(
+    "status",
+    "kind",
+    "relative_path",
+    "left_size_bytes",
+    "right_size_bytes",
+    "left_verification_status",
+    "right_verification_status"
   )
 )
 

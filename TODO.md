@@ -160,12 +160,13 @@ current non-FAST5 package surface.
 
 ## Slice 9: POD5 Folder Info And Manifests
 
-- [ ] Expose `pod5_folder_info(path)` for run-tree QC.
-- [ ] Expose `pod5_manifest(path)` with a versioned schema.
-- [ ] Expose `pod5_compare(left, right)` for operational handoff checks.
-- [ ] Add tests for mixed flow cells, duplicate file names, failed files, and
-      changed manifests.
-- [ ] Document how these outputs feed synoptikon.
+- [x] Expose `pod5_folder_info(path)` for run-tree QC.
+- [x] Expose `pod5_manifest(path)` with a versioned schema.
+- [x] Expose `pod5_compare(left, right)` for operational handoff checks.
+- [x] Add tests for duplicate file names, failed files, and changed manifests.
+- [ ] Add parser-backed or mocked-reader tests for mixed flow cells once
+      `pod5-tools` exposes real POD5 metadata through the floundeR binding.
+- [x] Document how these outputs feed synoptikon.
 
 ## Slice 10: Subdivision And Playback Planning
 

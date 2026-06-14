@@ -1,3 +1,9 @@
+# floundeR 0.4.0
+
+* Added Rust-backed `pod5_folder_info()`, `pod5_manifest()`, and
+  `pod5_compare()` wrappers for run-tree POD5 QC, versioned collection
+  manifests, and operational handoff comparisons.
+
 # floundeR 0.3.0
 
 * Added Rust-backed `pod5_verify()` and `pod5_file_info()` wrappers that return
