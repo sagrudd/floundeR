@@ -1,3 +1,9 @@
+# floundeR 0.3.0
+
+* Added Rust-backed `pod5_verify()` and `pod5_file_info()` wrappers that return
+  R-native data frames while preserving the current `pod5-tools` fast
+  extension/signature verification semantics and typed POD5 error conditions.
+
 # floundeR 0.2.6
 
 * Documented the no-commit policy for downloaded POD5 files and added

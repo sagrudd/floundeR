@@ -151,11 +151,11 @@ current non-FAST5 package surface.
 
 ## Slice 8: POD5 Verification And File Info
 
-- [ ] Expose `pod5_verify(path)` through Rust-in-R.
-- [ ] Expose `pod5_file_info(path)` through Rust-in-R.
-- [ ] Return structured data frames/lists rather than TSV/JSON text.
-- [ ] Map Rust path, format, schema, and integrity failures to R conditions.
-- [ ] Add tests for valid POD5-like signatures, non-POD5 files, truncated files,
+- [x] Expose `pod5_verify(path)` through Rust-in-R.
+- [x] Expose `pod5_file_info(path)` through Rust-in-R.
+- [x] Return structured data frames/lists rather than TSV/JSON text.
+- [x] Map Rust path, format, schema, and integrity failures to R conditions.
+- [x] Add tests for valid POD5-like signatures, non-POD5 files, truncated files,
       and missing paths.
 
 ## Slice 9: POD5 Folder Info And Manifests

@@ -105,6 +105,27 @@ flounder_qc_schemas <- list(
     "read_count",
     "state",
     "sha256"
+  ),
+  pod5_verify = c(
+    "path",
+    "size_bytes",
+    "overall_status",
+    "check",
+    "category",
+    "status",
+    "detail"
+  ),
+  pod5_file_info = c(
+    "path",
+    "size_bytes",
+    "flow_cell_id",
+    "sequencing_kit",
+    "read_count",
+    "acquisition_start_utc",
+    "duration_seconds",
+    "pod5_version",
+    "integrity_status",
+    "integrity_reason"
   )
 )
 
