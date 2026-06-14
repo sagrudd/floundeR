@@ -1,3 +1,9 @@
+# floundeR 0.11.4
+
+* Added the Porkchop integration audit for curated library-preparation QC
+  surfaces, preserving heuristic score terminology and excluding trimming-first
+  APIs from the normal floundeR surface.
+
 # floundeR 0.11.3
 
 * Added an executable Synoptikon QC handoff vignette covering run QC evidence,

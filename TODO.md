@@ -217,7 +217,7 @@ current non-FAST5 package surface.
 
 ## Slice 12A: Porkchop Library-Preparation QC
 
-- [ ] Audit `../porkchop` public library APIs and identify only the QC/review
+- [x] Audit `../porkchop` public library APIs and identify only the QC/review
       logic that should be promoted for in-process R use.
 - [ ] Expose curated R wrappers for kit candidates, adapter/primer evidence,
       barcode evidence, and cDNA primer-pair evidence.
