@@ -1,3 +1,10 @@
+# floundeR 0.2.1
+
+* Documented the current `R CMD check` compiled-code warning introduced by
+  linking the Rust `std`/`pod5-tools` stack, including the release posture for
+  GitHub builds and the requirement to resolve or obtain policy acceptance
+  before Bioconductor/CRAN-facing release work.
+
 # floundeR 0.2.0
 
 * Added `pod5_find()` as the first curated POD5 Rust-backed R API. The function

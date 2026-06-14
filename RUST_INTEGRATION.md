@@ -216,3 +216,30 @@ For public source-package installs, the embedded crate pins `pod5-tools` to the
 open GitHub repository at the commit matching the inspected adjacent checkout.
 That avoids brittle release-tarball failures caused by local sibling path
 dependencies while preserving the same in-process Rust library boundary.
+
+## Compiled-Code Check Warning
+
+The first `pod5-tools` binding necessarily moved the embedded crate from the
+minimal `no_std` proof point to a standard Rust library stack because POD5
+discovery walks the filesystem, owns path buffers, and reports modification
+timestamps through `pod5-tools`. In the Docker release-tarball check, R reports
+a compiled-code warning for `_exit`, `abort`, and `exit` symbols in
+`floundeR.so` after linking the Rust static library.
+
+floundeR does not intentionally call process-terminating functions from its
+public R APIs. Rust failures must continue to be mapped into typed R conditions
+or data-frame/list responses at the R boundary. The warning is therefore
+tracked as release-readiness debt for the Rust integration stack rather than as
+a blocker for the current GitHub-source reboot line.
+
+Before Bioconductor/CRAN-facing release work, this must be revisited. Acceptable
+outcomes are:
+
+- a supported Rust/R build strategy that removes the warning while preserving
+  in-process library calls;
+- explicit policy acceptance recorded in the release checklist;
+- a split binary/runtime distribution design if package-policy constraints make
+  embedded Rust static linking untenable.
+
+Do not replace Rust library calls with CLI subprocess wrappers merely to avoid
+this warning; that would violate the core architecture decision.

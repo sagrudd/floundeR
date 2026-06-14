@@ -40,9 +40,11 @@ Cargo plus rustc with Rust `1.85` or newer, matching `DESCRIPTION` and
 CLI wrappers.
 
 The package must remain installable without private Grammateus source or
-runtime assets. `../pod5-tools`, `../bamana`, and `../porkchop` are not required
-for the current scaffold build; they should become explicit Rust library
-dependencies only in the functional binding slices that need them.
+runtime assets. `pod5-tools` is now an explicit open Rust library dependency
+for `pod5_find()` and is pinned to the public GitHub repository in
+`src/rust/Cargo.toml`. `../bamana`, `../porkchop`, and private Grammateus
+should become explicit Rust library dependencies only in the functional binding
+slices that need them.
 
 ### macOS
 
@@ -102,6 +104,27 @@ embedded Rust static library links into the R package shared object. It
 intentionally does not
 include private Grammateus assets, ONT POD5 example data, or large derived
 files.
+
+### Current Compiled-Code Warning
+
+After `pod5_find()` linked the standard Rust `pod5-tools` dependency, the
+release-style Docker check completes with tests passing but reports one
+compiled-code warning:
+
+```text
+File 'floundeR/libs/floundeR.so':
+  Found '_exit', possibly from '_exit' (C)
+  Found 'abort', possibly from 'abort' (C)
+  Found 'exit', possibly from 'exit' (C)
+```
+
+The symbols are pulled in by the Rust `std`/panic/runtime stack linked into the
+static library, not by floundeR intentionally terminating R from its public
+POD5 API. This warning is acceptable for the current GitHub-source development
+line while Rust-backed QC bindings are being built out, but it is not waived for
+future Bioconductor/CRAN-facing release work. Before such a release, maintainers
+must either remove the warning with a supported Rust/R build strategy or record
+explicit policy acceptance in the release checklist.
 
 ### CI
 

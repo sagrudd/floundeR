@@ -126,7 +126,7 @@ current non-FAST5 package surface.
 - [x] Expose `pod5_find(path)` as an R function returning a data frame.
 - [x] Include path, file count, byte total, oldest mtime, and newest mtime.
 - [x] Add tests for empty folders, nested folders, and mixed file extensions.
-- [ ] Resolve or formally document the release-check compiled-code warning from
+- [x] Resolve or formally document the release-check compiled-code warning from
       linking the Rust `std`/`pod5-tools` stack before Bioconductor/CRAN-facing
       release work.
 - [ ] Add examples that do not call any external CLI process.
