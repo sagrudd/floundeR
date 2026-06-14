@@ -1,3 +1,10 @@
+# floundeR 0.6.0
+
+* Added Rust-backed `bam_summary()` as the first curated Bamana integration,
+  returning stable R-native QC tables for command status, evidence scope,
+  header metadata, counts, fractions, MAPQ, mapping state, flags, references,
+  index-derived evidence, and optional MAPQ histograms.
+
 # floundeR 0.5.2
 
 * Audited Bamana's public Rust command modules, JSON contracts, and governing

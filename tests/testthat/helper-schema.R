@@ -173,6 +173,57 @@ flounder_qc_schemas <- list(
     "read_count",
     "relative_paths",
     "warnings"
+  ),
+  bam_summary_status = c(
+    "schema_version",
+    "command",
+    "path",
+    "ok",
+    "analysis_wall_seconds",
+    "format",
+    "mode",
+    "confidence",
+    "semantic_note"
+  ),
+  bam_summary_evidence = c(
+    "schema_version",
+    "header_used",
+    "index_used",
+    "records_scanned",
+    "full_file_scanned"
+  ),
+  bam_summary_counts = c(
+    "schema_version",
+    "records_examined",
+    "records_total_known",
+    "mapped_records",
+    "unmapped_records",
+    "primary_records",
+    "secondary_records",
+    "supplementary_records",
+    "duplicate_records",
+    "qc_fail_records",
+    "paired_records",
+    "properly_paired_records",
+    "read1_records",
+    "read2_records"
+  ),
+  bam_summary_fractions = c(
+    "schema_version",
+    "scope",
+    "fraction_mapped",
+    "fraction_primary",
+    "fraction_secondary",
+    "fraction_supplementary",
+    "fraction_duplicate",
+    "fraction_qc_fail"
+  ),
+  bam_summary_mapq = c(
+    "schema_version",
+    "min",
+    "max",
+    "mean",
+    "zero_count"
   )
 )
 

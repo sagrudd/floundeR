@@ -1,6 +1,6 @@
 [package]
 name = "flounder-extendr"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 rust-version = "1.85"
 publish = false
@@ -10,6 +10,7 @@ name = "flounder_extendr"
 crate-type = ["staticlib"]
 
 [dependencies]
+bamana = { git = "https://github.com/sagrudd/bamana", rev = "d64c1d4cba524c4ef24bc45c6b9b721881b5009c", default-features = false }
 extendr-api = "0.9.0"
 pod5-tools = { git = "https://github.com/sagrudd/pod5-tools", rev = "fe6ad3c3eba64b228603a81dd70858bca60df2ad" }
 

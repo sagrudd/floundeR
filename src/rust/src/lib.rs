@@ -1,5 +1,12 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, time::Instant};
 
+use bamana::{
+    bam::index::IndexKind,
+    commands::summary::{
+        self, ConfidenceLevel, FractionSummary, MappingStatus, RecordCountSummary, SummaryMode,
+        SummaryPayload, SummaryRequest,
+    },
+};
 use extendr_api::prelude::*;
 use pod5_tools::{
     CompareStatus, FilesystemPod5MetadataReader, IntegrityStatus, Pod5CompareReport,
@@ -13,7 +20,7 @@ type SEXP = extendr_api::SEXP;
 #[unsafe(no_mangle)]
 pub extern "C" fn flounder_rust_capabilities() -> SEXP {
     let payload = format!(
-        "flounder.rust_capabilities.v1|flounder-extendr|{}|pod5-tools",
+        "flounder.rust_capabilities.v1|flounder-extendr|{}|pod5-tools|bamana",
         env!("CARGO_PKG_VERSION")
     );
     unsafe { Robj::from(payload).get() }
@@ -69,6 +76,26 @@ pub extern "C" fn flounder_pod5_subdivide_plan(
         files_per_chunk,
         seconds_per_chunk,
         reads_per_chunk,
+    );
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_summary(
+    path: SEXP,
+    sample_records: SEXP,
+    prefer_index: SEXP,
+    include_mapq_hist: SEXP,
+    include_flags: SEXP,
+    allow_incomplete: SEXP,
+) -> SEXP {
+    let result = bam_summary_response(
+        path,
+        sample_records,
+        prefer_index,
+        include_mapq_hist,
+        include_flags,
+        allow_incomplete,
     );
     unsafe { result.get() }
 }
@@ -283,6 +310,143 @@ fn pod5_subdivide_plan_response(
             pod5_tools_error_category(&error.to_string()),
         ),
     }
+}
+
+fn bam_summary_response(
+    path: SEXP,
+    sample_records: SEXP,
+    prefer_index: SEXP,
+    include_mapq_hist: SEXP,
+    include_flags: SEXP,
+    allow_incomplete: SEXP,
+) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let sample_records = unsafe { Robj::from_sexp(sample_records) };
+    let prefer_index = unsafe { Robj::from_sexp(prefer_index) };
+    let include_mapq_hist = unsafe { Robj::from_sexp(include_mapq_hist) };
+    let include_flags = unsafe { Robj::from_sexp(include_flags) };
+    let allow_incomplete = unsafe { Robj::from_sexp(allow_incomplete) };
+
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+    let Some(sample_records) = sexp_i32(&sample_records) else {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be supplied as integer text from the R wrapper.",
+            None,
+            None,
+        );
+    };
+    if sample_records < 0 {
+        return bam_error_response(
+            "argument",
+            "`sample_records` must be zero or a positive integer.",
+            None,
+            None,
+        );
+    }
+    let Some(prefer_index) = sexp_bool(&prefer_index) else {
+        return bam_error_response(
+            "argument",
+            "`prefer_index` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+    let Some(include_mapq_hist) = sexp_bool(&include_mapq_hist) else {
+        return bam_error_response(
+            "argument",
+            "`include_mapq_hist` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+    let Some(include_flags) = sexp_bool(&include_flags) else {
+        return bam_error_response(
+            "argument",
+            "`include_flags` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+    let Some(allow_incomplete) = sexp_bool(&allow_incomplete) else {
+        return bam_error_response(
+            "argument",
+            "`allow_incomplete` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+
+    let request = SummaryRequest {
+        bam: PathBuf::from(path),
+        sample_records: sample_records as usize,
+        full_scan: sample_records == 0,
+        prefer_index,
+        include_mapq_hist,
+        include_flags,
+        regions: Vec::new(),
+        live_progress: false,
+        allow_incomplete,
+    };
+    let started = Instant::now();
+    let response =
+        summary::run(request).with_analysis_wall_seconds(started.elapsed().as_secs_f64());
+
+    if !response.ok {
+        let Some(error) = response.error.as_ref() else {
+            return bam_error_response(
+                "unknown",
+                "Bamana summary failed without structured error metadata.",
+                None,
+                None,
+            );
+        };
+        return bam_error_response(
+            &error.code,
+            &error.message,
+            error.detail.as_deref(),
+            error.hint.as_deref(),
+        );
+    }
+
+    let Some(payload) = response.data.as_ref() else {
+        return bam_error_response(
+            "unknown",
+            "Bamana summary succeeded without a structured payload.",
+            None,
+            None,
+        );
+    };
+
+    list!(
+        ok = true,
+        data = list!(
+            status = bam_status_data_frame(&response, payload),
+            evidence = bam_evidence_data_frame(payload),
+            header = bam_header_data_frame(payload),
+            counts = bam_counts_data_frame(payload.counts.as_ref()),
+            fractions = bam_fractions_data_frame(payload.fractions.as_ref(), "full_file"),
+            fractions_observed =
+                bam_fractions_data_frame(payload.fractions_observed.as_ref(), "observed"),
+            mapq = bam_mapq_data_frame(payload),
+            mapping = bam_mapping_data_frame(payload),
+            anomalies = bam_anomalies_data_frame(payload),
+            flag_categories = bam_flag_categories_data_frame(payload),
+            references = bam_references_data_frame(payload),
+            index_derived = bam_index_derived_data_frame(payload),
+            mapq_histogram = bam_mapq_histogram_data_frame(payload)
+        ),
+        error = r!(()),
+        category = r!(())
+    )
+    .into()
 }
 
 fn pod5_find_data_frame(path: &str) -> Result<Robj, Box<dyn std::error::Error>> {
@@ -585,6 +749,388 @@ fn pod5_subdivide_plan_data_frame(plan: Pod5SubdividePlan) -> Robj {
     )
 }
 
+fn bam_status_data_frame(
+    response: &bamana::json::CommandResponse<SummaryPayload>,
+    payload: &SummaryPayload,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec![response.command.clone()],
+        path = vec![response.path.clone().unwrap_or_default()],
+        ok = vec![response.ok],
+        analysis_wall_seconds = vec![response.analysis_wall_seconds.unwrap_or(f64::NAN)],
+        format = vec![payload.format.to_string()],
+        mode = vec![summary_mode_label(payload.mode).to_string()],
+        confidence = vec![
+            payload
+                .confidence
+                .map(confidence_label)
+                .unwrap_or_default()
+                .to_string()
+        ],
+        semantic_note = vec![payload.semantic_note.clone().unwrap_or_default()]
+    )
+}
+
+fn bam_evidence_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(evidence) = payload.evidence.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            header_used = Vec::<bool>::new(),
+            index_used = Vec::<bool>::new(),
+            records_scanned = Vec::<f64>::new(),
+            full_file_scanned = Vec::<bool>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        header_used = vec![evidence.header_used],
+        index_used = vec![evidence.index_used],
+        records_scanned = vec![evidence.records_scanned as f64],
+        full_file_scanned = vec![evidence.full_file_scanned]
+    )
+}
+
+fn bam_header_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(header) = payload.header.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            references_defined = Vec::<f64>::new(),
+            sort_order = Vec::<String>::new(),
+            sub_sort_order = Vec::<String>::new(),
+            group_order = Vec::<String>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        references_defined = vec![header.references_defined as f64],
+        sort_order = vec![header.sort_order.clone().unwrap_or_default()],
+        sub_sort_order = vec![header.sub_sort_order.clone().unwrap_or_default()],
+        group_order = vec![header.group_order.clone().unwrap_or_default()]
+    )
+}
+
+fn bam_counts_data_frame(counts: Option<&RecordCountSummary>) -> Robj {
+    let Some(counts) = counts else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            records_examined = Vec::<f64>::new(),
+            records_total_known = Vec::<f64>::new(),
+            mapped_records = Vec::<f64>::new(),
+            unmapped_records = Vec::<f64>::new(),
+            primary_records = Vec::<f64>::new(),
+            secondary_records = Vec::<f64>::new(),
+            supplementary_records = Vec::<f64>::new(),
+            duplicate_records = Vec::<f64>::new(),
+            qc_fail_records = Vec::<f64>::new(),
+            paired_records = Vec::<f64>::new(),
+            properly_paired_records = Vec::<f64>::new(),
+            read1_records = Vec::<f64>::new(),
+            read2_records = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        records_examined = vec![counts.records_examined as f64],
+        records_total_known = vec![
+            counts
+                .records_total_known
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        mapped_records = vec![counts.mapped_records as f64],
+        unmapped_records = vec![counts.unmapped_records as f64],
+        primary_records = vec![counts.primary_records as f64],
+        secondary_records = vec![counts.secondary_records as f64],
+        supplementary_records = vec![counts.supplementary_records as f64],
+        duplicate_records = vec![counts.duplicate_records as f64],
+        qc_fail_records = vec![counts.qc_fail_records as f64],
+        paired_records = vec![counts.paired_records as f64],
+        properly_paired_records = vec![counts.properly_paired_records as f64],
+        read1_records = vec![counts.read1_records as f64],
+        read2_records = vec![counts.read2_records as f64]
+    )
+}
+
+fn bam_fractions_data_frame(fractions: Option<&FractionSummary>, scope: &str) -> Robj {
+    let Some(fractions) = fractions else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            scope = Vec::<String>::new(),
+            fraction_mapped = Vec::<f64>::new(),
+            fraction_primary = Vec::<f64>::new(),
+            fraction_secondary = Vec::<f64>::new(),
+            fraction_supplementary = Vec::<f64>::new(),
+            fraction_duplicate = Vec::<f64>::new(),
+            fraction_qc_fail = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        scope = vec![scope.to_string()],
+        fraction_mapped = vec![fractions.fraction_mapped.unwrap_or(f64::NAN)],
+        fraction_primary = vec![fractions.fraction_primary.unwrap_or(f64::NAN)],
+        fraction_secondary = vec![fractions.fraction_secondary.unwrap_or(f64::NAN)],
+        fraction_supplementary = vec![fractions.fraction_supplementary.unwrap_or(f64::NAN)],
+        fraction_duplicate = vec![fractions.fraction_duplicate.unwrap_or(f64::NAN)],
+        fraction_qc_fail = vec![fractions.fraction_qc_fail.unwrap_or(f64::NAN)]
+    )
+}
+
+fn bam_mapq_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(mapq) = payload.mapq.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            min = Vec::<f64>::new(),
+            max = Vec::<f64>::new(),
+            mean = Vec::<f64>::new(),
+            zero_count = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        min = vec![mapq.min.map(|value| value as f64).unwrap_or(f64::NAN)],
+        max = vec![mapq.max.map(|value| value as f64).unwrap_or(f64::NAN)],
+        mean = vec![mapq.mean.unwrap_or(f64::NAN)],
+        zero_count = vec![mapq.zero_count as f64]
+    )
+}
+
+fn bam_mapping_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(mapping) = payload.mapping.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            status = Vec::<String>::new(),
+            references_with_mapped_reads = Vec::<f64>::new(),
+            references_with_mapped_reads_observed = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        status = vec![mapping_status_label(mapping.status).to_string()],
+        references_with_mapped_reads = vec![
+            mapping
+                .references_with_mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        references_with_mapped_reads_observed = vec![
+            mapping
+                .references_with_mapped_reads_observed
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ]
+    )
+}
+
+fn bam_anomalies_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(anomalies) = payload.anomalies.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            contradictory_mapping_state_records = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        contradictory_mapping_state_records =
+            vec![anomalies.contradictory_mapping_state_records as f64]
+    )
+}
+
+fn bam_flag_categories_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(flags) = payload.flag_categories.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            paired_records = Vec::<f64>::new(),
+            properly_paired_records = Vec::<f64>::new(),
+            secondary_records = Vec::<f64>::new(),
+            supplementary_records = Vec::<f64>::new(),
+            duplicate_records = Vec::<f64>::new(),
+            qc_fail_records = Vec::<f64>::new(),
+            read1_records = Vec::<f64>::new(),
+            read2_records = Vec::<f64>::new(),
+            reverse_strand_records = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        paired_records = vec![flags.paired_records as f64],
+        properly_paired_records = vec![flags.properly_paired_records as f64],
+        secondary_records = vec![flags.secondary_records as f64],
+        supplementary_records = vec![flags.supplementary_records as f64],
+        duplicate_records = vec![flags.duplicate_records as f64],
+        qc_fail_records = vec![flags.qc_fail_records as f64],
+        read1_records = vec![flags.read1_records as f64],
+        read2_records = vec![flags.read2_records as f64],
+        reverse_strand_records = vec![flags.reverse_strand_records as f64]
+    )
+}
+
+fn bam_references_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(references) = payload.references.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            name = Vec::<String>::new(),
+            length = Vec::<f64>::new(),
+            mapped_reads = Vec::<f64>::new(),
+            unmapped_reads = Vec::<f64>::new(),
+            observed_mapped = Vec::<String>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0; references.len()],
+        name = references
+            .iter()
+            .map(|reference| reference.name.clone())
+            .collect::<Vec<_>>(),
+        length = references
+            .iter()
+            .map(|reference| reference.length as f64)
+            .collect::<Vec<_>>(),
+        mapped_reads = references
+            .iter()
+            .map(|reference| reference
+                .mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN))
+            .collect::<Vec<_>>(),
+        unmapped_reads = references
+            .iter()
+            .map(|reference| reference
+                .unmapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN))
+            .collect::<Vec<_>>(),
+        observed_mapped = references
+            .iter()
+            .map(|reference| optional_bool_label(reference.observed_mapped).to_string())
+            .collect::<Vec<_>>()
+    )
+}
+
+fn bam_index_derived_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(index) = payload.index_derived.as_ref() else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            present = Vec::<bool>::new(),
+            kind = Vec::<String>::new(),
+            used = Vec::<bool>::new(),
+            total_mapped_reads = Vec::<f64>::new(),
+            total_unmapped_reads = Vec::<f64>::new(),
+            references_with_mapped_reads = Vec::<f64>::new(),
+            note = Vec::<String>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        present = vec![index.present],
+        kind = vec![
+            index
+                .kind
+                .map(index_kind_label)
+                .unwrap_or_default()
+                .to_string()
+        ],
+        used = vec![index.used],
+        total_mapped_reads = vec![
+            index
+                .total_mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        total_unmapped_reads = vec![
+            index
+                .total_unmapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        references_with_mapped_reads = vec![
+            index
+                .references_with_mapped_reads
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        ],
+        note = vec![index.note.clone().unwrap_or_default()]
+    )
+}
+
+fn bam_mapq_histogram_data_frame(payload: &SummaryPayload) -> Robj {
+    let Some(histogram) = payload
+        .mapq
+        .as_ref()
+        .and_then(|mapq| mapq.histogram.as_ref())
+    else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            mapq = Vec::<f64>::new(),
+            read_count = Vec::<f64>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0; histogram.len()],
+        mapq = histogram
+            .keys()
+            .map(|value| *value as f64)
+            .collect::<Vec<_>>(),
+        read_count = histogram
+            .values()
+            .map(|value| *value as f64)
+            .collect::<Vec<_>>()
+    )
+}
+
+fn summary_mode_label(mode: SummaryMode) -> &'static str {
+    match mode {
+        SummaryMode::BoundedScan => "bounded_scan",
+        SummaryMode::FullScan => "full_scan",
+        SummaryMode::Indeterminate => "indeterminate",
+    }
+}
+
+fn confidence_label(confidence: ConfidenceLevel) -> &'static str {
+    match confidence {
+        ConfidenceLevel::High => "high",
+        ConfidenceLevel::Medium => "medium",
+        ConfidenceLevel::Low => "low",
+    }
+}
+
+fn mapping_status_label(status: MappingStatus) -> &'static str {
+    match status {
+        MappingStatus::Mapped => "mapped",
+        MappingStatus::Unmapped => "unmapped",
+        MappingStatus::Indeterminate => "indeterminate",
+    }
+}
+
+fn index_kind_label(kind: IndexKind) -> &'static str {
+    match kind {
+        IndexKind::Bai => "BAI",
+        IndexKind::Csi => "CSI",
+        IndexKind::Gzi => "GZI",
+        IndexKind::Unknown => "UNKNOWN",
+    }
+}
+
+fn optional_bool_label(value: Option<bool>) -> &'static str {
+    match value {
+        Some(true) => "true",
+        Some(false) => "false",
+        None => "",
+    }
+}
+
 fn verify_status_label(status: &VerifyStatus) -> &'static str {
     match status {
         VerifyStatus::Incomplete => "incomplete",
@@ -662,6 +1208,41 @@ fn pod5_tools_error_category(message: &str) -> &'static str {
         "path"
     } else {
         "unknown"
+    }
+}
+
+fn sexp_i32(value: &Robj) -> Option<i32> {
+    value.as_integer()
+}
+
+fn sexp_bool(value: &Robj) -> Option<bool> {
+    value.as_bool()
+}
+
+fn bam_error_response(code: &str, message: &str, detail: Option<&str>, hint: Option<&str>) -> Robj {
+    list!(
+        ok = false,
+        data = r!(()),
+        error = message,
+        category = bam_error_category(code),
+        code = code,
+        detail = detail.unwrap_or_default(),
+        hint = hint.unwrap_or_default()
+    )
+    .into()
+}
+
+fn bam_error_category(code: &str) -> &'static str {
+    match code {
+        "file_not_found" | "permission_denied" | "io_error" | "unknown_format" => "path",
+        "invalid_bam"
+        | "invalid_header"
+        | "invalid_record"
+        | "not_bam"
+        | "unsupported_input_format" => "format",
+        "invalid_index" | "missing_index" | "unsupported_index" => "index",
+        "argument" => "argument",
+        _ => "unknown",
     }
 }
 

@@ -187,7 +187,7 @@ current non-FAST5 package surface.
 
 - [x] Audit `../bamana` public library APIs and identify only the QC/review
       command logic that must be promoted for in-process R use.
-- [ ] Expose `bam_summary(path)` through Rust-in-R with stable R-native return
+- [x] Expose `bam_summary(path)` through Rust-in-R with stable R-native return
       shapes.
 - [ ] Expose `bam_verify(path)`, `bam_validate(path)`, and `bam_check_eof(path)`
       through Rust-in-R.

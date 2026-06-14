@@ -82,6 +82,15 @@ contracts:
 minimum first binding set because they satisfy the next Slice 11 TODO items and
 provide the core report-card inputs for aligned-read QC.
 
+`bam_summary()` is implemented in floundeR 0.6.0 as the first binding in this
+set. It links Bamana as an in-process Rust library dependency pinned to
+`d64c1d4cba524c4ef24bc45c6b9b721881b5009c`, calls
+`commands::summary::run()`, and returns a named R list of schema-stable data
+frames for status, evidence, header, counts, fractions, MAPQ, mapping,
+anomalies, flag categories, references, index-derived evidence, and optional
+MAPQ histograms. It deliberately leaves region-scoped summaries and the wider
+verify/validate/index/tag surfaces for subsequent Slice 11 bindings.
+
 ## R Return-Shape Guidance
 
 R wrappers should expose stable, schema-versioned objects rather than
