@@ -155,27 +155,52 @@ sequencing-summary report cards.
 
 ## Transformation Boundary
 
-The following Bamana capabilities are useful but should not be exposed in
-floundeR's first BAM QC API because they write outputs or alter records:
+floundeR must separate read-only evidence from commands that write new files,
+alter records, or normalize adjacent formats. The R package may call read-only
+surfaces directly as QC evidence. Transformation surfaces may be added only as
+explicit, output-path-bearing workflows with provenance-rich return objects.
 
-- `sort`
-- `merge`
-- `explode`
-- `select_region`
-- `consume`
-- `filter`
-- `subsample`
-- `fastq`
-- `unmap`
-- `reheader`
-- `annotate_rg`
-- `deduplicate`
-- `index`
+| Bamana operation | floundeR posture | Boundary |
+| --- | --- | --- |
+| `identify` | read-only candidate | File identity evidence only; useful for provenance but not yet required by the first BAM card. |
+| `verify` | read-only implemented | Header-level BAM/BGZF verification; does not prove EOF completeness or body validity. |
+| `check_eof` | read-only implemented | BGZF EOF-marker evidence only. |
+| `check_index` | read-only implemented | Adjacent sidecar discovery, support level, usability, and timestamp-staleness evidence. |
+| `check_map` | read-only implemented | Mapping-state evidence from usable index metadata or bounded/full scan. Region-scoped evidence must remain distinct from whole-file evidence. |
+| `check_sort` | read-only implemented | Declared versus observed sort evidence; not record rewriting. |
+| `check_tag` | read-only implemented | Aux-tag presence/type evidence; bounded non-observation is not full-file absence unless full scan is reported. |
+| `summary` | read-only implemented | Operational alignment overview; bounded summaries must not be interpreted as complete-file claims. |
+| `validate` | read-only implemented | Structural and consistency findings over declared scope; not biological correctness. |
+| `checksum` | read-only candidate | Handoff/provenance checksum domains; acceptable when surfaced as evidence and not as a write step. |
+| `header` | read-only candidate | Header/reference/read-group/program/comment evidence; header diagnostics are not body validation. |
+| `forensic_inspect` | read-only candidate | Provenance and operational anomaly evidence; must not be presented as fraud accusation. |
+| `inspect_duplication` | read-only candidate | Collection-duplication evidence; distinct from PCR duplicate marking and BAM duplicate flags. |
+| `benchmark` | out of normal floundeR API | Engineering/performance evidence, not routine biological or operational QC output. |
+| `sort` | transformation | Writes a reordered BAM; requires explicit output path, input/output provenance, and index invalidation or regeneration notes. |
+| `merge` | transformation | Writes a merged BAM; requires explicit output path, input ordering/compatibility provenance, and checksum reporting. |
+| `explode` | transformation | Writes shards; requires explicit output directory, shard manifest, boundary policy, and checksums. |
+| `select_region` | transformation | Writes selected records; requires explicit region semantics, duplicate-region policy, output path, header preservation, and provenance. |
+| `consume` | transformation | Normalizes BAM/SAM/CRAM/FASTQ-like inputs into BAM; requires explicit output path and source-format/reference-policy provenance. |
+| `filter` | transformation | Writes a retained-record BAM; requires explicit predicates, output path, and dropped/retained evidence. |
+| `subsample` | transformation | Writes sampled BAM/FASTQ outputs; requires explicit seed/deterministic identity policy, output path, and sampling guarantees. |
+| `fastq` | transformation | Exports FASTQ.GZ from BAM; loses alignment/header semantics by design and requires explicit output path. |
+| `unmap` | transformation | Writes an unmapped BAM; strips mapping state and requires explicit output path and metadata-loss note. |
+| `reheader` | transformation | Header-only mutation; must remain distinct from record-level `RG:Z` annotation and require explicit output path. |
+| `annotate_rg` | transformation | Record-level read-group tag mutation; must remain distinct from header-only metadata mutation and require explicit output path. |
+| `deduplicate` | transformation | Conservative collection-duplication remediation; distinct from PCR duplicate marking and requires dry-run/provenance-first reporting. |
+| `index` | sidecar writer | Writes BAI/FASTQ.GZI sidecars; acceptable later only as an explicit write-capable helper with force/overwrite semantics and sidecar provenance. |
 
-These operations may be added later only when they directly support QC/review,
-require explicit output paths, and return provenance-rich reports. They should
-remain distinct from read-only QC wrappers and must preserve Bamana's command
-semantics, output-safety rules, and JSON contracts.
+Write-capable operations must not be hidden behind report-card helpers or
+implicit convenience calls. If floundeR adds any transformation helper later,
+it must:
+
+- require an explicit output file or output directory;
+- return a structured provenance manifest with input/output paths, checksums,
+  command parameters, Bamana version, floundeR version, and write status;
+- preserve Bamana's distinction between dry-run planning and completed writes;
+- report index invalidation, sidecar creation, or deferred indexing behavior;
+- keep transformation outputs separate from read-only QC evidence in reports
+  and synoptikon payloads.
 
 ## Report And Synoptikon Use
 

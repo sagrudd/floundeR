@@ -201,7 +201,7 @@ current non-FAST5 package surface.
       fraction, QC-fail fraction, MAPQ zero burden, stale/missing index,
       sorting mismatch, missing expected tags, EOF absence, validation
       findings, and provenance anomalies.
-- [ ] Document which Bamana operations are read-only QC surfaces and which are
+- [x] Document which Bamana operations are read-only QC surfaces and which are
       transformations requiring explicit output paths.
 - [ ] Explicitly document which Bamana capabilities are out of scope for
       floundeR because they do not serve nanopore QC/review directly.

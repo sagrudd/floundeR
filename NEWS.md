@@ -1,3 +1,9 @@
+# floundeR 0.9.1
+
+* Documented the Bamana read-only versus transformation boundary, including
+  which operations may feed QC evidence directly and which write-capable
+  operations require explicit output paths and provenance manifests.
+
 # floundeR 0.9.0
 
 * Added `bam_qc_report_card()` and `bam_qc_report_card_thresholds()` to convert
