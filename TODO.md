@@ -283,7 +283,7 @@ current non-FAST5 package surface.
       versions.
 - [x] Add CI separation: public floundeR checks without Grammateus, credentialed
       private checks with Grammateus runtime/report rendering.
-- [ ] Document GitHub installation paths for open-source users and authorized
+- [x] Document GitHub installation paths for open-source users and authorized
       Grammateus runtime users.
 - [ ] Before any BioConductor submission, verify current policy for optional
       external binaries, private runtime assets, downloads, and system

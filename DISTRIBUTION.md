@@ -109,6 +109,9 @@ Initial GitHub distribution should provide:
   `pod5-tools`, `bamana`, and `porkchop` versions were tested;
 - a private Grammateus runtime manifest that records compatible runtime builds.
 
+The concrete public GitHub source-install path and authorized private
+Grammateus runtime setup path are documented in `GITHUB_INSTALLATION.md`.
+
 GitHub Actions should build and check floundeR without private Grammateus
 access. A separate private or credentialed workflow may verify Grammateus report
 rendering using private runtime assets.

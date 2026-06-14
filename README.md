@@ -42,6 +42,12 @@ rustc first, then install the package from GitHub. Platform-specific source
 install notes for macOS, Linux, Windows, Docker, and CI are recorded in
 [`DEVELOPMENT.md`](DEVELOPMENT.md#source-install-requirements).
 
+The detailed GitHub installation paths are recorded in
+[`GITHUB_INSTALLATION.md`](GITHUB_INSTALLATION.md): public users install the
+open-source package without private Grammateus assets, while authorized users
+can configure optional prebuilt Grammateus runtimes for governed HTML/PDF
+report rendering.
+
 ## `floundeR` and a BasicQC analysis to assess a flowcell run
 
 BasicQC was the name of the original Nanopore tutorial that introduced an R

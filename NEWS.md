@@ -1,3 +1,9 @@
+# floundeR 0.21.7
+
+* Documented the GitHub installation paths for public open-source floundeR
+  users and authorized users configuring optional prebuilt Grammateus runtime
+  assets.
+
 # floundeR 0.21.6
 
 * Added disabled GitHub Actions templates that separate public floundeR checks
