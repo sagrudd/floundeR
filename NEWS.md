@@ -1,3 +1,10 @@
+# floundeR 0.21.11
+
+* Added contemporary package vignettes for POD5 QC and BAM QC, and refreshed the
+  Synoptikon handoff vignette so the active tutorial set covers POD5
+  provenance, curated Bamana-backed BAM evidence, and sectioned QC JSON handoff
+  without restoring retired FAST5 workflows.
+
 # floundeR 0.21.10
 
 * Added an offline "run health in one minute" README example that produces a

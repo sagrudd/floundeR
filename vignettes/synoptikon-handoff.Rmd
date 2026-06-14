@@ -23,6 +23,10 @@ The example is network-free. It uses the package sequencing-summary fixture and
 metadata for the selected ONT open-data POD5 object without downloading POD5
 bytes.
 
+For focused input-level tutorials, see the POD5 QC and BAM QC vignettes. This
+vignette combines those evidence shapes into the Synoptikon JSON handoff
+contract.
+
 ```{r setup}
 library(floundeR)
 ```
@@ -113,8 +117,8 @@ library_preparation_evidence <- data.frame(
   status = "not_checked",
   evidence_kind = "porkchop_reserved",
   detail = paste(
-    "Porkchop adapter, primer, barcode, kit, and cDNA evidence will populate",
-    "this section once the curated Slice 12A bindings land."
+    "Porkchop adapter, primer, barcode, kit, and cDNA evidence can populate",
+    "this section when library-preparation screening evidence is supplied."
   ),
   stringsAsFactors = FALSE
 )

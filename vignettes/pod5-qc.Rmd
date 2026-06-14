@@ -1,0 +1,171 @@
+---
+title: "POD5 QC"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{POD5 QC}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows the package-level POD5 QC workflow in floundeR. It is a
+package tutorial, not a production report renderer. Governed HTML/PDF report
+artifacts remain a Grammateus responsibility.
+
+The default workflow is network-free and does not download or commit POD5 bytes.
+Rust-backed POD5 inspection is demonstrated only when the compiled extension is
+available in the local R installation.
+
+```{r setup}
+library(floundeR)
+rust_available <- flounder_rust_available()
+```
+
+## Canonical Open-Data Source
+
+floundeR uses a fixed ONT open-data POD5 source for opt-in real-data examples:
+`s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`.
+
+The routine pass example is
+`PAU85136_pass_279c9095_68316534_8289.pod5`. The fail object is reserved for
+fail-state examples and should not be used as the default tutorial input.
+
+```{r open-data-metadata}
+pod5_dataset <- ont_zymo_pod5_dataset()
+pod5_examples <- ont_zymo_pod5_example_objects()
+
+pod5_dataset
+pod5_examples
+```
+
+Opt in explicitly before downloading from S3, and keep cached files outside the
+repository:
+
+```{r opt-in-fetch, eval = FALSE}
+pass_example <- ont_zymo_pod5_example_objects(role = "pass")
+
+if (identical(tolower(Sys.getenv("FLOUNDER_RUN_NETWORK_TESTS")), "true")) {
+  fetched <- ont_open_data_fetch(
+    key = pass_example$key,
+    cache_dir = tools::R_user_dir("floundeR", which = "cache")
+  )
+
+  pod5_file_info(fetched$cache_path)
+  pod5_verify(fetched$cache_path)
+}
+```
+
+## Local POD5 Inventory
+
+The curated R API is intentionally small: discover POD5-containing folders,
+verify candidate files, inspect file or folder metadata, build manifests, compare
+collections, and plan read-only demonstration subdivisions. These calls go
+through in-process Rust and return R data frames or lists.
+
+The tiny files below are POD5-like signature fixtures for documentation. They
+exercise discovery, manifest, and envelope checks without embedding real raw
+signal data in the package.
+
+```{r local-pod5-inventory}
+if (rust_available) {
+  signature <- as.raw(c(0x8b, 0x50, 0x4f, 0x44, 0x0d, 0x0a, 0x1a, 0x0a))
+  run_dir <- file.path(tempdir(), "flounder-pod5-qc-example")
+  unlink(run_dir, recursive = TRUE)
+  dir.create(file.path(run_dir, "pass"), recursive = TRUE)
+  dir.create(file.path(run_dir, "fail"), recursive = TRUE)
+
+  writeBin(
+    c(signature, as.raw(rep(0, 16)), signature),
+    file.path(run_dir, "pass", "example-pass.pod5")
+  )
+  writeBin(
+    c(signature, as.raw(rep(1, 16)), signature),
+    file.path(run_dir, "fail", "example-fail.pod5")
+  )
+
+  pod5_find(run_dir)
+  pod5_folder_info(run_dir)
+  pod5_manifest(run_dir)
+} else {
+  data.frame(
+    status = "not_checked",
+    reason = "Compiled Rust support is unavailable in this R installation.",
+    stringsAsFactors = FALSE
+  )
+}
+```
+
+File-level inspection separates fast envelope evidence from unavailable deep
+POD5 metadata. That prevents a lightweight tutorial fixture from being
+overstated as fully parsed raw-signal evidence.
+
+```{r local-pod5-file}
+if (rust_available) {
+  example_file <- file.path(run_dir, "pass", "example-pass.pod5")
+
+  pod5_verify(example_file)
+  pod5_file_info(example_file)
+} else {
+  data.frame(
+    status = "not_checked",
+    reason = "Compiled Rust support is unavailable in this R installation.",
+    stringsAsFactors = FALSE
+  )
+}
+```
+
+## Demonstration Subdivision Plans
+
+Large POD5 files are not suitable for routine vignette builds. When a real POD5
+object has been cached outside the repository, floundeR can ask the Rust-backed
+POD5 layer for a read-only split plan. This plans demonstration subsets without
+writing new POD5 files.
+
+```{r pod5-subdivide-plan}
+if (rust_available) {
+  pod5_subdivide_plan(run_dir, strategy = "file-count", files_per_chunk = 1)
+} else {
+  data.frame(
+    status = "not_checked",
+    reason = "Compiled Rust support is unavailable in this R installation.",
+    stringsAsFactors = FALSE
+  )
+}
+```
+
+Actual subset or split file creation remains an explicit derived-data workflow:
+record the source URI, checksum, command/runtime provenance, and generated
+manifest, then keep the derived POD5 artifact outside the package repository.
+
+## QC Handoff Shape
+
+POD5 evidence is normally passed forward as manifest, verification, and
+open-data provenance tables. Those tables can be attached to Synoptikon handoff
+payloads or converted into Grammateus report elements when the optional private
+runtime is installed.
+
+```{r pod5-handoff-shape}
+pass_example <- ont_zymo_pod5_example_objects(role = "pass")
+
+pod5_provenance <- data.frame(
+  schema_version = "flounder.pod5_open_data_example.v1",
+  status = "not_downloaded",
+  bucket = pass_example$bucket,
+  region = pass_example$region,
+  key = pass_example$key,
+  s3_uri = pass_example$s3_uri,
+  size_bytes = pass_example$size,
+  intended_use = pass_example$intended_use,
+  stringsAsFactors = FALSE
+)
+
+pod5_provenance
+```
+
+Use the companion Synoptikon handoff vignette for the full JSON payload contract.
