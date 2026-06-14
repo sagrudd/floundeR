@@ -31,10 +31,19 @@ the supported platforms and referenced by an explicit manifest.
 Recommended artifact set per release:
 
 - `grammateus-runtime-{version}-{platform}.{tar.gz|zip}`
+- `grammateus-runtime-{version}-{platform}.{tar.gz|zip}.sha256`
+- `grammateus-runtime-{version}-{platform}.{tar.gz|zip}.sig`
 - `grammateus-runtime-manifest-{version}.json`
 - `grammateus-runtime-manifest-{version}.json.sig`
-- checksums for each platform archive
+- `grammateus-runtime-index-{version}.json`
+- `grammateus-runtime-index-{version}.json.sig`
+- `flounder-runtime-compatibility-{version}.json`
+- `flounder-runtime-compatibility-{version}.json.sig`
 - release notes identifying the compatible floundeR version range
+
+The normative GitHub/private-release asset names, platform identifiers,
+release-level runtime index, compatibility manifest, and publication rules are
+defined in `GRAMMATEUS_RELEASE_ASSETS.md`.
 
 The runtime archive should contain only redistributable runtime content needed
 by floundeR reporting:

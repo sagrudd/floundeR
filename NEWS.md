@@ -1,3 +1,9 @@
+# floundeR 0.21.3
+
+* Defined the GitHub/private release asset names, platform identifiers, runtime
+  index, compatibility manifest, and publication rules for prebuilt Grammateus
+  runtime bundles.
+
 # floundeR 0.21.2
 
 * Documented the legacy RMarkdown boundary: RMarkdown is retained for package

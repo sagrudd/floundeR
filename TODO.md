@@ -275,7 +275,7 @@ current non-FAST5 package surface.
 
 ## Slice 13A: GitHub And Future BioConductor Distribution
 
-- [ ] Define GitHub release asset names and manifests for prebuilt Grammateus
+- [x] Define GitHub release asset names and manifests for prebuilt Grammateus
       runtime bundles.
 - [ ] Add checksum and signature verification for private Grammateus runtime
       artifacts.

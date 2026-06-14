@@ -17,6 +17,7 @@ governing local files are:
 - `DISTRIBUTION.md`
 - `REPORTING_INTERFACE.md`
 - `GRAMMATEUS_RUNTIME_INTERFACE.md`
+- `GRAMMATEUS_RELEASE_ASSETS.md`
 - `LEGACY_REPORTING.md`
 
 ## pod5-tools
@@ -106,6 +107,6 @@ stale generated pages drive source behavior.
 
 Root-level project-control files such as `AGENTS.md`, `ROADMAP.md`, `TODO.md`,
 `DATASETS.md`, `DISTRIBUTION.md`, `REPORTING_INTERFACE.md`,
-`GRAMMATEUS_RUNTIME_INTERFACE.md`, `LEGACY_REPORTING.md`, and this file are
-repository governance files. They are excluded from R source package builds
-through `.Rbuildignore`.
+`GRAMMATEUS_RUNTIME_INTERFACE.md`, `GRAMMATEUS_RELEASE_ASSETS.md`,
+`LEGACY_REPORTING.md`, and this file are repository governance files. They are
+excluded from R source package builds through `.Rbuildignore`.

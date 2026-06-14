@@ -19,6 +19,8 @@ Bundle archive name:
 
 ```text
 grammateus-runtime-{runtime_version}-{platform}.{tar.gz|zip}
+grammateus-runtime-{runtime_version}-{platform}.{tar.gz|zip}.sha256
+grammateus-runtime-{runtime_version}-{platform}.{tar.gz|zip}.sig
 ```
 
 Manifest name:
@@ -26,7 +28,15 @@ Manifest name:
 ```text
 grammateus-runtime-manifest-{runtime_version}.json
 grammateus-runtime-manifest-{runtime_version}.json.sig
+grammateus-runtime-index-{runtime_version}.json
+grammateus-runtime-index-{runtime_version}.json.sig
+flounder-runtime-compatibility-{runtime_version}.json
+flounder-runtime-compatibility-{runtime_version}.json.sig
 ```
+
+The detailed GitHub/private-release asset contract, platform matrix, runtime
+index shape, compatibility manifest shape, and publication rules are maintained
+in `GRAMMATEUS_RELEASE_ASSETS.md`.
 
 The bundle must not contain private Grammateus source code. It may contain:
 
