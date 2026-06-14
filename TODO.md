@@ -249,7 +249,7 @@ current non-FAST5 package surface.
       execution as configured.
 - [x] Add in-process Rust bindings from `floundeR` to Grammateus report
       rendering; do not shell out to Grammateus CLI binaries.
-- [ ] Define the prebuilt Grammateus runtime interface used by public floundeR
+- [x] Define the prebuilt Grammateus runtime interface used by public floundeR
       builds when private Grammateus source is unavailable.
 - [ ] Implement Grammateus runtime discovery helpers such as
       `grammateus_runtime_available()`, `grammateus_runtime_version()`,

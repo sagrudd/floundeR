@@ -1,3 +1,10 @@
+# floundeR 0.16.1
+
+* Defined the prebuilt Grammateus runtime interface for public floundeR builds,
+  including the runtime bundle layout, manifest schema, discovery order,
+  validation categories, security checks, and Rust response envelope expected
+  when private Grammateus source is unavailable.
+
 # floundeR 0.16.0
 
 * Added `grammateus_render_element()`, `grammateus_render_figure_html()`, and

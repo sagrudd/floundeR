@@ -68,6 +68,27 @@ Helpers should include:
 Installation must be explicit. Do not silently download private runtime assets
 during package load, examples, tests, or ordinary QC operations.
 
+The normative runtime-bundle, manifest, validation, discovery, and Rust response
+contracts are defined in `GRAMMATEUS_RUNTIME_INTERFACE.md`. In short, public
+floundeR builds consume a signed manifest plus a platform-specific runtime
+archive rather than private Grammateus source. The manifest must declare:
+
+- `schema_version = "flounder.grammateus_runtime_manifest.v1"`;
+- the Grammateus runtime and release versions;
+- the compatible floundeR version range;
+- the target platform and ABI;
+- every runtime library, template, theme, schema, branding, license, and SBOM
+  artifact with relative path, byte length, and SHA-256 checksum;
+- the rendering and trusted-report capabilities available in the runtime;
+- signature/governance-envelope metadata;
+- build provenance including source commit and SBOM path.
+
+Runtime validation must fail closed for missing manifests, invalid signatures,
+checksum mismatches, platform/ABI mismatches, incompatible versions, unsafe
+paths, missing artifacts, and missing capabilities. Runtime-aware report
+rendering must still use registered Rust entry points inside the R extension;
+it must not call Grammateus CLI binaries as the normal package API.
+
 ## GitHub Distribution
 
 Initial GitHub distribution should provide:

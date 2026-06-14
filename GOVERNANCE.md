@@ -14,6 +14,9 @@ governing local files are:
 - `ROADMAP.md`
 - `TODO.md`
 - `DATASETS.md`
+- `DISTRIBUTION.md`
+- `REPORTING_INTERFACE.md`
+- `GRAMMATEUS_RUNTIME_INTERFACE.md`
 
 ## pod5-tools
 
@@ -101,5 +104,6 @@ update it when public documentation is intentionally refreshed, but do not let
 stale generated pages drive source behavior.
 
 Root-level project-control files such as `AGENTS.md`, `ROADMAP.md`, `TODO.md`,
-`DATASETS.md`, `DISTRIBUTION.md`, and this file are repository governance
+`DATASETS.md`, `DISTRIBUTION.md`, `REPORTING_INTERFACE.md`,
+`GRAMMATEUS_RUNTIME_INTERFACE.md`, and this file are repository governance
 files. They are excluded from R source package builds through `.Rbuildignore`.
