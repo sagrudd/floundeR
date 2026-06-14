@@ -268,7 +268,7 @@ current non-FAST5 package surface.
 - [x] Add the first QC plot helper set for yield over time, read quality, read
       length, flowcell density, barcode balance, POD5 integrity, BAM mapping,
       BAM MAPQ, and BAM flag summaries.
-- [ ] Add tests for report element schemas, required captions/alt text,
+- [x] Add tests for report element schemas, required captions/alt text,
       provenance hashes, and stable report identifiers.
 - [ ] Keep RMarkdown support only as a documented legacy/transitional path until
       Grammateus reports cover the required technical-report workflow.

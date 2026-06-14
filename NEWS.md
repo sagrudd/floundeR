@@ -1,3 +1,9 @@
+# floundeR 0.21.1
+
+* Added report-contract regression coverage for Grammateus element schemas,
+  required captions and alt text, provenance hashes, stable identifiers, and
+  serialized `qc_report()` contract/manifest handoff fields.
+
 # floundeR 0.21.0
 
 * Added the first Grammateus QC plot helper set for yield over time, read
