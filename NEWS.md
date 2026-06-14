@@ -1,3 +1,9 @@
+# floundeR 0.13.2
+
+* Recorded the Grammateus checkout preflight for Slice 13: the private local
+  `../grammateus` source checkout was clean, current with `origin/main`, and
+  not added as a public floundeR build dependency.
+
 # floundeR 0.13.1
 
 * Documented the Porkchop capabilities that remain out of scope for normal

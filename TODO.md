@@ -234,7 +234,7 @@ current non-FAST5 package surface.
 
 ## Slice 13: Grammateus Reporting Integration
 
-- [ ] Confirm the local `../grammateus` source checkout is current and clean
+- [x] Confirm the local `../grammateus` source checkout is current and clean
       before adding it as a Rust library dependency.
 - [ ] Verify the Grammateus charter, SRS, ARDs, and rendering/trusted-report
       contracts in `../mnemosyne-docs` before changing `../grammateus`.
