@@ -202,6 +202,89 @@ ont_open_data_fetch <- function(
   metadata
 }
 
+#' Describe the canonical ONT Zymo fecal POD5 dataset
+#'
+#' `ont_zymo_pod5_dataset()` returns stable metadata for the public ONT Zymo
+#' fecal POD5 prefix used by floundeR's opt-in real-data demonstrations. It does
+#' not contact S3.
+#'
+#' @return A one-row data frame with dataset name, bucket, region, prefix,
+#'   S3 URI, observed object counts, observed total bytes, and verification date.
+#'
+#' @examples
+#' ont_zymo_pod5_dataset()
+#'
+#' @export
+ont_zymo_pod5_dataset <- function() {
+  data.frame(
+    dataset_name = "ont_zymo_fecal_2025_05_pau85136_pod5",
+    bucket = "ont-open-data",
+    region = "eu-west-1",
+    prefix = flounder_ont_zymo_pod5_prefix(),
+    s3_uri = paste0("s3://ont-open-data/", flounder_ont_zymo_pod5_prefix()),
+    total_pod5_objects = 9107L,
+    pass_pod5_objects = 8290L,
+    fail_pod5_objects = 817L,
+    total_bytes = 2676973535744,
+    verified_utc = "2026-06-13T00:00:00Z",
+    stringsAsFactors = FALSE
+  )
+}
+
+#' Return selected ONT Zymo fecal POD5 example objects
+#'
+#' `ont_zymo_pod5_example_objects()` returns the fixed pass/fail POD5 object
+#' choices used for floundeR examples and opt-in integration workflows. The
+#' pass object is the routine example. The fail object should be used only where
+#' fail-state QC evidence is required. This helper does not contact S3.
+#'
+#' @param role Character scalar. Return all selected examples, only the pass
+#'   example, or only the fail-state example.
+#'
+#' @return A data frame with `role`, `state`, `file_name`, `bucket`, `region`,
+#'   `key`, `s3_uri`, `size`, `last_modified_utc`, and `intended_use`.
+#'
+#' @examples
+#' ont_zymo_pod5_example_objects()
+#' ont_zymo_pod5_example_objects(role = "pass")$key
+#'
+#' @export
+ont_zymo_pod5_example_objects <- function(role = c("all", "pass", "fail")) {
+  role <- match.arg(role)
+  prefix <- flounder_ont_zymo_pod5_prefix()
+  bucket <- "ont-open-data"
+  region <- "eu-west-1"
+
+  objects <- data.frame(
+    role = c("pass", "fail"),
+    state = c("pass", "fail"),
+    file_name = c(
+      "PAU85136_pass_279c9095_68316534_8289.pod5",
+      "PAU85136_fail_279c9095_68316534_0.pod5"
+    ),
+    bucket = bucket,
+    region = region,
+    stringsAsFactors = FALSE
+  )
+  objects$key <- paste0(prefix, objects$file_name)
+  objects$s3_uri <- paste0("s3://", bucket, "/", objects$key)
+  objects$size <- c(47077200, 163007608)
+  objects$last_modified_utc <- c(
+    "2025-05-19T23:24:03.000Z",
+    "2025-05-19T14:31:37.000Z"
+  )
+  objects$intended_use <- c(
+    "Primary routine opt-in example POD5 object.",
+    "Fail-state examples only."
+  )
+
+  if (role != "all") {
+    objects <- objects[objects$role == role, , drop = FALSE]
+  }
+  row.names(objects) <- NULL
+  objects
+}
+
 #' @rdname ont_open_data_list
 #' @export
 flounder_ont_zymo_pod5_prefix <- function() {

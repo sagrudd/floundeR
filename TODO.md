@@ -139,12 +139,12 @@ current non-FAST5 package surface.
       `region = "eu-west-1"`.
 - [x] Implement `ont_open_data_fetch()` with explicit object-key selection,
       cache directory control, and no implicit bulk downloads.
-- [ ] Add a named dataset helper for
+- [x] Add a named dataset helper for
       `s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`.
-- [ ] Add named constants or helper accessors for the selected example objects:
+- [x] Add named constants or helper accessors for the selected example objects:
       `PAU85136_pass_279c9095_68316534_8289.pod5` and
       `PAU85136_fail_279c9095_68316534_0.pod5`.
-- [ ] Record object key, size, last-modified timestamp, and local cache path in
+- [x] Record object key, size, last-modified timestamp, and local cache path in
       returned metadata.
 - [ ] Add tests with mocked S3 listings and no network requirement.
 - [ ] Document that downloaded POD5 files must not be committed.

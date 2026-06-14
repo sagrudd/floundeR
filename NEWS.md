@@ -1,3 +1,9 @@
+# floundeR 0.2.5
+
+* Added no-network ONT Zymo fecal POD5 dataset and selected pass/fail example
+  object helpers so documentation, downloads, and future reports share stable
+  source metadata.
+
 # floundeR 0.2.4
 
 * Added `ont_open_data_fetch()` for explicit single-object ONT open-data
