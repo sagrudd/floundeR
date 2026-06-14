@@ -285,7 +285,7 @@ current non-FAST5 package surface.
       private checks with Grammateus runtime/report rendering.
 - [x] Document GitHub installation paths for open-source users and authorized
       Grammateus runtime users.
-- [ ] Before any BioConductor submission, verify current policy for optional
+- [x] Before any BioConductor submission, verify current policy for optional
       external binaries, private runtime assets, downloads, and system
       requirements.
 

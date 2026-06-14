@@ -1,3 +1,9 @@
+# floundeR 0.21.8
+
+* Verified and recorded the current Bioconductor policy posture for optional
+  Grammateus runtime assets, external system requirements, downloads, data,
+  tests, and future submission blockers.
+
 # floundeR 0.21.7
 
 * Documented the GitHub installation paths for public open-source floundeR

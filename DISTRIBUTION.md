@@ -141,9 +141,10 @@ Bioconductor-facing posture:
 - document that governed PDF/HTML rendering requires an optional private
   Grammateus runtime distributed outside the open-source package.
 
-Before any Bioconductor submission, re-check current Bioconductor policy around
-external binaries, downloads, optional system requirements, and non-open
-components.
+The current submission-policy posture and future blockers are recorded in
+`BIOCONDUCTOR_POLICY.md`. Before any Bioconductor submission, re-check current
+Bioconductor policy around external binaries, downloads, optional system
+requirements, non-open components, and package data.
 
 ## Open Rust Dependencies
 

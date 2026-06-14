@@ -15,6 +15,7 @@ governing local files are:
 - `TODO.md`
 - `DATASETS.md`
 - `DISTRIBUTION.md`
+- `BIOCONDUCTOR_POLICY.md`
 - `GITHUB_INSTALLATION.md`
 - `REPORTING_INTERFACE.md`
 - `GRAMMATEUS_RUNTIME_INTERFACE.md`
@@ -107,7 +108,8 @@ update it when public documentation is intentionally refreshed, but do not let
 stale generated pages drive source behavior.
 
 Root-level project-control files such as `AGENTS.md`, `ROADMAP.md`, `TODO.md`,
-`DATASETS.md`, `DISTRIBUTION.md`, `GITHUB_INSTALLATION.md`,
+`DATASETS.md`, `DISTRIBUTION.md`, `BIOCONDUCTOR_POLICY.md`,
+`GITHUB_INSTALLATION.md`,
 `REPORTING_INTERFACE.md`,
 `GRAMMATEUS_RUNTIME_INTERFACE.md`, `GRAMMATEUS_RELEASE_ASSETS.md`,
 `LEGACY_REPORTING.md`, and this file are repository governance files. They are
