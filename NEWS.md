@@ -1,3 +1,10 @@
+# floundeR 0.11.3
+
+* Added an executable Synoptikon QC handoff vignette covering run QC evidence,
+  ONT POD5 provenance, reserved BAM/library-preparation sections, and JSON
+  payload writing.
+* Updated the release-tarball check to build and check package vignettes.
+
 # floundeR 0.11.2
 
 * Added offline Synoptikon QC payload JSON-schema validation tests and fixed

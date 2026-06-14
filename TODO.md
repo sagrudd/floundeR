@@ -213,7 +213,7 @@ current non-FAST5 package surface.
 - [x] Include sequencing-summary, flowcell, barcode, POD5 integrity, BAM QC,
       and library-preparation evidence sections.
 - [x] Add validation tests against the expected `../mnemosyne` schema.
-- [ ] Add a vignette showing end-to-end handoff.
+- [x] Add a vignette showing end-to-end handoff.
 
 ## Slice 12A: Porkchop Library-Preparation QC
 

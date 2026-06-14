@@ -1,0 +1,206 @@
+---
+title: "Synoptikon QC Handoff"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Synoptikon QC Handoff}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette shows the package-level handoff contract from floundeR QC data to
+Synoptikon/Mneion. It is an R package vignette, not the production QC report
+renderer. Governed HTML/PDF report rendering remains a Grammateus responsibility
+and is intentionally optional for the open-source floundeR package.
+
+The example is network-free. It uses the package sequencing-summary fixture and
+metadata for the selected ONT open-data POD5 object without downloading POD5
+bytes.
+
+```{r setup}
+library(floundeR)
+```
+
+## Build Run-Level QC Evidence
+
+Start from a sequencing-summary file and derive the stable QC tables that
+Synoptikon can ingest directly.
+
+```{r run-qc}
+summary_file <- flnDr("sequencing_summary.txt.bz2")
+
+run_summary <- qc_run_summary(
+  summary_file,
+  source_id = "example-sequencing-summary"
+)
+
+flowcell_density <- qc_channel_density(summary_file)
+barcode_composition <- qc_barcode_composition(summary_file)
+run_report_card <- qc_report_card(summary_file)
+
+run_summary
+run_report_card
+```
+
+## Add POD5 Source Metadata
+
+The canonical contemporary POD5 source for floundeR demonstrations is the ONT
+Zymo fecal run at `s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`.
+The routine pass example is the smallest pass POD5 object recorded for that
+prefix. This vignette records the selected object as provenance without
+downloading it.
+
+```{r pod5-metadata}
+pod5_dataset <- ont_zymo_pod5_dataset()
+pod5_example <- ont_zymo_pod5_example_objects(role = "pass")
+
+pod5_handoff <- data.frame(
+  schema_version = "flounder.pod5_open_data_example.v1",
+  status = "not_checked",
+  bucket = pod5_example$bucket,
+  region = pod5_example$region,
+  key = pod5_example$key,
+  s3_uri = pod5_example$s3_uri,
+  size_bytes = pod5_example$size,
+  last_modified_utc = pod5_example$last_modified_utc,
+  intended_use = pod5_example$intended_use,
+  stringsAsFactors = FALSE
+)
+
+pod5_dataset
+pod5_handoff
+```
+
+To fetch and inspect the selected POD5 object, opt in explicitly and cache the
+file outside the repository:
+
+```{r pod5-fetch, eval = FALSE}
+if (identical(tolower(Sys.getenv("FLOUNDER_RUN_NETWORK_TESTS")), "true")) {
+  fetched <- ont_open_data_fetch(
+    key = pod5_example$key,
+    cache_dir = tools::R_user_dir("floundeR", which = "cache")
+  )
+
+  pod5_info <- pod5_file_info(fetched$cache_path)
+  pod5_integrity <- pod5_verify(fetched$cache_path)
+}
+```
+
+## Represent Reserved Evidence Surfaces
+
+BAM/Bamana and Porkchop/library-preparation evidence are first-class handoff
+sections. In this minimal vignette they are intentionally marked as not checked,
+because no BAM file or library-preparation screen is bundled with the package
+fixture.
+
+```{r reserved-evidence}
+bam_evidence <- data.frame(
+  schema_version = "flounder.bam_qc_report_card.v1",
+  status = "not_checked",
+  check_id = "bam_evidence_not_supplied",
+  detail = "No BAM file is bundled with this vignette fixture.",
+  stringsAsFactors = FALSE
+)
+
+library_preparation_evidence <- data.frame(
+  schema_version = "flounder.library_preparation_qc.v1",
+  status = "not_checked",
+  evidence_kind = "porkchop_reserved",
+  detail = paste(
+    "Porkchop adapter, primer, barcode, kit, and cDNA evidence will populate",
+    "this section once the curated Slice 12A bindings land."
+  ),
+  stringsAsFactors = FALSE
+)
+```
+
+## Create The Synoptikon Payload
+
+`as_synoptikon_qc()` assembles the sectioned evidence in memory.
+`write_synoptikon_qc()` serialises the same contract as JSON for handoff.
+
+```{r payload}
+payload <- as_synoptikon_qc(
+  run_summary = run_summary,
+  report_cards = run_report_card,
+  flowcell = list(channel_density = flowcell_density),
+  barcode = list(composition = barcode_composition),
+  pod5 = list(open_data_example = pod5_handoff),
+  bam = list(report_card = bam_evidence),
+  library_preparation = list(evidence = library_preparation_evidence),
+  input_provenance = list(
+    input_id = "example-sequencing-summary",
+    kind = "sequencing_summary",
+    uri = summary_file,
+    size_bytes = unname(file.info(summary_file)$size),
+    sha256 = NULL,
+    metadata = list(package_fixture = TRUE)
+  ),
+  run_identity = list(
+    run_id = "example-run",
+    sample_id = "example-sample",
+    project_id = "flounder-revival",
+    flow_cell_id = NA_character_
+  ),
+  governance_context = list(
+    tenant_id = "example-tenant",
+    governance_domain_id = "example-domain",
+    mneion_work_request_id = "example-work-request"
+  ),
+  limitations = list(
+    limitation_id = "example-pod5-not-downloaded",
+    severity = "info",
+    section = "pod5",
+    message = paste(
+      "This vignette records ONT open-data POD5 provenance but does not",
+      "download POD5 bytes by default."
+    )
+  ),
+  payload_id = "example-synoptikon-qc-payload",
+  generated_at_utc = "2026-06-14T06:39:36Z"
+)
+
+names(payload)
+names(payload$qc_sections)
+payload$handoff
+```
+
+```{r write-json}
+handoff_path <- file.path(tempdir(), "flounder-synoptikon-qc-payload.json")
+write_synoptikon_qc(
+  handoff_path,
+  run_summary = run_summary,
+  report_cards = run_report_card,
+  flowcell = list(channel_density = flowcell_density),
+  barcode = list(composition = barcode_composition),
+  pod5 = list(open_data_example = pod5_handoff),
+  bam = list(report_card = bam_evidence),
+  library_preparation = list(evidence = library_preparation_evidence),
+  input_provenance = payload$input_provenance,
+  run_identity = payload$run_identity,
+  governance_context = payload$governance_context,
+  limitations = payload$limitations,
+  payload_id = payload$payload_id,
+  generated_at_utc = payload$generated_at_utc
+)
+
+jsonlite::fromJSON(handoff_path, simplifyVector = FALSE)$schema_version
+```
+
+The written JSON follows the installed schema at
+`inst/schema/synoptikon-qc-payload-v1.schema.json`. Downstream Synoptikon
+ingestion can use that schema to validate the handoff before creating governed
+workbench records, report-build inputs, or audit evidence.
+
+## Where Grammateus Fits
+
+The Synoptikon payload is QC evidence. It is not a trusted report manifest and
+does not replace Grammateus lifecycle contracts. Once Grammateus runtime support
+lands, the same sectioned QC data should feed semantic report elements, governed
+figures, provenance tables, and Mnemosyne Biosciences branded HTML/PDF reports.

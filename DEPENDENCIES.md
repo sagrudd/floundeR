@@ -45,8 +45,8 @@ the clean container after dependency installation.
 | emojifont | Imports | CRAN | 0.6.0 | Legacy presentation dependency; candidate for removal unless active report styling still requires it. |
 | ggplot2 | Imports | CRAN | 4.0.3 | Supported plotting dependency; central for R plot handoff into Grammateus. |
 | ggsci | Imports | CRAN | 5.0.0 | Palette dependency; review against Mnemosyne/Grammateus branding before retaining. |
-| kableExtra | Suggests | CRAN | 1.4.0 | Transitional table rendering support for legacy RMarkdown; optional while Grammateus reporting is introduced. |
-| knitr | Suggests | CRAN | 1.51 | Transitional vignette/RMarkdown support; optional long term. |
+| jsonlite | Imports | CRAN | 2.0.0 | Supported JSON dependency; required for Synoptikon QC payload writing and schema-facing tests. |
+| knitr | Suggests | CRAN | 1.51 | Standard R package vignette builder; not used as the production QC report renderer. |
 | lubridate | Imports | CRAN | 1.9.5 | Supported timestamp handling dependency. |
 | magick | Imports | CRAN | 2.9.1 | Native image dependency; review once Grammateus asset rendering owns report images. |
 | magrittr | Imports | CRAN | 2.0.5 | Pipe dependency used by legacy API style; review after modernisation. |
@@ -56,7 +56,7 @@ the clean container after dependency installation.
 | readr | Imports | CRAN | 2.2.0 | Supported table parser; central to sequencing-summary modernisation. |
 | reshape2 | Imports | CRAN | 1.4.5 | Legacy reshape dependency; candidate for replacement with tidyr/dplyr patterns. |
 | rlang | Imports | CRAN | 1.2.0 | Supported tidy error/programming dependency. |
-| rmarkdown | Suggests | CRAN | 2.31 | Transitional report path only; Grammateus is the strategic HTML/PDF renderer. |
+| rmarkdown | Suggests | CRAN | 2.31 | Standard R package vignette engine only; Grammateus remains the strategic HTML/PDF QC report renderer. |
 | stringdist | Imports | CRAN | 0.9.17 | Supported fuzzy matching dependency; likely relevant to kit/adapter evidence. |
 | stringr | Imports | CRAN | 1.6.0 | Supported string handling dependency. |
 | testthat | Suggests | CRAN | 3.3.2 | Supported test framework dependency. |

@@ -8,7 +8,7 @@ rm -rf "$CHECK_ROOT"
 mkdir -p "$CHECK_ROOT"
 
 cd "$CHECK_ROOT"
-R CMD build --no-build-vignettes "$ROOT_DIR"
+R CMD build "$ROOT_DIR"
 
 TARBALL=$(find "$CHECK_ROOT" -maxdepth 1 -type f -name 'floundeR_*.tar.gz' | sort | tail -n 1)
 
@@ -17,4 +17,4 @@ if [ -z "$TARBALL" ]; then
   exit 1
 fi
 
-R CMD check --no-manual --no-build-vignettes "$TARBALL"
+R CMD check --no-manual "$TARBALL"
