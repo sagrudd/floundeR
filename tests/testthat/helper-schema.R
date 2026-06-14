@@ -160,6 +160,19 @@ flounder_qc_schemas <- list(
     "right_size_bytes",
     "left_verification_status",
     "right_verification_status"
+  ),
+  pod5_subdivide_plan = c(
+    "schema_version",
+    "source",
+    "strategy",
+    "target",
+    "chunk_index",
+    "chunk_label",
+    "file_count",
+    "total_bytes",
+    "read_count",
+    "relative_paths",
+    "warnings"
   )
 )
 

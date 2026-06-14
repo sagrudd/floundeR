@@ -57,9 +57,11 @@ Rules for derived subsets:
 
 - Derive subsets from the selected pass/fail source files by default.
 - Keep generated demonstration POD5 files as small as practical.
+- Plan candidate splits first with `pod5_subdivide_plan()` and record the
+  resulting plan table before creating any derived artifact.
 - Record the source bucket, source key, source object size, source timestamp,
-  `pod5-tools` version, subsetting/splitting parameters, output file size, and
-  output checksum.
+  `pod5-tools` version, subdivision strategy, target values, selected relative
+  paths, output file size, and output checksum.
 - Store large derived files in an explicit cache or artifact location, not in
   the package repository.
 - Commit only tiny derived fixtures if they are intentionally created for unit

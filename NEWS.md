@@ -1,3 +1,9 @@
+# floundeR 0.5.0
+
+* Added read-only Rust-backed `pod5_subdivide_plan()` for deterministic POD5
+  file-count, sample-label, elapsed-time, and read-count planning without
+  writing derived POD5 files.
+
 # floundeR 0.4.1
 
 * Recorded upstream mocked-reader coverage for mixed-flow-cell POD5 folder

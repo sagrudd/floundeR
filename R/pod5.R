@@ -362,6 +362,103 @@ pod5_compare <- function(left, right) {
   data
 }
 
+#' Plan a read-only POD5 collection subdivision
+#'
+#' `pod5_subdivide_plan()` asks the in-process Rust extension and curated
+#' `pod5-tools` library API to build a deterministic, read-only plan describing
+#' how a POD5 file, folder, run tree, or manifest could be split for
+#' demonstration, review, or workflow development. This function does not write
+#' POD5 files and does not create output directories.
+#'
+#' @param path Character scalar. POD5 file, directory, run tree, or manifest
+#'   JSON file to plan from.
+#' @param strategy One of `file-count`, `sample-label`, `elapsed-time`, or
+#'   `read-count`.
+#' @param files_per_chunk Positive integer used by `strategy = "file-count"`.
+#' @param seconds_per_chunk Optional positive integer used by
+#'   `strategy = "elapsed-time"`.
+#' @param reads_per_chunk Optional positive integer used by
+#'   `strategy = "read-count"`.
+#'
+#' @return A data frame with one row per planned chunk and the columns
+#'   `schema_version`, `source`, `strategy`, `target`, `chunk_index`,
+#'   `chunk_label`, `file_count`, `total_bytes`, `read_count`, `relative_paths`,
+#'   and `warnings`.
+#'
+#' @examples
+#' signature <- as.raw(c(0x8b, 0x50, 0x4f, 0x44, 0x0d, 0x0a, 0x1a, 0x0a))
+#' run_dir <- file.path(tempdir(), "flounder-subdivide-plan-example")
+#' unlink(run_dir, recursive = TRUE)
+#' dir.create(run_dir, recursive = TRUE)
+#' writeBin(c(signature, as.raw(rep(0, 16)), signature), file.path(run_dir, "a.pod5"))
+#' pod5_subdivide_plan(run_dir, files_per_chunk = 1)
+#'
+#' @export
+pod5_subdivide_plan <- function(
+  path,
+  strategy = c("file-count", "sample-label", "elapsed-time", "read-count"),
+  files_per_chunk = 4L,
+  seconds_per_chunk = NULL,
+  reads_per_chunk = NULL
+) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_pod5_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+  strategy <- match.arg(strategy)
+  files_per_chunk <- .flounder_positive_integer_scalar(
+    files_per_chunk,
+    "files_per_chunk"
+  )
+  seconds_per_chunk <- .flounder_optional_positive_integer_scalar(
+    seconds_per_chunk,
+    "seconds_per_chunk"
+  )
+  reads_per_chunk <- .flounder_optional_positive_integer_scalar(
+    reads_per_chunk,
+    "reads_per_chunk"
+  )
+
+  response <- .flounder_pod5_subdivide_plan_call(
+    path,
+    strategy,
+    as.character(files_per_chunk),
+    .flounder_optional_integer_label(seconds_per_chunk),
+    .flounder_optional_integer_label(reads_per_chunk)
+  )
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_pod5_error(
+      response$error %||% "POD5 subdivision planning failed in the Rust extension.",
+      category = response$category %||% "unknown"
+    )
+  }
+
+  data <- response$data
+  names(data) <- c(
+    "schema_version",
+    "source",
+    "strategy",
+    "target",
+    "chunk_index",
+    "chunk_label",
+    "file_count",
+    "total_bytes",
+    "read_count",
+    "relative_paths",
+    "warnings"
+  )
+  data$schema_version <- as.integer(data$schema_version)
+  data$chunk_index <- .flounder_nan_to_na(data$chunk_index)
+  data$file_count <- as.integer(data$file_count)
+  data$total_bytes <- as.numeric(data$total_bytes)
+  data$read_count <- .flounder_nan_to_na(data$read_count)
+  data$chunk_label <- .flounder_empty_to_na(data$chunk_label)
+  data$relative_paths <- .flounder_empty_to_na(data$relative_paths)
+  data$warnings <- .flounder_empty_to_na(data$warnings)
+  data
+}
+
 .flounder_pod5_find_call <- function(path) {
   .Call("flounder_pod5_find", path, PACKAGE = "floundeR")
 }
@@ -384,6 +481,24 @@ pod5_compare <- function(left, right) {
 
 .flounder_pod5_compare_call <- function(left, right) {
   .Call("flounder_pod5_compare", left, right, PACKAGE = "floundeR")
+}
+
+.flounder_pod5_subdivide_plan_call <- function(
+  path,
+  strategy,
+  files_per_chunk,
+  seconds_per_chunk,
+  reads_per_chunk
+) {
+  .Call(
+    "flounder_pod5_subdivide_plan",
+    path,
+    strategy,
+    files_per_chunk,
+    seconds_per_chunk,
+    reads_per_chunk,
+    PACKAGE = "floundeR"
+  )
 }
 
 .flounder_pod5_error <- function(
@@ -430,4 +545,29 @@ pod5_compare <- function(left, right) {
   x <- as.numeric(x)
   x[is.nan(x)] <- NA_real_
   x
+}
+
+.flounder_positive_integer_scalar <- function(x, name) {
+  if (!is.numeric(x) || length(x) != 1L || is.na(x) || x < 1L || x != as.integer(x)) {
+    .flounder_pod5_error(
+      paste0("`", name, "` must be a positive integer scalar."),
+      category = "format"
+    )
+  }
+  as.integer(x)
+}
+
+.flounder_optional_positive_integer_scalar <- function(x, name) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  .flounder_positive_integer_scalar(x, name)
+}
+
+.flounder_optional_integer_label <- function(x) {
+  if (is.null(x)) {
+    ""
+  } else {
+    as.character(x)
+  }
 }

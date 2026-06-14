@@ -171,13 +171,13 @@ current non-FAST5 package surface.
 
 ## Slice 10: Subdivision And Playback Planning
 
-- [ ] Expose read-only `pod5_subdivide_plan()` in R.
-- [ ] Expose playback planning only if synoptikon/mnemosyne needs simulated run
+- [x] Expose read-only `pod5_subdivide_plan()` in R.
+- [x] Expose playback planning only if synoptikon/mnemosyne needs simulated run
       arrivals for QC/review workflows.
-- [ ] Keep write-capable POD5 subdivision out of R until read-only contracts are
+- [x] Keep write-capable POD5 subdivision out of R until read-only contracts are
       stable.
-- [ ] Add deterministic tests for planning outputs.
-- [ ] Define the demonstration subset policy for `pod5-tools`-derived POD5
+- [x] Add deterministic tests for planning outputs.
+- [x] Define the demonstration subset policy for `pod5-tools`-derived POD5
       splits, including source provenance, subsetting parameters, output
       checksums, and artifact storage location.
 - [ ] Add a small derived-POD5 workflow for examples once the read-only binding

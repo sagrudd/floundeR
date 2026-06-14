@@ -3,8 +3,9 @@ use std::path::PathBuf;
 use extendr_api::prelude::*;
 use pod5_tools::{
     CompareStatus, FilesystemPod5MetadataReader, IntegrityStatus, Pod5CompareReport,
-    Pod5FolderInfo, Pod5Manifest, VerifyCheckStatus, VerifyStatus, compare_inputs,
-    find_pod5_directories, folder_info, manifest_from_path, read_pod5_file_info, verify_pod5_file,
+    Pod5FolderInfo, Pod5Manifest, Pod5SubdividePlan, SubdivideStrategy, VerifyCheckStatus,
+    VerifyStatus, compare_inputs, find_pod5_directories, folder_info, manifest_from_path,
+    read_pod5_file_info, subdivide_plan_from_path, verify_pod5_file,
 };
 
 type SEXP = extendr_api::SEXP;
@@ -51,6 +52,24 @@ pub extern "C" fn flounder_pod5_manifest(path: SEXP) -> SEXP {
 #[unsafe(no_mangle)]
 pub extern "C" fn flounder_pod5_compare(left: SEXP, right: SEXP) -> SEXP {
     let result = pod5_compare_response(left, right);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_pod5_subdivide_plan(
+    path: SEXP,
+    strategy: SEXP,
+    files_per_chunk: SEXP,
+    seconds_per_chunk: SEXP,
+    reads_per_chunk: SEXP,
+) -> SEXP {
+    let result = pod5_subdivide_plan_response(
+        path,
+        strategy,
+        files_per_chunk,
+        seconds_per_chunk,
+        reads_per_chunk,
+    );
     unsafe { result.get() }
 }
 
@@ -175,6 +194,86 @@ fn pod5_compare_response(left: SEXP, right: SEXP) -> Robj {
         Ok(report) => list!(
             ok = true,
             data = pod5_compare_data_frame(report),
+            error = r!(()),
+            category = r!(())
+        )
+        .into(),
+        Err(error) => pod5_error_response_with_category(
+            &error.to_string(),
+            pod5_tools_error_category(&error.to_string()),
+        ),
+    }
+}
+
+fn pod5_subdivide_plan_response(
+    path: SEXP,
+    strategy: SEXP,
+    files_per_chunk: SEXP,
+    seconds_per_chunk: SEXP,
+    reads_per_chunk: SEXP,
+) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let strategy = unsafe { Robj::from_sexp(strategy) };
+    let files_per_chunk = unsafe { Robj::from_sexp(files_per_chunk) };
+    let seconds_per_chunk = unsafe { Robj::from_sexp(seconds_per_chunk) };
+    let reads_per_chunk = unsafe { Robj::from_sexp(reads_per_chunk) };
+
+    let Some(path) = path.as_str() else {
+        return pod5_error_response_with_category(
+            "`path` must be a non-missing character scalar.",
+            "path",
+        );
+    };
+    let Some(strategy) = strategy.as_str() else {
+        return pod5_error_response_with_category(
+            "`strategy` must be a non-missing character scalar.",
+            "format",
+        );
+    };
+    let Some(files_per_chunk) = files_per_chunk.as_str() else {
+        return pod5_error_response_with_category(
+            "`files_per_chunk` must be supplied as text from the R wrapper.",
+            "format",
+        );
+    };
+    let Some(seconds_per_chunk) = seconds_per_chunk.as_str() else {
+        return pod5_error_response_with_category(
+            "`seconds_per_chunk` must be supplied as text from the R wrapper.",
+            "format",
+        );
+    };
+    let Some(reads_per_chunk) = reads_per_chunk.as_str() else {
+        return pod5_error_response_with_category(
+            "`reads_per_chunk` must be supplied as text from the R wrapper.",
+            "format",
+        );
+    };
+
+    let Ok(strategy) = subdivide_strategy_from_label(strategy) else {
+        return pod5_error_response_with_category("unsupported subdivision strategy", "format");
+    };
+    let Ok(files_per_chunk) = files_per_chunk.parse::<u64>() else {
+        return pod5_error_response_with_category("files-per-chunk must be an integer", "format");
+    };
+    let seconds_per_chunk = optional_u64_from_label(seconds_per_chunk);
+    let reads_per_chunk = optional_u64_from_label(reads_per_chunk);
+    if seconds_per_chunk.is_err() || reads_per_chunk.is_err() {
+        return pod5_error_response_with_category(
+            "optional subdivision targets must be empty or integer text",
+            "format",
+        );
+    }
+
+    match subdivide_plan_from_path(
+        &PathBuf::from(path),
+        strategy,
+        files_per_chunk,
+        seconds_per_chunk.unwrap(),
+        reads_per_chunk.unwrap(),
+    ) {
+        Ok(plan) => list!(
+            ok = true,
+            data = pod5_subdivide_plan_data_frame(plan),
             error = r!(()),
             category = r!(())
         )
@@ -402,6 +501,90 @@ fn pod5_compare_data_frame(report: Pod5CompareReport) -> Robj {
     )
 }
 
+fn pod5_subdivide_plan_data_frame(plan: Pod5SubdividePlan) -> Robj {
+    let warnings = plan.warnings.join("; ");
+    let strategy = subdivide_strategy_label(&plan.strategy).to_string();
+
+    if plan.chunks.is_empty() {
+        return data_frame!(
+            schema_version = vec![plan.schema_version as f64],
+            source = vec![plan.source.to_string_lossy().into_owned()],
+            strategy = vec![strategy],
+            target = vec![plan.target],
+            chunk_index = vec![f64::NAN],
+            chunk_label = vec![String::new()],
+            file_count = vec![0.0],
+            total_bytes = vec![0.0],
+            read_count = vec![f64::NAN],
+            relative_paths = vec![String::new()],
+            warnings = vec![warnings]
+        );
+    }
+
+    let row_count = plan.chunks.len();
+    let schema_versions = vec![plan.schema_version as f64; row_count];
+    let sources = vec![plan.source.to_string_lossy().into_owned(); row_count];
+    let strategies = vec![strategy; row_count];
+    let targets = vec![plan.target; row_count];
+    let warnings = vec![warnings; row_count];
+    let chunk_index = plan
+        .chunks
+        .iter()
+        .map(|chunk| chunk.index as f64)
+        .collect::<Vec<_>>();
+    let chunk_label = plan
+        .chunks
+        .iter()
+        .map(|chunk| chunk.label.clone())
+        .collect::<Vec<_>>();
+    let file_count = plan
+        .chunks
+        .iter()
+        .map(|chunk| chunk.file_count as f64)
+        .collect::<Vec<_>>();
+    let total_bytes = plan
+        .chunks
+        .iter()
+        .map(|chunk| chunk.total_bytes as f64)
+        .collect::<Vec<_>>();
+    let read_count = plan
+        .chunks
+        .iter()
+        .map(|chunk| {
+            chunk
+                .read_count
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN)
+        })
+        .collect::<Vec<_>>();
+    let relative_paths = plan
+        .chunks
+        .iter()
+        .map(|chunk| {
+            chunk
+                .relative_paths
+                .iter()
+                .map(|path| path.to_string_lossy().into_owned())
+                .collect::<Vec<_>>()
+                .join(",")
+        })
+        .collect::<Vec<_>>();
+
+    data_frame!(
+        schema_version = schema_versions,
+        source = sources,
+        strategy = strategies,
+        target = targets,
+        chunk_index = chunk_index,
+        chunk_label = chunk_label,
+        file_count = file_count,
+        total_bytes = total_bytes,
+        read_count = read_count,
+        relative_paths = relative_paths,
+        warnings = warnings
+    )
+}
+
 fn verify_status_label(status: &VerifyStatus) -> &'static str {
     match status {
         VerifyStatus::Incomplete => "incomplete",
@@ -422,6 +605,33 @@ fn compare_status_label(status: &CompareStatus) -> &'static str {
     match status {
         CompareStatus::Match => "match",
         CompareStatus::Different => "different",
+    }
+}
+
+fn subdivide_strategy_from_label(label: &str) -> Result<SubdivideStrategy, ()> {
+    match label {
+        "file-count" => Ok(SubdivideStrategy::FileCount),
+        "elapsed-time" => Ok(SubdivideStrategy::ElapsedTime),
+        "read-count" => Ok(SubdivideStrategy::ReadCount),
+        "sample-label" => Ok(SubdivideStrategy::SampleLabel),
+        _ => Err(()),
+    }
+}
+
+fn subdivide_strategy_label(strategy: &SubdivideStrategy) -> &'static str {
+    match strategy {
+        SubdivideStrategy::FileCount => "file-count",
+        SubdivideStrategy::ElapsedTime => "elapsed-time",
+        SubdivideStrategy::ReadCount => "read-count",
+        SubdivideStrategy::SampleLabel => "sample-label",
+    }
+}
+
+fn optional_u64_from_label(label: &str) -> Result<Option<u64>, std::num::ParseIntError> {
+    if label.is_empty() {
+        Ok(None)
+    } else {
+        label.parse::<u64>().map(Some)
     }
 }
 

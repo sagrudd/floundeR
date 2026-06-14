@@ -95,6 +95,30 @@ These outputs should be included in the future `as_synoptikon_qc()` payload
 under a POD5/raw-data integrity section. They should also be eligible report
 inputs for Grammateus POD5 integrity plots and provenance tables.
 
+## Subdivision Planning
+
+Slice 10 added an in-process Rust binding for:
+
+- `pod5_tools::subdivide_plan_from_path(path, strategy, files_per_chunk,
+  seconds_per_chunk, reads_per_chunk)`
+
+The R function `pod5_subdivide_plan()` is read-only. It returns a deterministic
+plan table describing how a local POD5 file, folder, run tree, or manifest
+could be grouped by file count, sample label, elapsed time, or read count. It
+does not write POD5 files, copy files, create output directories, or expose the
+`pod5-tools` write-capable subdivision API.
+
+The current filesystem-backed POD5 metadata reader cannot recover acquisition
+timestamps or read counts, so elapsed-time and read-count strategies return a
+single placeholder chunk with an explicit warning. Those strategies should
+become fully data-aware when the parser-backed POD5 reader is exposed through
+the binding.
+
+Playback planning remains out of floundeR's public API for now. It is useful in
+`pod5-tools` for workflow development, but floundeR should only expose it after
+synoptikon or `../mnemosyne` has a concrete QC/review requirement for simulated
+run arrivals.
+
 ## Scope Guard
 
 floundeR should keep exposing only read-only POD5 functions that directly
