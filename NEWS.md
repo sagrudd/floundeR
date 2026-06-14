@@ -1,3 +1,9 @@
+# floundeR 0.17.0
+
+* Added Grammateus runtime discovery, manifest parsing, validation, version,
+  availability, and cache-install helpers for optional private prebuilt runtime
+  bundles. Core floundeR remains installable without Grammateus assets.
+
 # floundeR 0.16.1
 
 * Defined the prebuilt Grammateus runtime interface for public floundeR builds,
