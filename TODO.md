@@ -137,7 +137,7 @@ current non-FAST5 package surface.
 
 - [x] Implement `ont_open_data_list()` for anonymous S3 listings using
       `region = "eu-west-1"`.
-- [ ] Implement `ont_open_data_fetch()` with explicit object-key selection,
+- [x] Implement `ont_open_data_fetch()` with explicit object-key selection,
       cache directory control, and no implicit bulk downloads.
 - [ ] Add a named dataset helper for
       `s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`.

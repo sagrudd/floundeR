@@ -1,3 +1,9 @@
+# floundeR 0.2.4
+
+* Added `ont_open_data_fetch()` for explicit single-object ONT open-data
+  downloads into caller-controlled cache directories with returned provenance
+  metadata.
+
 # floundeR 0.2.3
 
 * Added `ont_open_data_list()` for explicit anonymous metadata listings of the
