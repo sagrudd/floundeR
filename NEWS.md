@@ -1,3 +1,11 @@
+# floundeR 0.13.3
+
+* Recorded Grammateus canonical charter, SRS, ARD, rendering-elements, and
+  trusted-report contract verification before report-binding work, including
+  the constraints floundeR must preserve for internal-only branding,
+  deterministic semantic elements, provenance, Synoptikon/Mneion trust reuse,
+  and optional private runtime distribution.
+
 # floundeR 0.13.2
 
 * Recorded the Grammateus checkout preflight for Slice 13: the private local

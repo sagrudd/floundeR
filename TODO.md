@@ -236,7 +236,7 @@ current non-FAST5 package surface.
 
 - [x] Confirm the local `../grammateus` source checkout is current and clean
       before adding it as a Rust library dependency.
-- [ ] Verify the Grammateus charter, SRS, ARDs, and rendering/trusted-report
+- [x] Verify the Grammateus charter, SRS, ARDs, and rendering/trusted-report
       contracts in `../mnemosyne-docs` before changing `../grammateus`.
 - [ ] Identify the Grammateus public library APIs needed for semantic report
       elements, rendering, manifests, provenance, branding, and trusted-report
