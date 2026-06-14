@@ -256,7 +256,7 @@ current non-FAST5 package surface.
       `grammateus_runtime_validate()`, and `grammateus_runtime_install()`.
 - [x] Ensure core QC APIs and package checks do not require Grammateus runtime
       assets.
-- [ ] Define Grammateus semantic elements for run metadata, QC summary,
+- [x] Define Grammateus semantic elements for run metadata, QC summary,
       flowcell density, yield over time, quality distribution, barcode balance,
       POD5 integrity, BAM alignment summaries, BAM validation/index/sort
       evidence, Porkchop kit/library-preparation evidence, report-card

@@ -1,3 +1,9 @@
+# floundeR 0.18.0
+
+* Added `grammateus_report_element()` and `grammateus_qc_report_elements()` to
+  define the first runtime-free Grammateus semantic element contracts for QC
+  report assembly.
+
 # floundeR 0.17.1
 
 * Added regression coverage confirming core QC APIs, Synoptikon export, and

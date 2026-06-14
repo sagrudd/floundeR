@@ -500,6 +500,305 @@ grammateus_render_figure_pdf <- function(element) {
   .grammateus_render_response(response, "raw")
 }
 
+#' Build Grammateus semantic report elements
+#'
+#' `grammateus_report_element()` creates a low-level Grammateus-shaped semantic
+#' report element from R data. `grammateus_qc_report_elements()` builds the
+#' standard floundeR QC report element set for run metadata, QC summaries,
+#' flowcell/yield/quality/barcode evidence, POD5 integrity, BAM evidence,
+#' library-preparation evidence, report-card findings, methods, limitations,
+#' appendices, and provenance. These helpers do not render HTML or PDF and do
+#' not require private Grammateus runtime assets.
+#'
+#' @param element_id Stable lower-snake-case identifier with an element-type
+#'   prefix such as `table_`, `section_`, `methods_`, `limitations_`,
+#'   `appendix_`, or `provenance_`.
+#' @param element_type Semantic element type.
+#' @param title Human-readable element title.
+#' @param caption Required caption for table-like report elements.
+#' @param data Optional data frame or list payload.
+#' @param body Optional character body for text-like elements.
+#' @param methods_note Optional methods note.
+#' @param source_hash Optional SHA-256 hash for the source data. When omitted,
+#'   a deterministic hash is computed from `data` and `body`.
+#' @param produced_by Producing software or service name.
+#' @param producer_version Producing software version.
+#' @param produced_at_utc Production timestamp.
+#' @param run_id Optional upstream run, workflow, or analysis identifier.
+#' @param run_metadata,qc_summary,flowcell_density,yield_over_time,quality_distribution,barcode_balance,pod5_integrity,bam_alignment_summary,bam_validation,bam_index,bam_sort,library_preparation,report_card_findings Optional QC evidence tables.
+#' @param methods Optional methods text.
+#' @param limitations Optional limitations table or text.
+#' @param appendices Optional named list of appendix tables or text.
+#' @param provenance Optional provenance table or list.
+#'
+#' @return A `flounder_grammateus_report_element` list, or a
+#'   `flounder_grammateus_report_element_bundle` containing named elements.
+#'
+#' @export
+grammateus_report_element <- function(
+    element_id,
+    element_type = c("table", "section", "methods", "limitations",
+                     "appendix", "provenance"),
+    title,
+    caption = NULL,
+    data = NULL,
+    body = NULL,
+    methods_note = NULL,
+    source_hash = NULL,
+    produced_by = "floundeR",
+    producer_version = NULL,
+    produced_at_utc = Sys.time(),
+    run_id = NULL) {
+  element_type <- match.arg(element_type)
+  element_id <- .grammateus_element_id(element_id, element_type)
+  title <- .grammateus_required_text(title, "title")
+  caption <- .grammateus_element_caption(caption, element_type)
+  methods_note <- .grammateus_optional_text(methods_note, "methods_note")
+  body <- .grammateus_optional_body(body)
+  payload <- .grammateus_element_payload(data, body)
+  if (is.null(producer_version)) {
+    producer_version <- .grammateus_default_flounder_version()
+  }
+  if (is.null(source_hash)) {
+    source_hash <- .grammateus_value_sha256(list(
+      element_id = element_id,
+      element_type = element_type,
+      title = title,
+      caption = caption,
+      payload = payload,
+      body = body
+    ))
+  } else {
+    source_hash <- .grammateus_normalize_sha256(source_hash, "source_hash")
+  }
+
+  element <- list(
+    schema_version = "flounder.grammateus_report_element.v1",
+    element_id = element_id,
+    element_type = element_type,
+    title = title,
+    caption = caption,
+    body = body,
+    payload = payload,
+    methods_note = methods_note,
+    provenance = .grammateus_provenance(
+      source_hash = source_hash,
+      produced_by = produced_by,
+      producer_version = producer_version,
+      produced_at_utc = produced_at_utc,
+      run_id = run_id
+    )
+  )
+  class(element) <- c(
+    "flounder_grammateus_report_element",
+    "flounder_grammateus_element",
+    "list"
+  )
+  element
+}
+
+#' @rdname grammateus_report_element
+#' @export
+grammateus_qc_report_elements <- function(
+    run_metadata = NULL,
+    qc_summary = NULL,
+    flowcell_density = NULL,
+    yield_over_time = NULL,
+    quality_distribution = NULL,
+    barcode_balance = NULL,
+    pod5_integrity = NULL,
+    bam_alignment_summary = NULL,
+    bam_validation = NULL,
+    bam_index = NULL,
+    bam_sort = NULL,
+    library_preparation = NULL,
+    report_card_findings = NULL,
+    methods = NULL,
+    limitations = NULL,
+    appendices = NULL,
+    provenance = NULL,
+    produced_by = "floundeR",
+    producer_version = NULL,
+    produced_at_utc = Sys.time(),
+    run_id = NULL) {
+  if (is.null(producer_version)) {
+    producer_version <- .grammateus_default_flounder_version()
+  }
+  common <- list(
+    produced_by = produced_by,
+    producer_version = producer_version,
+    produced_at_utc = produced_at_utc,
+    run_id = run_id
+  )
+  element_specs <- list(
+    run_metadata = list(
+      value = run_metadata,
+      id = "table_run_metadata",
+      title = "Run metadata",
+      caption = "Run identity and acquisition metadata."
+    ),
+    qc_summary = list(
+      value = qc_summary,
+      id = "table_qc_summary",
+      title = "QC summary",
+      caption = "Run-level sequencing summary metrics."
+    ),
+    flowcell_density = list(
+      value = flowcell_density,
+      id = "table_flowcell_density",
+      title = "Flowcell density",
+      caption = "Read and base yield by flowcell channel."
+    ),
+    yield_over_time = list(
+      value = yield_over_time,
+      id = "table_yield_over_time",
+      title = "Yield over time",
+      caption = "Sequencing yield over elapsed run time."
+    ),
+    quality_distribution = list(
+      value = quality_distribution,
+      id = "table_quality_distribution",
+      title = "Quality distribution",
+      caption = "Read quality distribution."
+    ),
+    barcode_balance = list(
+      value = barcode_balance,
+      id = "table_barcode_balance",
+      title = "Barcode balance",
+      caption = "Read and base yield by barcode assignment."
+    ),
+    pod5_integrity = list(
+      value = pod5_integrity,
+      id = "table_pod5_integrity",
+      title = "POD5 integrity",
+      caption = "POD5 raw-data integrity and metadata evidence."
+    ),
+    bam_alignment_summary = list(
+      value = bam_alignment_summary,
+      id = "table_bam_alignment_summary",
+      title = "BAM alignment summary",
+      caption = "Aligned-read mapping and flag summary evidence."
+    ),
+    bam_validation = list(
+      value = bam_validation,
+      id = "table_bam_validation",
+      title = "BAM validation",
+      caption = "BAM validation findings."
+    ),
+    bam_index = list(
+      value = bam_index,
+      id = "table_bam_index",
+      title = "BAM index evidence",
+      caption = "BAM index state and freshness evidence."
+    ),
+    bam_sort = list(
+      value = bam_sort,
+      id = "table_bam_sort",
+      title = "BAM sort evidence",
+      caption = "BAM sorting and header consistency evidence."
+    ),
+    library_preparation = list(
+      value = library_preparation,
+      id = "table_library_preparation",
+      title = "Library-preparation evidence",
+      caption = "Adapter, primer, barcode, kit, and cDNA evidence."
+    ),
+    report_card_findings = list(
+      value = report_card_findings,
+      id = "table_report_card_findings",
+      title = "Report-card findings",
+      caption = "Pass, warning, and failure status for configured QC checks."
+    )
+  )
+  elements <- list()
+  for (name in names(element_specs)) {
+    spec <- element_specs[[name]]
+    if (!is.null(spec$value)) {
+      elements[[name]] <- do.call(grammateus_report_element, c(
+        list(
+          element_id = spec$id,
+          element_type = "table",
+          title = spec$title,
+          caption = spec$caption,
+          data = spec$value
+        ),
+        common
+      ))
+    }
+  }
+  if (!is.null(methods)) {
+    elements$methods <- do.call(grammateus_report_element, c(
+      list(
+        element_id = "methods_qc_workflow",
+        element_type = "methods",
+        title = "Methods",
+        caption = "Methods used to produce the QC report.",
+        body = methods
+      ),
+      common
+    ))
+  }
+  if (!is.null(limitations)) {
+    limitations_args <- if (is.data.frame(limitations) || is.list(limitations)) {
+      list(data = limitations)
+    } else {
+      list(body = limitations)
+    }
+    elements$limitations <- do.call(grammateus_report_element, c(
+      list(
+        element_id = "limitations_qc_workflow",
+        element_type = "limitations",
+        title = "Limitations",
+        caption = "Known limitations for this QC report."
+      ),
+      limitations_args,
+      common
+    ))
+  }
+  if (!is.null(provenance)) {
+    elements$provenance <- do.call(grammateus_report_element, c(
+      list(
+        element_id = "provenance_qc_inputs",
+        element_type = "provenance",
+        title = "Input provenance",
+        caption = "Input data and software provenance used by this QC report.",
+        data = provenance
+      ),
+      common
+    ))
+  }
+  appendices <- .grammateus_appendices(appendices)
+  for (name in names(appendices)) {
+    value <- appendices[[name]]
+    appendix_args <- if (is.data.frame(value) || is.list(value)) {
+      list(data = value)
+    } else {
+      list(body = value)
+    }
+    elements[[paste0("appendix_", name)]] <- do.call(grammateus_report_element, c(
+      list(
+        element_id = paste0("appendix_", name),
+        element_type = "appendix",
+        title = paste("Appendix", gsub("_", " ", name)),
+        caption = paste("Appendix", gsub("_", " ", name), "supporting detail.")
+      ),
+      appendix_args,
+      common
+    ))
+  }
+  bundle <- list(
+    schema_version = "flounder.grammateus_report_element_bundle.v1",
+    element_count = length(elements),
+    elements = elements
+  )
+  class(bundle) <- c(
+    "flounder_grammateus_report_element_bundle",
+    "flounder_grammateus_element",
+    "list"
+  )
+  bundle
+}
+
 .grammateus_existing_file <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path) || path == "") {
     stop("path must be a non-empty character scalar.", call. = FALSE)
@@ -946,6 +1245,99 @@ grammateus_render_figure_pdf <- function(element) {
   } else {
     rows
   }
+}
+
+.grammateus_element_id <- function(element_id, element_type) {
+  element_id <- .grammateus_required_text(element_id, "element_id")
+  prefix <- switch(
+    element_type,
+    "table" = "table_",
+    "section" = "section_",
+    "methods" = "methods_",
+    "limitations" = "limitations_",
+    "appendix" = "appendix_",
+    "provenance" = "provenance_"
+  )
+  if (!startsWith(element_id, prefix)) {
+    stop("element_id must start with `", prefix, "`.", call. = FALSE)
+  }
+  if (!grepl("^[a-z0-9_]+$", element_id)) {
+    stop("element_id must use lower snake case.", call. = FALSE)
+  }
+  element_id
+}
+
+.grammateus_element_caption <- function(caption, element_type) {
+  if (element_type %in% c("table", "methods", "limitations", "appendix",
+                          "provenance")) {
+    return(.grammateus_required_text(caption, "caption"))
+  }
+  .grammateus_optional_text(caption, "caption")
+}
+
+.grammateus_optional_body <- function(body) {
+  if (is.null(body)) {
+    return(NULL)
+  }
+  if (!is.character(body) || length(body) == 0L || anyNA(body)) {
+    stop("body must be a character vector without missing values.", call. = FALSE)
+  }
+  paste(body, collapse = "\n")
+}
+
+.grammateus_element_payload <- function(data, body) {
+  if (is.null(data)) {
+    return(list(kind = "text", body_length = nchar(body %||% "", type = "bytes")))
+  }
+  if (is.data.frame(data)) {
+    records <- .grammateus_records_from_data_frame(data)
+    return(list(
+      kind = "table",
+      columns = names(data),
+      row_count = nrow(data),
+      records = records,
+      data_sha256 = .grammateus_value_sha256(data)
+    ))
+  }
+  if (is.list(data)) {
+    return(list(
+      kind = "list",
+      fields = names(data),
+      value = data,
+      data_sha256 = .grammateus_value_sha256(data)
+    ))
+  }
+  stop("data must be NULL, a data frame, or a list.", call. = FALSE)
+}
+
+.grammateus_appendices <- function(appendices) {
+  if (is.null(appendices)) {
+    return(list())
+  }
+  if (!is.list(appendices)) {
+    stop("appendices must be a named list.", call. = FALSE)
+  }
+  if (is.null(names(appendices)) ||
+      any(!nzchar(names(appendices))) ||
+      anyNA(names(appendices))) {
+    stop("appendices must be a named list.", call. = FALSE)
+  }
+  names(appendices) <- vapply(
+    names(appendices),
+    .grammateus_appendix_name,
+    character(1)
+  )
+  appendices
+}
+
+.grammateus_appendix_name <- function(name) {
+  name <- tolower(gsub("[^A-Za-z0-9]+", "_", name))
+  name <- gsub("^_+|_+$", "", name)
+  if (!nzchar(name)) {
+    stop("appendix names must contain at least one alphanumeric character.",
+         call. = FALSE)
+  }
+  name
 }
 
 .grammateus_plot_data_source_hash <- function(data) {
