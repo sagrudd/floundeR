@@ -244,7 +244,7 @@ current non-FAST5 package surface.
 - [x] Implement R-to-Grammateus plot artifact handoff for existing `ggplot2`
       plots, including deterministic SVG/PNG output, checksums, captions, alt
       text, methods notes, and provenance.
-- [ ] Implement Grammateus-to-R controlled plot generation wrappers for
+- [x] Implement Grammateus-to-R controlled plot generation wrappers for
       semantic `ReportPlot` specs, using local `Rscript` or governed container
       execution as configured.
 - [ ] Add in-process Rust bindings from `floundeR` to Grammateus report

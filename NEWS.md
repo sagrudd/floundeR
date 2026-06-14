@@ -1,3 +1,11 @@
+# floundeR 0.15.0
+
+* Added `grammateus_plot_spec()` and `grammateus_render_plot()` to support
+  Grammateus-to-R controlled plot generation from semantic `ReportPlot`-shaped
+  specs, including deterministic run directories, generated R scripts,
+  plot/data/script hashes, backend session capture, and PNG/SVG artifact
+  metadata.
+
 # floundeR 0.14.0
 
 * Added `grammateus_figure_from_ggplot()` and

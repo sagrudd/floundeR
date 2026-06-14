@@ -1,6 +1,6 @@
 Package: floundeR
 Title: Toolkit For Nanopore Sequence Analysis
-Version: 0.14.0
+Version: 0.15.0
 Authors@R: 
     person(given = "Stephen",
            family = "Rudd",
@@ -22,7 +22,8 @@ Suggests:
     knitr,
     rmarkdown,
     svglite,
-    testthat
+    testthat,
+    viridisLite
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Imports: 

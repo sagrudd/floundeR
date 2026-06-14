@@ -69,7 +69,7 @@ container. It records deterministic run directories, plot specs, data JSON,
 generated scripts, stdout/stderr, `sessionInfo()`, artifact hashes, and rendered
 SVG/PNG files.
 
-Expected floundeR integration:
+Implemented floundeR integration:
 
 ```r
 plot_spec <- grammateus_plot_spec(
@@ -92,6 +92,17 @@ run <- grammateus_render_plot(
 )
 ```
 
+`grammateus_plot_spec()` returns a `flounder_grammateus_plot_spec` object that
+matches the Grammateus `ReportPlot` contract closely enough for later Rust
+runtime binding: stable plot identity, semantic plot family, inline tidy data or
+data reference, mappings, axes, output settings, optional bar-value semantics,
+and provenance. `grammateus_render_plot()` writes a deterministic run directory
+containing `plot_spec.json`, `plot_data.json`, `render_plot.R`,
+`backend_session.txt`, stdout/stderr capture, and requested PNG/SVG artifacts.
+The generated artifact metadata includes SHA-256 hashes and
+`flounder_grammateus_figure` wrappers so the outputs can be handed into the
+reporting path consistently.
+
 This path is best when a report template or synoptikon workflow owns the report
 definition and wants reproducible plot generation from canonical tidy data.
 
@@ -100,7 +111,7 @@ definition and wants reproducible plot generation from canonical tidy data.
 `floundeR` should provide a thin R interface over Grammateus rather than
 requiring users to hand-author Rust-shaped JSON.
 
-Planned helpers:
+R helpers:
 
 - `grammateus_plot_spec()`: build and validate a backend-neutral plot spec from
   tidy R data.

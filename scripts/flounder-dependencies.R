@@ -24,7 +24,8 @@ flounder_cran_packages <- function() {
     "testthat",
     "tibble",
     "tidyr",
-    "tidyselect"
+    "tidyselect",
+    "viridisLite"
   )
 }
 
