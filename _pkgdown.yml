@@ -1,0 +1,108 @@
+url: https://sagrudd.github.io/floundeR/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, articles, reference, news]
+    right: [github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Contemporary QC Workflows
+      - text: "POD5 QC"
+        href: articles/pod5-qc.html
+      - text: "BAM QC"
+        href: articles/bam-qc.html
+      - text: "Synoptikon QC Handoff"
+        href: articles/synoptikon-handoff.html
+      - text: "Grammateus Technical Report"
+        href: articles/grammateus-technical-report.html
+      - text: "Grammateus Plot Directions"
+        href: articles/grammateus-plot-directions.html
+
+articles:
+- title: Contemporary QC Workflows
+  desc: >
+    Current nanopore QC workflows built around POD5 provenance, BAM evidence,
+    Synoptikon handoff, and Grammateus semantic reporting.
+  contents:
+  - pod5-qc
+  - bam-qc
+  - synoptikon-handoff
+  - grammateus-technical-report
+  - grammateus-plot-directions
+
+reference:
+- title: Run-Level QC Contracts
+  desc: Tidy sequencing-summary QC tables and report-card checks.
+  contents:
+  - qc_run_summary
+  - qc_yield_over_time
+  - qc_read_length_distribution
+  - qc_quality_distribution
+  - qc_channel_density
+  - qc_barcode_composition
+  - qc_report_card
+  - qc_report_card_thresholds
+- title: POD5 Evidence And ONT Open Data
+  desc: Rust-backed POD5 discovery, integrity, manifest, and selected ONT
+    Zymo open-data helpers.
+  contents:
+  - starts_with("pod5_")
+  - starts_with("ont_")
+  - flounder_ont_zymo_pod5_prefix
+- title: BAM/Bamana QC Evidence
+  desc: Curated alignment-level QC wrappers backed by Bamana semantics.
+  contents:
+  - starts_with("bam_")
+- title: Library-Preparation Evidence
+  desc: Curated Porkchop-backed kit, adapter, primer, barcode, and cDNA QC
+    evidence.
+  contents:
+  - starts_with("library_")
+- title: Synoptikon Handoff
+  desc: Versioned JSON payloads for Mnemosyne/Synoptikon QC review.
+  contents:
+  - as_synoptikon_qc
+  - write_synoptikon_qc
+- title: Grammateus Reporting
+  desc: Semantic report elements, figure handoff, controlled R plot rendering,
+    runtime discovery, and Mnemosyne theme descriptors.
+  contents:
+  - starts_with("grammateus_")
+  - qc_report
+  - starts_with("qc_plot_")
+- title: Rust Extension Availability
+  desc: Helpers for detecting and skipping optional compiled Rust support.
+  contents:
+  - starts_with("flounder_rust_")
+  - skip_if_no_flounder_rust
+- title: Legacy Sequence And Annotation Helpers
+  desc: File wrappers and helpers retained outside the retired FAST5 API.
+  contents:
+  - Fasta
+  - Fastq
+  - Blast
+  - GenbankGenome
+  - SequencingSummary
+  - SequencingSet
+  - Flowcell
+  - MultiplexSet
+  - TemporalSet
+  - BamFile
+  - FloundeR
+  - flnDr
+  - phredmean
+  - qualToMeanQ
+  - to_flowcell
+  - to_sequencing_set
+- title: Visualisation Helpers
+  desc: Legacy graphical classes and themes retained for compatibility.
+  contents:
+  - Angenieux
+  - AngenieuxDecoration
+  - Infographic
+  - InfographicItem

@@ -301,7 +301,7 @@ current non-FAST5 package surface.
 - [x] Add a Grammateus-backed technical report vignette.
 - [x] Add a vignette showing both reporting directions: R plot dropped into a
       Grammateus report, and Grammateus semantic plot spec rendered by R.
-- [ ] Update pkgdown navigation.
+- [x] Update pkgdown navigation.
 - [ ] Add plot examples for report-card findings.
 
 ## Slice 15: Release Preparation

@@ -1,3 +1,9 @@
+# floundeR 0.21.16
+
+* Added source pkgdown navigation for the rebooted documentation set, grouping
+  contemporary POD5, BAM, Synoptikon, Grammateus, Rust, and library-preparation
+  reference surfaces ahead of retained legacy helpers.
+
 # floundeR 0.21.15
 
 * Added a two-direction Grammateus plot vignette showing analyst-owned R
