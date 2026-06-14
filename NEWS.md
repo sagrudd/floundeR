@@ -1,3 +1,9 @@
+# floundeR 0.21.18
+
+* Started the release-preparation checkpoint after completing the reboot
+  documentation refresh, with version and NEWS metadata aligned before the
+  remaining test, check, and documentation-build tasks.
+
 # floundeR 0.21.17
 
 * Added report-card plot examples to the Grammateus technical-report vignette,

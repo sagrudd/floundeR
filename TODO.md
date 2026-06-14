@@ -306,8 +306,8 @@ current non-FAST5 package surface.
 
 ## Slice 15: Release Preparation
 
-- [ ] Bump version according to semantic versioning.
-- [ ] Update `NEWS.md`.
+- [x] Bump version according to semantic versioning.
+- [x] Update `NEWS.md`.
 - [ ] Run full tests.
 - [ ] Run `R CMD check`.
 - [ ] Build documentation.
