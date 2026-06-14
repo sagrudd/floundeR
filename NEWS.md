@@ -1,3 +1,9 @@
+# floundeR 0.2.6
+
+* Documented the no-commit policy for downloaded POD5 files and added
+  repository ignore guardrails for local ONT open-data caches while preserving
+  an explicit path for intentionally tiny test fixtures.
+
 # floundeR 0.2.5
 
 * Added no-network ONT Zymo fecal POD5 dataset and selected pass/fail example

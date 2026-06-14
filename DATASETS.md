@@ -88,6 +88,11 @@ as `ont_open_data_list()` and `ont_open_data_fetch()`.
 ## Repository Policy
 
 - Do not commit downloaded POD5 files.
+- The repository `.gitignore` ignores `*.pod5`, common local ONT cache
+  directories, and temporary POD5 download names by default. Intentional tiny
+  POD5 fixtures must use the `tests/testthat/fixtures/tiny-*.pod5` naming
+  convention and be added deliberately after reviewer-visible provenance is
+  recorded.
 - Do not make package tests depend on network access.
 - Use tiny generated fixtures for unit tests.
 - Use the selected pass file for routine opt-in integration tests, vignettes,

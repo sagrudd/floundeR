@@ -243,6 +243,12 @@ FLOUNDER_RUN_NETWORK_TESTS=true Rscript -e 'testthat::test_local("tests/testthat
 Network tests must still use explicit cache directories outside the repository
 and must not commit downloaded or derived POD5 files.
 
+`tests/testthat/test-ont-open-data.R` covers the default ONT open-data helper
+surface with mocked S3 list/save bindings, so ordinary package checks do not
+touch the network or download POD5 files. Downloaded or derived POD5 artifacts
+are ignored by default; only deliberately reviewed tiny fixtures named
+`tests/testthat/fixtures/tiny-*.pod5` should ever be committed.
+
 ## Rust-Backed Tests
 
 Rust-backed tests must skip cleanly when a required compiled feature or runtime

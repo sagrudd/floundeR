@@ -7,3 +7,12 @@ inst/doc
 .Rbuildignore
 sequencing_summary_PAG07165_2dfda515.txt
 src/rust/target/
+
+# ONT open-data and derived POD5 artifacts are opt-in local data, not source.
+*.pod5
+*.pod5.tmp
+flounder-ont-open-data/
+flounder-ont-cache-*/
+ont-open-data-cache/
+tests/testthat/fixtures/*.pod5
+!tests/testthat/fixtures/tiny-*.pod5

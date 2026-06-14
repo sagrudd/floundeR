@@ -146,8 +146,8 @@ current non-FAST5 package surface.
       `PAU85136_fail_279c9095_68316534_0.pod5`.
 - [x] Record object key, size, last-modified timestamp, and local cache path in
       returned metadata.
-- [ ] Add tests with mocked S3 listings and no network requirement.
-- [ ] Document that downloaded POD5 files must not be committed.
+- [x] Add tests with mocked S3 listings and no network requirement.
+- [x] Document that downloaded POD5 files must not be committed.
 
 ## Slice 8: POD5 Verification And File Info
 
