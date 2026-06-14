@@ -1,3 +1,9 @@
+# floundeR 0.21.10
+
+* Added an offline "run health in one minute" README example that produces a
+  run summary, report-card counts, and Synoptikon payload schema check from a
+  sequencing-summary input.
+
 # floundeR 0.21.9
 
 * Rewrote the README around the contemporary nanopore QC workflow, covering

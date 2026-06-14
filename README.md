@@ -60,6 +60,46 @@ HTML/PDF rendering can use an optional prebuilt Grammateus runtime when
 authorized and configured through `GRAMMATEUS_HOME`, package options, or the
 runtime cache helpers.
 
+## Run Health In One Minute
+
+This is the smallest useful health check for a nanopore run. It uses the
+packaged sequencing-summary fixture here, but the same code accepts a real
+MinKNOW, Guppy, or Dorado sequencing-summary path.
+
+```r
+library(floundeR)
+
+summary_file <- flnDr("sequencing_summary.txt.bz2")
+
+run_summary <- qc_run_summary(summary_file)
+barcode_balance <- qc_barcode_composition(summary_file)
+run_card <- qc_report_card(
+  run_summary,
+  barcode_composition = barcode_balance
+)
+
+run_summary[, c(
+  "read_count",
+  "total_bases",
+  "pass_fraction",
+  "mean_qscore",
+  "n50_read_length",
+  "channel_count"
+)]
+
+table(run_card$status)
+
+payload <- as_synoptikon_qc(
+  run_summary = run_summary,
+  barcode = barcode_balance,
+  report_cards = list(run = run_card)
+)
+payload$schema_version
+```
+
+That gives an analyst a one-row run summary, pass/warn/fail report-card counts,
+and a versioned payload shape ready for downstream handoff.
+
 ## Contemporary QC Workflow
 
 Start with the sequencing-summary file. `floundeR` accepts a path, a
