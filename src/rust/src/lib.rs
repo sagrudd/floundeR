@@ -2,10 +2,22 @@ use std::{path::PathBuf, time::Instant};
 
 use bamana::{
     bam::index::IndexKind,
+    bam::validate::{
+        FindingScope, FindingSeverity, ValidatePayload, ValidationFinding, ValidationMode,
+        ValidationSummary,
+    },
     commands::summary::{
         self, ConfidenceLevel, FractionSummary, MappingStatus, RecordCountSummary, SummaryMode,
         SummaryPayload, SummaryRequest,
     },
+    commands::{
+        check_eof::{self, CheckEofRequest, CheckEofResponse},
+        validate::{self, ValidateRequest},
+        verify::{self, VerifyRequest, VerifyResponse},
+    },
+    error::AppError,
+    formats::probe::{Confidence, ContainerKind, DetectedFormat},
+    json::JsonError,
 };
 use extendr_api::prelude::*;
 use pod5_tools::{
@@ -97,6 +109,40 @@ pub extern "C" fn flounder_bam_summary(
         include_flags,
         allow_incomplete,
     );
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_verify(path: SEXP) -> SEXP {
+    let result = bam_verify_response(path);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_validate(
+    path: SEXP,
+    max_errors: SEXP,
+    max_warnings: SEXP,
+    header_only: SEXP,
+    records: SEXP,
+    fail_fast: SEXP,
+    include_warnings: SEXP,
+) -> SEXP {
+    let result = bam_validate_response(
+        path,
+        max_errors,
+        max_warnings,
+        header_only,
+        records,
+        fail_fast,
+        include_warnings,
+    );
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_bam_check_eof(path: SEXP) -> SEXP {
+    let result = bam_check_eof_response(path);
     unsafe { result.get() }
 }
 
@@ -447,6 +493,200 @@ fn bam_summary_response(
         category = r!(())
     )
     .into()
+}
+
+fn bam_verify_response(path: SEXP) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+
+    let request = VerifyRequest {
+        bam: PathBuf::from(path),
+    };
+    let started = Instant::now();
+    match verify::run(request) {
+        Ok(payload) => list!(
+            ok = true,
+            data =
+                bam_verify_data_frame(path, true, started.elapsed().as_secs_f64(), &payload, None),
+            error = r!(()),
+            category = r!(())
+        )
+        .into(),
+        Err(error) => bam_app_error_response(error),
+    }
+}
+
+fn bam_validate_response(
+    path: SEXP,
+    max_errors: SEXP,
+    max_warnings: SEXP,
+    header_only: SEXP,
+    records: SEXP,
+    fail_fast: SEXP,
+    include_warnings: SEXP,
+) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let max_errors = unsafe { Robj::from_sexp(max_errors) };
+    let max_warnings = unsafe { Robj::from_sexp(max_warnings) };
+    let header_only = unsafe { Robj::from_sexp(header_only) };
+    let records = unsafe { Robj::from_sexp(records) };
+    let fail_fast = unsafe { Robj::from_sexp(fail_fast) };
+    let include_warnings = unsafe { Robj::from_sexp(include_warnings) };
+
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+    let Some(max_errors) = sexp_i32(&max_errors) else {
+        return bam_error_response("argument", "`max_errors` must be an integer.", None, None);
+    };
+    let Some(max_warnings) = sexp_i32(&max_warnings) else {
+        return bam_error_response("argument", "`max_warnings` must be an integer.", None, None);
+    };
+    let Some(header_only) = sexp_bool(&header_only) else {
+        return bam_error_response(
+            "argument",
+            "`header_only` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+    let Some(fail_fast) = sexp_bool(&fail_fast) else {
+        return bam_error_response("argument", "`fail_fast` must be TRUE or FALSE.", None, None);
+    };
+    let Some(include_warnings) = sexp_bool(&include_warnings) else {
+        return bam_error_response(
+            "argument",
+            "`include_warnings` must be TRUE or FALSE.",
+            None,
+            None,
+        );
+    };
+    if max_errors < 1 || max_warnings < 0 {
+        return bam_error_response(
+            "argument",
+            "`max_errors` must be positive and `max_warnings` must be non-negative.",
+            None,
+            None,
+        );
+    }
+    let records = match optional_i32_from_label(&records) {
+        Ok(records) => records,
+        Err(()) => {
+            return bam_error_response(
+                "argument",
+                "`records` must be empty or a positive integer text value.",
+                None,
+                None,
+            );
+        }
+    };
+
+    let request = ValidateRequest {
+        bam: PathBuf::from(path),
+        max_errors: max_errors as usize,
+        max_warnings: max_warnings as usize,
+        header_only,
+        records: records.map(|value| value as u64),
+        fail_fast,
+        include_warnings,
+    };
+    let started = Instant::now();
+    let response =
+        validate::run(request).with_analysis_wall_seconds(started.elapsed().as_secs_f64());
+
+    if let Some(payload) = response.data.as_ref() {
+        return list!(
+            ok = true,
+            data = bam_validate_list(&response, payload),
+            command_ok = response.ok,
+            error = r!(()),
+            category = r!(())
+        )
+        .into();
+    }
+
+    let Some(error) = response.error.as_ref() else {
+        return bam_error_response(
+            "unknown",
+            "Bamana validation failed without structured error metadata.",
+            None,
+            None,
+        );
+    };
+    bam_error_response(
+        &error.code,
+        &error.message,
+        error.detail.as_deref(),
+        error.hint.as_deref(),
+    )
+}
+
+fn bam_check_eof_response(path: SEXP) -> Robj {
+    let path = unsafe { Robj::from_sexp(path) };
+    let Some(path) = path.as_str() else {
+        return bam_error_response(
+            "path",
+            "`path` must be a non-missing character scalar.",
+            None,
+            None,
+        );
+    };
+
+    let request = CheckEofRequest {
+        bam: PathBuf::from(path),
+    };
+    let started = Instant::now();
+    match check_eof::run(request) {
+        Ok(payload) => list!(
+            ok = true,
+            data = bam_check_eof_data_frame(
+                path,
+                true,
+                started.elapsed().as_secs_f64(),
+                &payload,
+                None
+            ),
+            error = r!(()),
+            category = r!(())
+        )
+        .into(),
+        Err(error) => {
+            let json_error = error.to_json_error();
+            if json_error.code != "truncated_file" {
+                return bam_error_response(
+                    &json_error.code,
+                    &json_error.message,
+                    json_error.detail.as_deref(),
+                    json_error.hint.as_deref(),
+                );
+            }
+            let data = bam_check_eof_failure_data_frame(
+                path,
+                started.elapsed().as_secs_f64(),
+                &json_error,
+            );
+            list!(
+                ok = true,
+                data = data,
+                command_ok = false,
+                error = r!(()),
+                category = r!(())
+            )
+            .into()
+        }
+    }
 }
 
 fn pod5_find_data_frame(path: &str) -> Result<Robj, Box<dyn std::error::Error>> {
@@ -1090,6 +1330,195 @@ fn bam_mapq_histogram_data_frame(payload: &SummaryPayload) -> Robj {
     )
 }
 
+fn bam_verify_data_frame(
+    path: &str,
+    ok: bool,
+    analysis_wall_seconds: f64,
+    payload: &VerifyResponse,
+    error: Option<&JsonError>,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec!["verify".to_string()],
+        path = vec![path.to_string()],
+        ok = vec![ok],
+        analysis_wall_seconds = vec![analysis_wall_seconds],
+        detected_format = vec![detected_format_label(payload.detected_format).to_string()],
+        container = vec![container_kind_label(payload.container).to_string()],
+        is_bam = vec![payload.is_bam],
+        shallow_verified = vec![payload.shallow_verified],
+        deep_validated = vec![payload.deep_validated],
+        confidence = vec![probe_confidence_label(payload.confidence).to_string()],
+        checks_performed = vec![payload.checks_performed.join(",")],
+        semantic_note = vec![payload.semantic_note.clone()],
+        error_code = vec![error.map(|error| error.code.clone()).unwrap_or_default()],
+        error_message = vec![error.map(|error| error.message.clone()).unwrap_or_default()],
+        error_detail = vec![
+            error
+                .and_then(|error| error.detail.clone())
+                .unwrap_or_default()
+        ],
+        error_hint = vec![
+            error
+                .and_then(|error| error.hint.clone())
+                .unwrap_or_default()
+        ]
+    )
+}
+
+fn bam_validate_list(
+    response: &bamana::json::CommandResponse<ValidatePayload>,
+    payload: &ValidatePayload,
+) -> Robj {
+    list!(
+        status = bam_validate_status_data_frame(response, payload),
+        summary = bam_validate_summary_data_frame(&payload.summary),
+        findings = bam_validate_findings_data_frame(&payload.findings),
+        error = bam_validate_error_data_frame(response.error.as_ref())
+    )
+    .into()
+}
+
+fn bam_validate_status_data_frame(
+    response: &bamana::json::CommandResponse<ValidatePayload>,
+    payload: &ValidatePayload,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec![response.command.clone()],
+        path = vec![response.path.clone().unwrap_or_default()],
+        ok = vec![response.ok],
+        analysis_wall_seconds = vec![response.analysis_wall_seconds.unwrap_or(f64::NAN)],
+        format = vec![payload.format.to_string()],
+        mode = vec![validation_mode_label(payload.mode).to_string()],
+        valid = vec![payload.valid],
+        semantic_note = vec![payload.semantic_note.clone()]
+    )
+}
+
+fn bam_validate_summary_data_frame(summary: &ValidationSummary) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        header_valid = vec![summary.header_valid],
+        records_examined = vec![summary.records_examined as f64],
+        full_file_examined = vec![summary.full_file_examined],
+        errors = vec![summary.errors as f64],
+        warnings = vec![summary.warnings as f64],
+        infos = vec![summary.infos as f64]
+    )
+}
+
+fn bam_validate_findings_data_frame(findings: &[ValidationFinding]) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0; findings.len()],
+        severity = findings
+            .iter()
+            .map(|finding| finding_severity_label(finding.severity).to_string())
+            .collect::<Vec<_>>(),
+        scope = findings
+            .iter()
+            .map(|finding| finding_scope_label(finding.scope).to_string())
+            .collect::<Vec<_>>(),
+        code = findings
+            .iter()
+            .map(|finding| finding.code.clone())
+            .collect::<Vec<_>>(),
+        message = findings
+            .iter()
+            .map(|finding| finding.message.clone())
+            .collect::<Vec<_>>(),
+        record_index = findings
+            .iter()
+            .map(|finding| finding
+                .record_index
+                .map(|value| value as f64)
+                .unwrap_or(f64::NAN))
+            .collect::<Vec<_>>(),
+        reference_name = findings
+            .iter()
+            .map(|finding| finding.reference_name.clone().unwrap_or_default())
+            .collect::<Vec<_>>(),
+        tag = findings
+            .iter()
+            .map(|finding| finding.tag.clone().unwrap_or_default())
+            .collect::<Vec<_>>()
+    )
+}
+
+fn bam_validate_error_data_frame(error: Option<&JsonError>) -> Robj {
+    let Some(error) = error else {
+        return data_frame!(
+            schema_version = Vec::<f64>::new(),
+            code = Vec::<String>::new(),
+            message = Vec::<String>::new(),
+            detail = Vec::<String>::new(),
+            hint = Vec::<String>::new()
+        );
+    };
+
+    data_frame!(
+        schema_version = vec![1.0],
+        code = vec![error.code.clone()],
+        message = vec![error.message.clone()],
+        detail = vec![error.detail.clone().unwrap_or_default()],
+        hint = vec![error.hint.clone().unwrap_or_default()]
+    )
+}
+
+fn bam_check_eof_data_frame(
+    path: &str,
+    ok: bool,
+    analysis_wall_seconds: f64,
+    payload: &CheckEofResponse,
+    error: Option<&JsonError>,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec!["check_eof".to_string()],
+        path = vec![path.to_string()],
+        ok = vec![ok],
+        analysis_wall_seconds = vec![analysis_wall_seconds],
+        detected_format = vec![detected_format_label(payload.detected_format).to_string()],
+        bgzf_eof_present = vec![payload.bgzf_eof_present],
+        complete = vec![payload.complete],
+        semantic_note = vec![payload.semantic_note.clone()],
+        error_code = vec![error.map(|error| error.code.clone()).unwrap_or_default()],
+        error_message = vec![error.map(|error| error.message.clone()).unwrap_or_default()],
+        error_detail = vec![
+            error
+                .and_then(|error| error.detail.clone())
+                .unwrap_or_default()
+        ],
+        error_hint = vec![
+            error
+                .and_then(|error| error.hint.clone())
+                .unwrap_or_default()
+        ]
+    )
+}
+
+fn bam_check_eof_failure_data_frame(
+    path: &str,
+    analysis_wall_seconds: f64,
+    error: &JsonError,
+) -> Robj {
+    data_frame!(
+        schema_version = vec![1.0],
+        command = vec!["check_eof".to_string()],
+        path = vec![path.to_string()],
+        ok = vec![false],
+        analysis_wall_seconds = vec![analysis_wall_seconds],
+        detected_format = vec!["BAM".to_string()],
+        bgzf_eof_present = vec![false],
+        complete = vec![false],
+        semantic_note = vec!["EOF marker evidence was not present; this is a tail-completeness finding and does not by itself describe BAM semantic validity.".to_string()],
+        error_code = vec![error.code.clone()],
+        error_message = vec![error.message.clone()],
+        error_detail = vec![error.detail.clone().unwrap_or_default()],
+        error_hint = vec![error.hint.clone().unwrap_or_default()]
+    )
+}
+
 fn summary_mode_label(mode: SummaryMode) -> &'static str {
     match mode {
         SummaryMode::BoundedScan => "bounded_scan",
@@ -1128,6 +1557,63 @@ fn optional_bool_label(value: Option<bool>) -> &'static str {
         Some(true) => "true",
         Some(false) => "false",
         None => "",
+    }
+}
+
+fn detected_format_label(format: DetectedFormat) -> &'static str {
+    match format {
+        DetectedFormat::Bam => "BAM",
+        DetectedFormat::Sam => "SAM",
+        DetectedFormat::Cram => "CRAM",
+        DetectedFormat::Fastq => "FASTQ",
+        DetectedFormat::FastqGz => "FASTQ.GZ",
+        DetectedFormat::Fasta => "FASTA",
+        DetectedFormat::Bed => "BED",
+        DetectedFormat::Gff => "GFF",
+        DetectedFormat::Unknown => "UNKNOWN",
+    }
+}
+
+fn container_kind_label(container: ContainerKind) -> &'static str {
+    match container {
+        ContainerKind::Bgzf => "BGZF",
+        ContainerKind::Gzip => "GZIP",
+        ContainerKind::PlainText => "PLAIN_TEXT",
+        ContainerKind::Binary => "BINARY",
+        ContainerKind::Unknown => "UNKNOWN",
+    }
+}
+
+fn probe_confidence_label(confidence: Confidence) -> &'static str {
+    match confidence {
+        Confidence::High => "high",
+        Confidence::Medium => "medium",
+        Confidence::Low => "low",
+    }
+}
+
+fn validation_mode_label(mode: ValidationMode) -> &'static str {
+    match mode {
+        ValidationMode::HeaderOnly => "header_only",
+        ValidationMode::BoundedRecords => "bounded_records",
+        ValidationMode::Full => "full",
+    }
+}
+
+fn finding_severity_label(severity: FindingSeverity) -> &'static str {
+    match severity {
+        FindingSeverity::Error => "error",
+        FindingSeverity::Warning => "warning",
+        FindingSeverity::Info => "info",
+    }
+}
+
+fn finding_scope_label(scope: FindingScope) -> &'static str {
+    match scope {
+        FindingScope::File => "file",
+        FindingScope::Header => "header",
+        FindingScope::Record => "record",
+        FindingScope::Aux => "aux",
     }
 }
 
@@ -1181,6 +1667,23 @@ fn optional_u64_from_label(label: &str) -> Result<Option<u64>, std::num::ParseIn
     }
 }
 
+fn optional_i32_from_label(value: &Robj) -> Result<Option<i32>, ()> {
+    if value.is_null() {
+        return Ok(None);
+    }
+    let Some(label) = value.as_str() else {
+        return Err(());
+    };
+    if label.is_empty() {
+        return Ok(None);
+    }
+    let parsed = label.parse::<i32>().map_err(|_| ())?;
+    if parsed < 1 {
+        return Err(());
+    }
+    Ok(Some(parsed))
+}
+
 fn integrity_fields(integrity: &IntegrityStatus) -> (&'static str, String) {
     match integrity {
         IntegrityStatus::Passed => ("passed", String::new()),
@@ -1232,6 +1735,16 @@ fn bam_error_response(code: &str, message: &str, detail: Option<&str>, hint: Opt
     .into()
 }
 
+fn bam_app_error_response(error: AppError) -> Robj {
+    let error = error.to_json_error();
+    bam_error_response(
+        &error.code,
+        &error.message,
+        error.detail.as_deref(),
+        error.hint.as_deref(),
+    )
+}
+
 fn bam_error_category(code: &str) -> &'static str {
     match code {
         "file_not_found" | "permission_denied" | "io_error" | "unknown_format" => "path",
@@ -1239,6 +1752,7 @@ fn bam_error_category(code: &str) -> &'static str {
         | "invalid_header"
         | "invalid_record"
         | "not_bam"
+        | "truncated_file"
         | "unsupported_input_format" => "format",
         "invalid_index" | "missing_index" | "unsupported_index" => "index",
         "argument" => "argument",

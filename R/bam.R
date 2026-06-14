@@ -75,6 +75,166 @@ bam_summary <- function(
   .flounder_bam_summary_normalise(response$data)
 }
 
+#' Verify a BAM file header and container identity
+#'
+#' `bam_verify()` calls Bamana's shallow verification library path in-process.
+#' It confirms BGZF container recognition, BAM magic, and native BAM header
+#' parsing, but it does not scan alignment records and does not prove EOF
+#' completeness.
+#'
+#' @param path Character scalar. Local BAM file to verify.
+#'
+#' @return A one-row data frame with command status, detected format,
+#'   container, shallow/deep validation flags, checks performed, confidence,
+#'   semantic note, and Bamana error metadata columns.
+#'
+#' @examples
+#' \dontrun{
+#' bam_verify("reads.bam")
+#' }
+#'
+#' @export
+bam_verify <- function(path) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+
+  response <- .flounder_bam_verify_call(path)
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM verification failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_command_table_normalise(response$data,
+    class = "floundeR_bam_verify"
+  )
+}
+
+#' Validate BAM structure and selected consistency checks
+#'
+#' `bam_validate()` calls Bamana's structural validation library path
+#' in-process. Validation findings are returned as evidence tables even when
+#' Bamana reports validation failure; missing or unreadable inputs without a
+#' validation payload still raise typed Bamana-backed R conditions.
+#'
+#' @param path Character scalar. Local BAM file to validate.
+#' @param max_errors Positive integer scalar. Maximum error findings to retain.
+#' @param max_warnings Non-negative integer scalar. Maximum warning findings to
+#'   retain.
+#' @param header_only Logical scalar. Validate the header only.
+#' @param records Optional positive integer scalar. Validate at most this many
+#'   records after the header.
+#' @param fail_fast Logical scalar. Stop at the first error-level finding.
+#' @param include_warnings Logical scalar. Include warning-level findings.
+#'
+#' @return A named list with `status`, `summary`, `findings`, and `error` data
+#'   frames. `status$ok` preserves Bamana's command envelope result; a
+#'   validation failure with findings therefore returns `ok = FALSE` rather
+#'   than raising an R error.
+#'
+#' @examples
+#' \dontrun{
+#' bam_validate("reads.bam")
+#' }
+#'
+#' @export
+bam_validate <- function(
+  path,
+  max_errors = 100L,
+  max_warnings = 100L,
+  header_only = FALSE,
+  records = NULL,
+  fail_fast = FALSE,
+  include_warnings = TRUE
+) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+  max_errors <- .flounder_positive_bam_integer_scalar(max_errors, "max_errors")
+  max_warnings <- .flounder_nonnegative_integer_scalar(
+    max_warnings,
+    "max_warnings"
+  )
+  header_only <- .flounder_logical_scalar(header_only, "header_only")
+  records <- .flounder_optional_positive_bam_integer_scalar(records, "records")
+  fail_fast <- .flounder_logical_scalar(fail_fast, "fail_fast")
+  include_warnings <- .flounder_logical_scalar(
+    include_warnings,
+    "include_warnings"
+  )
+
+  response <- .flounder_bam_validate_call(
+    path,
+    max_errors,
+    max_warnings,
+    header_only,
+    records,
+    fail_fast,
+    include_warnings
+  )
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM validation failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_validate_normalise(response$data)
+}
+
+#' Check canonical BGZF EOF evidence
+#'
+#' `bam_check_eof()` reports canonical BGZF EOF-marker evidence through
+#' Bamana's in-process Rust library path. It reports tail completeness only and
+#' does not imply BAM header, record, or aux-field validity.
+#'
+#' @param path Character scalar. Local BAM file to inspect.
+#'
+#' @return A one-row data frame with command status, detected format,
+#'   `bgzf_eof_present`, `complete`, semantic note, and Bamana error metadata
+#'   columns. Missing EOF is returned as `complete = FALSE` evidence.
+#'
+#' @examples
+#' \dontrun{
+#' bam_check_eof("reads.bam")
+#' }
+#'
+#' @export
+bam_check_eof <- function(path) {
+  if (!is.character(path) || length(path) != 1L || is.na(path)) {
+    .flounder_bam_error("`path` must be a non-missing character scalar.",
+      category = "path"
+    )
+  }
+
+  response <- .flounder_bam_check_eof_call(path)
+  if (!is.list(response) || !isTRUE(response$ok)) {
+    .flounder_bam_error(
+      response$error %||% "BAM EOF check failed in the Rust extension.",
+      category = response$category %||% "unknown",
+      code = response$code %||% NA_character_,
+      detail = .flounder_empty_scalar_to_na(response$detail %||% NA_character_),
+      hint = .flounder_empty_scalar_to_na(response$hint %||% NA_character_)
+    )
+  }
+
+  .flounder_bam_command_table_normalise(response$data,
+    class = "floundeR_bam_check_eof"
+  )
+}
+
 .flounder_bam_summary_call <- function(
   path,
   sample_records,
@@ -93,6 +253,36 @@ bam_summary <- function(
     allow_incomplete,
     PACKAGE = "floundeR"
   )
+}
+
+.flounder_bam_verify_call <- function(path) {
+  .Call("flounder_bam_verify", path, PACKAGE = "floundeR")
+}
+
+.flounder_bam_validate_call <- function(
+  path,
+  max_errors,
+  max_warnings,
+  header_only,
+  records,
+  fail_fast,
+  include_warnings
+) {
+  .Call(
+    "flounder_bam_validate",
+    path,
+    as.integer(max_errors),
+    as.integer(max_warnings),
+    header_only,
+    .flounder_optional_integer_label(records),
+    fail_fast,
+    include_warnings,
+    PACKAGE = "floundeR"
+  )
+}
+
+.flounder_bam_check_eof_call <- function(path) {
+  .Call("flounder_bam_check_eof", path, PACKAGE = "floundeR")
 }
 
 .flounder_bam_summary_normalise <- function(data) {
@@ -198,6 +388,64 @@ bam_summary <- function(
   data
 }
 
+.flounder_bam_command_table_normalise <- function(data, class) {
+  data <- as.data.frame(data, stringsAsFactors = FALSE)
+  data$schema_version <- as.integer(data$schema_version)
+  data$analysis_wall_seconds <- .flounder_nan_to_na(
+    data$analysis_wall_seconds
+  )
+  for (column in c(
+    "checks_performed",
+    "semantic_note",
+    "error_code",
+    "error_message",
+    "error_detail",
+    "error_hint"
+  )) {
+    if (column %in% names(data)) {
+      data[[column]] <- .flounder_empty_to_na(data[[column]])
+    }
+  }
+  class(data) <- c(class, "data.frame")
+  data
+}
+
+.flounder_bam_validate_normalise <- function(data) {
+  if (!is.list(data)) {
+    .flounder_bam_error("BAM validation returned an unsupported payload shape.")
+  }
+
+  for (name in names(data)) {
+    data[[name]] <- as.data.frame(data[[name]], stringsAsFactors = FALSE)
+  }
+
+  data$status$schema_version <- as.integer(data$status$schema_version)
+  data$status$analysis_wall_seconds <- .flounder_nan_to_na(
+    data$status$analysis_wall_seconds
+  )
+  data$status$semantic_note <- .flounder_empty_to_na(data$status$semantic_note)
+
+  data$summary$schema_version <- as.integer(data$summary$schema_version)
+  for (column in c("records_examined", "errors", "warnings", "infos")) {
+    data$summary[[column]] <- .flounder_nan_to_na(data$summary[[column]])
+  }
+
+  data$findings$schema_version <- as.integer(data$findings$schema_version)
+  data$findings$record_index <- .flounder_nan_to_na(data$findings$record_index)
+  data$findings$reference_name <- .flounder_empty_to_na(
+    data$findings$reference_name
+  )
+  data$findings$tag <- .flounder_empty_to_na(data$findings$tag)
+
+  data$error$schema_version <- as.integer(data$error$schema_version)
+  for (column in c("code", "message", "detail", "hint")) {
+    data$error[[column]] <- .flounder_empty_to_na(data$error[[column]])
+  }
+
+  class(data) <- c("floundeR_bam_validate", "list")
+  data
+}
+
 .flounder_bam_fraction_table <- function(data) {
   data$schema_version <- as.integer(data$schema_version)
   for (column in setdiff(names(data), c("schema_version", "scope"))) {
@@ -214,6 +462,23 @@ bam_summary <- function(
     )
   }
   as.integer(x)
+}
+
+.flounder_positive_bam_integer_scalar <- function(x, name) {
+  if (!is.numeric(x) || length(x) != 1L || is.na(x) || x < 1L || x != as.integer(x)) {
+    .flounder_bam_error(
+      paste0("`", name, "` must be a positive integer scalar."),
+      category = "argument"
+    )
+  }
+  as.integer(x)
+}
+
+.flounder_optional_positive_bam_integer_scalar <- function(x, name) {
+  if (is.null(x)) {
+    return(NULL)
+  }
+  .flounder_positive_bam_integer_scalar(x, name)
 }
 
 .flounder_logical_scalar <- function(x, name) {

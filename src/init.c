@@ -12,6 +12,9 @@ extern SEXP flounder_pod5_manifest(SEXP path);
 extern SEXP flounder_pod5_compare(SEXP left, SEXP right);
 extern SEXP flounder_pod5_subdivide_plan(SEXP path, SEXP strategy, SEXP files_per_chunk, SEXP seconds_per_chunk, SEXP reads_per_chunk);
 extern SEXP flounder_bam_summary(SEXP path, SEXP sample_records, SEXP prefer_index, SEXP include_mapq_hist, SEXP include_flags, SEXP allow_incomplete);
+extern SEXP flounder_bam_verify(SEXP path);
+extern SEXP flounder_bam_validate(SEXP path, SEXP max_errors, SEXP max_warnings, SEXP header_only, SEXP records, SEXP fail_fast, SEXP include_warnings);
+extern SEXP flounder_bam_check_eof(SEXP path);
 
 static const R_CallMethodDef CallEntries[] = {
     {"flounder_rust_capabilities", (DL_FUNC) &flounder_rust_capabilities, 0},
@@ -23,6 +26,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"flounder_pod5_compare", (DL_FUNC) &flounder_pod5_compare, 2},
     {"flounder_pod5_subdivide_plan", (DL_FUNC) &flounder_pod5_subdivide_plan, 5},
     {"flounder_bam_summary", (DL_FUNC) &flounder_bam_summary, 6},
+    {"flounder_bam_verify", (DL_FUNC) &flounder_bam_verify, 1},
+    {"flounder_bam_validate", (DL_FUNC) &flounder_bam_validate, 7},
+    {"flounder_bam_check_eof", (DL_FUNC) &flounder_bam_check_eof, 1},
     {NULL, NULL, 0}
 };
 

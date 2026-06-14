@@ -189,13 +189,13 @@ current non-FAST5 package surface.
       command logic that must be promoted for in-process R use.
 - [x] Expose `bam_summary(path)` through Rust-in-R with stable R-native return
       shapes.
-- [ ] Expose `bam_verify(path)`, `bam_validate(path)`, and `bam_check_eof(path)`
+- [x] Expose `bam_verify(path)`, `bam_validate(path)`, and `bam_check_eof(path)`
       through Rust-in-R.
 - [ ] Expose BAM index, mapping, sorting, and tag checks needed for QC report
       cards.
 - [ ] Map Bamana response envelopes and errors to R conditions without losing
       command semantics.
-- [ ] Add small BAM fixtures and offline tests for summary/verify/validate
+- [x] Add small BAM fixtures and offline tests for summary/verify/validate
       wrappers.
 - [ ] Define BAM QC report-card checks for mapping fraction, duplicate
       fraction, QC-fail fraction, MAPQ zero burden, stale/missing index,

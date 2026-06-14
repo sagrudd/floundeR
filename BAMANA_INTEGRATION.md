@@ -91,6 +91,15 @@ anomalies, flag categories, references, index-derived evidence, and optional
 MAPQ histograms. It deliberately leaves region-scoped summaries and the wider
 verify/validate/index/tag surfaces for subsequent Slice 11 bindings.
 
+`bam_verify()`, `bam_validate()`, and `bam_check_eof()` are implemented in
+floundeR 0.7.0. `bam_verify()` exposes Bamana's header-level verification as a
+one-row evidence table and keeps EOF/body validation explicitly out of scope.
+`bam_validate()` returns status, summary, findings, and error-metadata tables;
+validation failures with findings are returned as QC evidence rather than
+ordinary R exceptions. `bam_check_eof()` reports canonical BGZF EOF-marker
+evidence as a one-row table, including missing EOF as `complete = FALSE`
+evidence with Bamana error metadata.
+
 ## R Return-Shape Guidance
 
 R wrappers should expose stable, schema-versioned objects rather than

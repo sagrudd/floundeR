@@ -1,3 +1,10 @@
+# floundeR 0.7.0
+
+* Added Rust-backed `bam_verify()`, `bam_validate()`, and `bam_check_eof()`
+  wrappers over Bamana's read-only verification, validation, and BGZF EOF
+  evidence surfaces, with stable R-native return shapes and offline BAM
+  fixture coverage.
+
 # floundeR 0.6.0
 
 * Added Rust-backed `bam_summary()` as the first curated Bamana integration,

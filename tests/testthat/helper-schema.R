@@ -224,6 +224,77 @@ flounder_qc_schemas <- list(
     "max",
     "mean",
     "zero_count"
+  ),
+  bam_verify = c(
+    "schema_version",
+    "command",
+    "path",
+    "ok",
+    "analysis_wall_seconds",
+    "detected_format",
+    "container",
+    "is_bam",
+    "shallow_verified",
+    "deep_validated",
+    "confidence",
+    "checks_performed",
+    "semantic_note",
+    "error_code",
+    "error_message",
+    "error_detail",
+    "error_hint"
+  ),
+  bam_check_eof = c(
+    "schema_version",
+    "command",
+    "path",
+    "ok",
+    "analysis_wall_seconds",
+    "detected_format",
+    "bgzf_eof_present",
+    "complete",
+    "semantic_note",
+    "error_code",
+    "error_message",
+    "error_detail",
+    "error_hint"
+  ),
+  bam_validate_status = c(
+    "schema_version",
+    "command",
+    "path",
+    "ok",
+    "analysis_wall_seconds",
+    "format",
+    "mode",
+    "valid",
+    "semantic_note"
+  ),
+  bam_validate_summary = c(
+    "schema_version",
+    "header_valid",
+    "records_examined",
+    "full_file_examined",
+    "errors",
+    "warnings",
+    "infos"
+  ),
+  bam_validate_findings = c(
+    "schema_version",
+    "severity",
+    "scope",
+    "code",
+    "message",
+    "record_index",
+    "reference_name",
+    "tag"
+  ),
+  bam_validate_error = c(
+    "schema_version",
+    "code",
+    "message",
+    "detail",
+    "hint"
   )
 )
 
