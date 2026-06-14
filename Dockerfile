@@ -8,11 +8,13 @@ ENV PATH=/usr/local/cargo/bin:${PATH}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
+    cmake \
     curl \
     g++ \
     gfortran \
     git \
     libbz2-dev \
+    libclang-dev \
     libcurl4-openssl-dev \
     libfontconfig1-dev \
     libfreetype6-dev \

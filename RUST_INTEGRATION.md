@@ -150,18 +150,22 @@ package builds:
   the R shared object is linked.
 - `src/init.c` provides a conservative native registration entry point.
 
-The extension now links the first curated POD5 dependency through the open
-`pod5-tools` Git repository. Bamana, Porkchop, and private Grammateus should be
-introduced only with the first functional binding that needs each engine.
+The extension links curated POD5 and BAM/BGZF/FASTQ dependencies through the
+open `pod5-tools` and `bamana` Git repositories. Porkchop-backed R wrappers are
+present, but the public default build keeps Porkchop unlinked until the
+Porkchop repository is public; local sibling-checkout builds use
+`src/rust-porkchop/Cargo.toml` and the `porkchop-integration` feature.
+Private Grammateus should be introduced only through the optional runtime model
+documented for reporting.
 
 ## Minimal Callable Function
 
 The first Rust-to-R proof point was an internal capability function exposed as
 `.flounder_rust_capabilities()`. The current Rust entry points are registered
 through `src/init.c`; capability metadata reports linked status for
-`pod5-tools` and explicit `not_linked` status for Bamana, Porkchop, and
-Grammateus. The internal helpers remain in place so public functions can
-enforce a consistent R error and availability policy.
+`pod5-tools` and `bamana`, feature-dependent status for Porkchop, and explicit
+`not_linked` status for Grammateus. The internal helpers remain in place so
+public functions can enforce a consistent R error and availability policy.
 
 ## R Wrapper And Error Policy
 

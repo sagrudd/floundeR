@@ -1,17 +1,19 @@
 CARGO ?= cargo
-CARGO_MANIFEST = rust/Cargo.toml
+CARGO_MANIFEST ?= rust/Cargo.toml
 CARGO_FLAGS = --manifest-path=$(CARGO_MANIFEST) --lib --release
-RUST_LIB = rust/target/release/libflounder_extendr.a
+CARGO_FEATURE_ARGS ?=
+RUST_LIB ?= rust/target/release/libflounder_extendr.a
 RUST_SOURCES = rust/src/lib.rs $(CARGO_MANIFEST)
+EXTRA_RUST_LIBS ?=
 
-PKG_LIBS = $(RUST_LIB)
+PKG_LIBS = $(RUST_LIB) $(EXTRA_RUST_LIBS)
 
 $(SHLIB): $(RUST_LIB)
 
 .PHONY: FORCE
 
 $(RUST_LIB): FORCE $(RUST_SOURCES)
-	$(CARGO) build $(CARGO_FLAGS)
+	CARGO_NET_GIT_FETCH_WITH_CLI=true $(CARGO) build $(CARGO_FLAGS) $(CARGO_FEATURE_ARGS)
 
 clean:
 	-$(CARGO) clean --manifest-path=$(CARGO_MANIFEST)

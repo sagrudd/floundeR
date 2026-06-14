@@ -1,3 +1,14 @@
+# floundeR 0.12.0
+
+* Added in-process Porkchop-backed R wrappers for library kit candidates,
+  adapter/primer evidence, barcode/flank evidence, and cDNA primer-pair
+  evidence. Until Porkchop is public, default source builds keep that engine
+  unlinked and the wrappers fail with typed R conditions; local sibling-checkout
+  builds can enable the `porkchop-integration` feature.
+* Porkchop evidence preserves heuristic score terminology, kit provenance,
+  lifecycle/support status, and validation limitations while keeping trimming
+  and preprocessing out of the normal floundeR API.
+
 # floundeR 0.11.4
 
 * Added the Porkchop integration audit for curated library-preparation QC

@@ -15,5 +15,7 @@
 ^SYNOPTIKON_QC_PAYLOAD\.md$
 ^legacy-vignettes$
 ^scripts$
+^src/rust/target$
+^src/rust-porkchop/target$
 ^TODO\.md$
 ^\.dockerignore$

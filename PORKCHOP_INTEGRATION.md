@@ -40,8 +40,15 @@ Local Porkchop source state at audit time:
 - git commit: `e60bdd2`
 - MSRV: Rust `1.82`
 
-floundeR is not linked to Porkchop yet. `flounder_rust_capabilities()` correctly
-reports `porkchop = "not_linked"` until the curated bindings land.
+floundeR 0.12.0 exposes the curated R wrapper surface for Porkchop-backed
+library-preparation QC. The public default source build remains installable
+without the private GitHub checkout while Porkchop has not yet been made
+public, so `flounder_rust_capabilities()` reports `porkchop = "not_linked"` in
+that mode and the wrappers raise typed R conditions. Local development builds
+can compile the real in-process integration with
+`CARGO_MANIFEST=rust-porkchop/Cargo.toml`,
+`CARGO_FEATURE_ARGS=--features=porkchop-integration`, and a sibling
+`../porkchop` checkout.
 
 ## Public Contract Shape
 
@@ -81,29 +88,32 @@ read-only contracts.
 
 | floundeR target | Porkchop source | Purpose |
 | --- | --- | --- |
-| `library_kit_candidates()` | `list_supported_kits()`, `get_sequences_for_kit()`, kit metadata, and a future pure screening-ranker library function | Rank candidate library-preparation contexts from observed motif evidence while carrying lifecycle, support level, provenance, score terminology, and limitations. |
+| `library_kit_candidates()` | `list_supported_kits()`, kit metadata, and `motif_index::cached_motif_indexes()` | Rank candidate library-preparation contexts from observed motif evidence while carrying lifecycle, support level, provenance, score terminology, and limitations. |
 | `library_adapter_primer_evidence()` | `motif_index::cached_motif_index_for_kit()`, `KitMotifIndex`, `MotifFamily::Adapter`, `MotifFamily::Primer` | Report adapter and primer motif observations per read or aggregate sample without trimming reads. |
 | `library_barcode_evidence()` | `KitMotifIndex`, `MotifFamily::Barcode`, `MotifFamily::Flank`, registry expected barcode counts | Report barcode/flank motif evidence, barcode ambiguity, expected barcode coverage, and barcode-family context. |
 | `library_cdna_primer_evidence()` | `cdna::orientation_rules_for_kit()`, `cdna::detect_cdna_primer_pair()` | Report cDNA primer-pair evidence and read-class vocabulary for supported PCS/PCB kits. |
 | `library_preparation_report_card()` | floundeR wrapper over the above evidence tables | Produce pass/warn/fail checks for unexpected library chemistry, adapter burden, barcode ambiguity, cDNA partial/unclassified burden, and unsupported or partial kit support levels. |
 
-`library_kit_candidates()` needs the most care. Porkchop's current
+`library_kit_candidates()` in floundeR 0.12.0 uses Porkchop's public kit
+registry and motif index directly to provide in-memory heuristic candidate
+evidence. Porkchop's current
 `screen::run_screen()` is still a CLI-style workflow that owns input reading,
 parallel execution, terminal UI, JSON writing, and optional HTML writing. Its
 internal kit-ranking logic is useful, but it is not yet a clean floundeR
 binding point because key helpers are private and output-oriented. Before
-floundeR binds kit candidate screening, Porkchop should expose a pure library
-adapter that accepts in-memory motif tallies or read batches and returns
-structured candidate rows without writing files or starting the terminal UI.
+floundeR attempts file-backed or sampled screening parity with `porkchop
+screen`, Porkchop should expose a pure library adapter that accepts in-memory
+motif tallies or read batches and returns structured candidate rows without
+writing files or starting the terminal UI.
 
-`library_adapter_primer_evidence()` and `library_barcode_evidence()` can start
+`library_adapter_primer_evidence()` and `library_barcode_evidence()` start
 from the existing `motif_index` API. `KitMotifIndex` already preserves registry
 order, motif family, source bucket, normalized motif text, reverse-complement
 motifs, provenance through `SequenceRecord`, and ambiguity-aware match ranges.
 The floundeR wrapper should convert those hits to stable R-native tables rather
 than copying the CLI screen report shape wholesale.
 
-`library_cdna_primer_evidence()` can start from the existing `cdna` API.
+`library_cdna_primer_evidence()` starts from the existing `cdna` API.
 `detect_cdna_primer_pair()` takes a kit id and in-memory read sequence, returns
 structured `CdnaPrimerPairDetection`, and distinguishes unsupported kit IDs
 from supported kits with unclassified reads. floundeR should preserve that
@@ -242,9 +252,10 @@ Grammateus runtime assets.
 
 ## Required Upstream Library Work
 
-No Porkchop source change is required for this audit. The next implementation
-slice should either bind existing pure APIs directly or make small upstream
-Porkchop changes to expose a clean screening adapter.
+No Porkchop source change was required for the first floundeR 0.12.0 wrappers.
+They bind existing pure APIs directly. A later implementation slice may still
+need small upstream Porkchop changes to expose a clean file-backed screening
+adapter.
 
 The likely upstream additions are:
 

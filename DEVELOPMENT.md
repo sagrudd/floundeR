@@ -40,11 +40,12 @@ Cargo plus rustc with Rust `1.85` or newer, matching `DESCRIPTION` and
 CLI wrappers.
 
 The package must remain installable without private Grammateus source or
-runtime assets. `pod5-tools` is now an explicit open Rust library dependency
-for `pod5_find()` and is pinned to the public GitHub repository in
-`src/rust/Cargo.toml`. `../bamana`, `../porkchop`, and private Grammateus
-should become explicit Rust library dependencies only in the functional binding
-slices that need them.
+runtime assets, and without private GitHub access while Porkchop has not yet
+been made public. `pod5-tools` and `bamana` are explicit open Rust library
+dependencies pinned in `src/rust/Cargo.toml`. Porkchop-backed wrappers are
+available in the R API, but the public default build reports
+`porkchop = "not_linked"` until a build is made with the local development
+manifest in `src/rust-porkchop/Cargo.toml` and a sibling `../porkchop` checkout.
 
 ### macOS
 
@@ -104,6 +105,28 @@ embedded Rust static library links into the R package shared object. It
 intentionally does not
 include private Grammateus assets, ONT POD5 example data, or large derived
 files.
+
+Run the Porkchop-enabled development build only from a checkout layout where
+`floundeR` and `porkchop` are sibling directories:
+
+```sh
+docker run --rm -v /Users/stephen/Projects:/workspace -w /workspace/floundeR \
+  flounder-dev sh -c \
+  'export CARGO_TARGET_DIR=/tmp/flounder-porkchop-target &&
+   cargo build --manifest-path=src/rust-porkchop/Cargo.toml \
+     --lib --release --features=porkchop-integration &&
+   EDLIB_DIR=$(find /tmp/flounder-porkchop-target/release/build \
+     -path "*/out/lib/libedlib.a" -print -quit | sed "s#/libedlib.a##") &&
+   CARGO_MANIFEST=rust-porkchop/Cargo.toml \
+   CARGO_FEATURE_ARGS=--features=porkchop-integration \
+   RUST_LIB=/tmp/flounder-porkchop-target/release/libflounder_extendr.a \
+   EXTRA_RUST_LIBS="-L${EDLIB_DIR} -ledlib -lstdc++" \
+   R CMD INSTALL .'
+```
+
+This development path needs the additional native toolchain declared in the
+Dockerfile, including `cmake` and `libclang-dev`, because Porkchop's current
+dependency graph includes native `edlib`/`bindgen` build steps.
 
 ### Current Compiled-Code Warning
 

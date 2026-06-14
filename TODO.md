@@ -219,13 +219,13 @@ current non-FAST5 package surface.
 
 - [x] Audit `../porkchop` public library APIs and identify only the QC/review
       logic that should be promoted for in-process R use.
-- [ ] Expose curated R wrappers for kit candidates, adapter/primer evidence,
+- [x] Expose curated R wrappers for kit candidates, adapter/primer evidence,
       barcode evidence, and cDNA primer-pair evidence.
-- [ ] Preserve Porkchop heuristic score terminology; do not expose scores as
+- [x] Preserve Porkchop heuristic score terminology; do not expose scores as
       calibrated probabilities.
-- [ ] Carry kit provenance, lifecycle status, support level, and validation
+- [x] Carry kit provenance, lifecycle status, support level, and validation
       limitations into floundeR return values.
-- [ ] Add small FASTQ fixtures or mocked sequence records for offline tests.
+- [x] Add small FASTQ fixtures or mocked sequence records for offline tests.
 - [ ] Define report-card checks for unexpected library chemistry, adapter
       burden, barcode ambiguity, cDNA partial/unclassified burden, and
       unsupported or partial kit support levels.

@@ -1,5 +1,8 @@
 use std::{path::PathBuf, time::Instant};
 
+#[cfg(feature = "porkchop-integration")]
+use std::collections::HashSet;
+
 use bamana::{
     bam::index::IndexKind,
     bam::validate::{
@@ -41,14 +44,29 @@ use pod5_tools::{
     VerifyStatus, compare_inputs, find_pod5_directories, folder_info, manifest_from_path,
     read_pod5_file_info, subdivide_plan_from_path, verify_pod5_file,
 };
+#[cfg(feature = "porkchop-integration")]
+use porkchop::{
+    cdna::detect_cdna_primer_pair,
+    kit::{Kit, KitMetadata, SeqKind, SupportLevel},
+    list_supported_kits,
+    motif_index::{
+        MotifFamily, MotifIndexStrand, cached_motif_index_for_kit, cached_motif_indexes,
+    },
+};
 
 type SEXP = extendr_api::SEXP;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn flounder_rust_capabilities() -> SEXP {
+    let porkchop = if cfg!(feature = "porkchop-integration") {
+        "|porkchop"
+    } else {
+        ""
+    };
     let payload = format!(
-        "flounder.rust_capabilities.v1|flounder-extendr|{}|pod5-tools|bamana",
-        env!("CARGO_PKG_VERSION")
+        "flounder.rust_capabilities.v1|flounder-extendr|{}|pod5-tools|bamana{}",
+        env!("CARGO_PKG_VERSION"),
+        porkchop
     );
     unsafe { Robj::from(payload).get() }
 }
@@ -201,6 +219,148 @@ pub extern "C" fn flounder_bam_check_tag(
         count_hits,
     );
     unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_library_kit_candidates(reads: SEXP, read_ids: SEXP) -> SEXP {
+    let result = library_kit_candidates_response(reads, read_ids);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_library_adapter_primer_evidence(
+    reads: SEXP,
+    read_ids: SEXP,
+    kit_id: SEXP,
+) -> SEXP {
+    #[cfg(feature = "porkchop-integration")]
+    let result = library_motif_evidence_response(
+        reads,
+        read_ids,
+        kit_id,
+        &[MotifFamily::Adapter, MotifFamily::Primer],
+    );
+    #[cfg(not(feature = "porkchop-integration"))]
+    let result = library_motif_evidence_response(reads, read_ids, kit_id, &[]);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_library_barcode_evidence(
+    reads: SEXP,
+    read_ids: SEXP,
+    kit_id: SEXP,
+) -> SEXP {
+    #[cfg(feature = "porkchop-integration")]
+    let result = library_motif_evidence_response(
+        reads,
+        read_ids,
+        kit_id,
+        &[MotifFamily::Barcode, MotifFamily::Flank],
+    );
+    #[cfg(not(feature = "porkchop-integration"))]
+    let result = library_motif_evidence_response(reads, read_ids, kit_id, &[]);
+    unsafe { result.get() }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn flounder_library_cdna_primer_evidence(
+    reads: SEXP,
+    read_ids: SEXP,
+    kit_id: SEXP,
+) -> SEXP {
+    let result = library_cdna_primer_evidence_response(reads, read_ids, kit_id);
+    unsafe { result.get() }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_kit_candidates_response(reads: SEXP, read_ids: SEXP) -> Robj {
+    let reads = unsafe { Robj::from_sexp(reads) };
+    let read_ids = unsafe { Robj::from_sexp(read_ids) };
+    let Ok((reads, read_ids)) = library_read_inputs(&reads, &read_ids) else {
+        return library_error_response(
+            "argument",
+            "`reads` and `read_ids` must be non-missing character vectors of equal length.",
+        );
+    };
+
+    match library_kit_candidates_data_frame(&reads, &read_ids) {
+        Ok(data) => list!(ok = true, data = data, error = r!(()), category = r!(())).into(),
+        Err(message) => library_error_response("porkchop", &message),
+    }
+}
+
+#[cfg(not(feature = "porkchop-integration"))]
+fn library_kit_candidates_response(_reads: SEXP, _read_ids: SEXP) -> Robj {
+    library_porkchop_unavailable_response()
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_motif_evidence_response(
+    reads: SEXP,
+    read_ids: SEXP,
+    kit_id: SEXP,
+    families: &[MotifFamily],
+) -> Robj {
+    let reads = unsafe { Robj::from_sexp(reads) };
+    let read_ids = unsafe { Robj::from_sexp(read_ids) };
+    let kit_id = unsafe { Robj::from_sexp(kit_id) };
+    let Ok((reads, read_ids)) = library_read_inputs(&reads, &read_ids) else {
+        return library_error_response(
+            "argument",
+            "`reads` and `read_ids` must be non-missing character vectors of equal length.",
+        );
+    };
+    let Some(kit_id) = kit_id.as_str() else {
+        return library_error_response(
+            "argument",
+            "`kit_id` must be a non-missing character scalar.",
+        );
+    };
+
+    match library_motif_evidence_data_frame(&reads, &read_ids, kit_id, families) {
+        Ok(data) => list!(ok = true, data = data, error = r!(()), category = r!(())).into(),
+        Err(message) => library_error_response("kit", &message),
+    }
+}
+
+#[cfg(not(feature = "porkchop-integration"))]
+fn library_motif_evidence_response(
+    _reads: SEXP,
+    _read_ids: SEXP,
+    _kit_id: SEXP,
+    _families: &[()],
+) -> Robj {
+    library_porkchop_unavailable_response()
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_cdna_primer_evidence_response(reads: SEXP, read_ids: SEXP, kit_id: SEXP) -> Robj {
+    let reads = unsafe { Robj::from_sexp(reads) };
+    let read_ids = unsafe { Robj::from_sexp(read_ids) };
+    let kit_id = unsafe { Robj::from_sexp(kit_id) };
+    let Ok((reads, read_ids)) = library_read_inputs(&reads, &read_ids) else {
+        return library_error_response(
+            "argument",
+            "`reads` and `read_ids` must be non-missing character vectors of equal length.",
+        );
+    };
+    let Some(kit_id) = kit_id.as_str() else {
+        return library_error_response(
+            "argument",
+            "`kit_id` must be a non-missing character scalar.",
+        );
+    };
+
+    match library_cdna_primer_evidence_data_frame(&reads, &read_ids, kit_id) {
+        Ok(data) => list!(ok = true, data = data, error = r!(()), category = r!(())).into(),
+        Err(message) => library_error_response("kit", &message),
+    }
+}
+
+#[cfg(not(feature = "porkchop-integration"))]
+fn library_cdna_primer_evidence_response(_reads: SEXP, _read_ids: SEXP, _kit_id: SEXP) -> Robj {
+    library_porkchop_unavailable_response()
 }
 
 fn pod5_find_response(path: SEXP) -> Robj {
@@ -2507,6 +2667,500 @@ fn bam_app_error_response(error: AppError) -> Robj {
         error.detail.as_deref(),
         error.hint.as_deref(),
     )
+}
+
+#[derive(Debug)]
+#[cfg(feature = "porkchop-integration")]
+struct KitCandidateRow {
+    kit_id: String,
+    description: String,
+    chemistry: String,
+    workflow: String,
+    kit_family: String,
+    lifecycle_status: String,
+    support_level: String,
+    legacy: bool,
+    introduced_year: f64,
+    retired_year: f64,
+    score: f64,
+    normalized_score: f64,
+    matched_motifs: usize,
+    total_hits: usize,
+    provenance_source: String,
+    provenance_appendix: String,
+    provenance_notes: String,
+    source_urls: String,
+    validation_status: String,
+    known_limitations: String,
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_read_inputs(reads: &Robj, read_ids: &Robj) -> Result<(Vec<String>, Vec<String>), ()> {
+    let Some(reads) = reads.as_str_vector() else {
+        return Err(());
+    };
+    let Some(read_ids) = read_ids.as_str_vector() else {
+        return Err(());
+    };
+    if reads.len() != read_ids.len() {
+        return Err(());
+    }
+    Ok((
+        reads.iter().map(|value| (*value).to_string()).collect(),
+        read_ids.iter().map(|value| (*value).to_string()).collect(),
+    ))
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_kit_candidates_data_frame(
+    reads: &[String],
+    _read_ids: &[String],
+) -> Result<Robj, String> {
+    let indexes = cached_motif_indexes().map_err(|error| format!("{error:?}"))?;
+    let mut rows = Vec::new();
+
+    for index in indexes {
+        let Some(kit) = list_supported_kits()
+            .iter()
+            .find(|kit| kit.id.0 == index.kit_id().0)
+        else {
+            continue;
+        };
+        let mut score = 0.0_f64;
+        let mut total_hits = 0_usize;
+        let mut matched = HashSet::<String>::new();
+
+        for read in reads {
+            for hit in index.find_bidirectional_matches_in(read.as_bytes()) {
+                total_hits += 1;
+                score += motif_family_weight(hit.entry().family());
+                matched.insert(hit.entry().name().to_string());
+            }
+        }
+
+        let metadata = kit.metadata;
+        rows.push(KitCandidateRow {
+            kit_id: kit.id.0.to_string(),
+            description: kit.description.to_string(),
+            chemistry: kit.chemistry.to_string(),
+            workflow: metadata.workflow.to_string(),
+            kit_family: metadata.family.to_string(),
+            lifecycle_status: metadata.status.to_string(),
+            support_level: metadata.support_level.to_string(),
+            legacy: kit.legacy,
+            introduced_year: option_u16_to_f64(metadata.introduced_year),
+            retired_year: option_u16_to_f64(metadata.retired_year),
+            score,
+            normalized_score: 0.0,
+            matched_motifs: matched.len(),
+            total_hits,
+            provenance_source: metadata.provenance.source.to_string(),
+            provenance_appendix: metadata.provenance.appendix.unwrap_or_default().to_string(),
+            provenance_notes: metadata.provenance.notes.unwrap_or_default().to_string(),
+            source_urls: metadata.source_urls.join(";"),
+            validation_status: support_level_validation_status(metadata.support_level).to_string(),
+            known_limitations: kit_known_limitations(kit, &metadata),
+        });
+    }
+
+    normalize_candidate_scores(&mut rows);
+    rows.sort_by(|left, right| {
+        right
+            .normalized_score
+            .partial_cmp(&left.normalized_score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| {
+                right
+                    .score
+                    .partial_cmp(&left.score)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            })
+            .then_with(|| left.kit_id.cmp(&right.kit_id))
+    });
+
+    Ok(data_frame!(
+        schema_version = vec!["flounder.library_kit_candidates.v1".to_string(); rows.len()],
+        kit_id = rows
+            .iter()
+            .map(|row| row.kit_id.clone())
+            .collect::<Vec<_>>(),
+        description = rows
+            .iter()
+            .map(|row| row.description.clone())
+            .collect::<Vec<_>>(),
+        chemistry = rows
+            .iter()
+            .map(|row| row.chemistry.clone())
+            .collect::<Vec<_>>(),
+        workflow = rows
+            .iter()
+            .map(|row| row.workflow.clone())
+            .collect::<Vec<_>>(),
+        kit_family = rows
+            .iter()
+            .map(|row| row.kit_family.clone())
+            .collect::<Vec<_>>(),
+        lifecycle_status = rows
+            .iter()
+            .map(|row| row.lifecycle_status.clone())
+            .collect::<Vec<_>>(),
+        support_level = rows
+            .iter()
+            .map(|row| row.support_level.clone())
+            .collect::<Vec<_>>(),
+        legacy = rows.iter().map(|row| row.legacy).collect::<Vec<_>>(),
+        introduced_year = rows
+            .iter()
+            .map(|row| row.introduced_year)
+            .collect::<Vec<_>>(),
+        retired_year = rows.iter().map(|row| row.retired_year).collect::<Vec<_>>(),
+        score = rows.iter().map(|row| row.score).collect::<Vec<_>>(),
+        normalized_score = rows
+            .iter()
+            .map(|row| row.normalized_score)
+            .collect::<Vec<_>>(),
+        score_kind = vec!["heuristic_evidence_score".to_string(); rows.len()],
+        matched_motifs = rows
+            .iter()
+            .map(|row| row.matched_motifs as f64)
+            .collect::<Vec<_>>(),
+        total_hits = rows
+            .iter()
+            .map(|row| row.total_hits as f64)
+            .collect::<Vec<_>>(),
+        provenance_source = rows
+            .iter()
+            .map(|row| row.provenance_source.clone())
+            .collect::<Vec<_>>(),
+        provenance_appendix = rows
+            .iter()
+            .map(|row| row.provenance_appendix.clone())
+            .collect::<Vec<_>>(),
+        provenance_notes = rows
+            .iter()
+            .map(|row| row.provenance_notes.clone())
+            .collect::<Vec<_>>(),
+        source_urls = rows
+            .iter()
+            .map(|row| row.source_urls.clone())
+            .collect::<Vec<_>>(),
+        validation_status = rows
+            .iter()
+            .map(|row| row.validation_status.clone())
+            .collect::<Vec<_>>(),
+        known_limitations = rows
+            .iter()
+            .map(|row| row.known_limitations.clone())
+            .collect::<Vec<_>>()
+    ))
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_motif_evidence_data_frame(
+    reads: &[String],
+    read_ids: &[String],
+    kit_id: &str,
+    families: &[MotifFamily],
+) -> Result<Robj, String> {
+    let Some(index) = cached_motif_index_for_kit(kit_id).map_err(|error| format!("{error:?}"))?
+    else {
+        return Err(format!("Unknown Porkchop kit id `{kit_id}`."));
+    };
+    let Some(kit) = list_supported_kits().iter().find(|kit| kit.id.0 == kit_id) else {
+        return Err(format!("Unknown Porkchop kit id `{kit_id}`."));
+    };
+
+    let mut out_read_ids = Vec::new();
+    let mut out_kit_ids = Vec::new();
+    let mut motif_names = Vec::new();
+    let mut motif_kinds = Vec::new();
+    let mut motif_families = Vec::new();
+    let mut motif_sources = Vec::new();
+    let mut strands = Vec::new();
+    let mut starts = Vec::new();
+    let mut ends = Vec::new();
+    let mut match_semantics = Vec::new();
+    let mut edit_distances = Vec::new();
+    let mut provenance_sources = Vec::new();
+    let mut support_levels = Vec::new();
+
+    for (read, read_id) in reads.iter().zip(read_ids.iter()) {
+        for hit in index.find_bidirectional_matches_in(read.as_bytes()) {
+            let entry = hit.entry();
+            if !families.contains(&entry.family()) {
+                continue;
+            }
+            let record = entry.record();
+            out_read_ids.push(read_id.clone());
+            out_kit_ids.push(kit_id.to_string());
+            motif_names.push(entry.name().to_string());
+            motif_kinds.push(seq_kind_label(entry.kind()).to_string());
+            motif_families.push(motif_family_label(entry.family()).to_string());
+            motif_sources.push(motif_source_label(entry.source()).to_string());
+            strands.push(motif_strand_label(hit.strand()).to_string());
+            starts.push(hit.start() as f64);
+            ends.push(hit.end() as f64);
+            match_semantics.push("ambiguity_aware_exact".to_string());
+            edit_distances.push(f64::NAN);
+            provenance_sources.push(record.provenance.source.to_string());
+            support_levels.push(kit.metadata.support_level.to_string());
+        }
+    }
+
+    Ok(data_frame!(
+        schema_version = vec!["flounder.library_motif_evidence.v1".to_string(); out_read_ids.len()],
+        read_id = out_read_ids,
+        kit_id = out_kit_ids,
+        motif_name = motif_names,
+        motif_kind = motif_kinds,
+        motif_family = motif_families,
+        motif_source = motif_sources,
+        strand = strands,
+        start = starts,
+        end = ends,
+        match_semantics = match_semantics,
+        edit_distance = edit_distances,
+        provenance_source = provenance_sources,
+        support_level = support_levels
+    ))
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn library_cdna_primer_evidence_data_frame(
+    reads: &[String],
+    read_ids: &[String],
+    kit_id: &str,
+) -> Result<Robj, String> {
+    if porkchop::cdna::orientation_rules_for_kit(kit_id).is_none() {
+        return Err(format!(
+            "Porkchop kit `{kit_id}` has no cDNA orientation rules."
+        ));
+    }
+
+    let mut out_read_ids = Vec::new();
+    let mut kit_ids = Vec::new();
+    let mut classes = Vec::new();
+    let mut classified = Vec::new();
+    let mut full_length = Vec::new();
+    let mut five_prime_names = Vec::new();
+    let mut five_prime_starts = Vec::new();
+    let mut five_prime_ends = Vec::new();
+    let mut three_prime_names = Vec::new();
+    let mut three_prime_starts = Vec::new();
+    let mut three_prime_ends = Vec::new();
+    let mut primer_hit_counts = Vec::new();
+    let mut workflow_support_notes = Vec::new();
+    let mut known_limitations = Vec::new();
+
+    let kit = list_supported_kits().iter().find(|kit| kit.id.0 == kit_id);
+    let limitations = kit
+        .map(|kit| kit_known_limitations(kit, &kit.metadata))
+        .unwrap_or_default();
+    let support_note = "primer-pair classification only; rescue, UMI-aware barcode handling, and public-dataset validation are separate claims";
+
+    for (read, read_id) in reads.iter().zip(read_ids.iter()) {
+        let Some(result) = detect_cdna_primer_pair(kit_id, read.as_bytes()) else {
+            return Err(format!(
+                "Porkchop kit `{kit_id}` has no cDNA registry sequence records."
+            ));
+        };
+        out_read_ids.push(read_id.clone());
+        kit_ids.push(result.kit_id.clone());
+        classes.push(result.class.as_str().to_string());
+        classified.push(result.class.is_classified());
+        full_length.push(result.class.is_full_length());
+        five_prime_names.push(
+            result
+                .five_prime
+                .as_ref()
+                .map(|hit| hit.name.clone())
+                .unwrap_or_default(),
+        );
+        five_prime_starts.push(
+            result
+                .five_prime
+                .as_ref()
+                .map(|hit| hit.start as f64)
+                .unwrap_or(f64::NAN),
+        );
+        five_prime_ends.push(
+            result
+                .five_prime
+                .as_ref()
+                .map(|hit| hit.end as f64)
+                .unwrap_or(f64::NAN),
+        );
+        three_prime_names.push(
+            result
+                .three_prime
+                .as_ref()
+                .map(|hit| hit.name.clone())
+                .unwrap_or_default(),
+        );
+        three_prime_starts.push(
+            result
+                .three_prime
+                .as_ref()
+                .map(|hit| hit.start as f64)
+                .unwrap_or(f64::NAN),
+        );
+        three_prime_ends.push(
+            result
+                .three_prime
+                .as_ref()
+                .map(|hit| hit.end as f64)
+                .unwrap_or(f64::NAN),
+        );
+        primer_hit_counts.push(result.primer_hits.len() as f64);
+        workflow_support_notes.push(support_note.to_string());
+        known_limitations.push(limitations.clone());
+    }
+
+    Ok(data_frame!(
+        schema_version =
+            vec!["flounder.library_cdna_primer_evidence.v1".to_string(); out_read_ids.len()],
+        kit_id = kit_ids,
+        read_id = out_read_ids,
+        class = classes,
+        classified = classified,
+        full_length = full_length,
+        five_prime_name = five_prime_names,
+        five_prime_start = five_prime_starts,
+        five_prime_end = five_prime_ends,
+        three_prime_name = three_prime_names,
+        three_prime_start = three_prime_starts,
+        three_prime_end = three_prime_ends,
+        primer_hit_count = primer_hit_counts,
+        workflow_support_note = workflow_support_notes,
+        known_limitations = known_limitations
+    ))
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn normalize_candidate_scores(rows: &mut [KitCandidateRow]) {
+    if rows.is_empty() {
+        return;
+    }
+    let max_score = rows
+        .iter()
+        .map(|row| row.score)
+        .fold(f64::NEG_INFINITY, f64::max);
+    let exps = rows
+        .iter()
+        .map(|row| (row.score - max_score).exp())
+        .collect::<Vec<_>>();
+    let denominator = exps.iter().sum::<f64>().max(1e-12);
+    for (row, exp) in rows.iter_mut().zip(exps.iter()) {
+        row.normalized_score = exp / denominator;
+    }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn motif_family_weight(family: MotifFamily) -> f64 {
+    match family {
+        MotifFamily::Adapter => 3.0,
+        MotifFamily::Primer => 2.0,
+        MotifFamily::Barcode => 1.0,
+        MotifFamily::Flank => 0.5,
+    }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn option_u16_to_f64(value: Option<u16>) -> f64 {
+    value.map(|value| value as f64).unwrap_or(f64::NAN)
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn support_level_validation_status(level: SupportLevel) -> &'static str {
+    match level {
+        SupportLevel::Full => "registry_supported_validation_separate",
+        SupportLevel::BestEffort => "best_effort_registry_support",
+        SupportLevel::Partial => "partial_registry_support",
+        SupportLevel::Experimental => "experimental_registry_support",
+    }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn kit_known_limitations(kit: &Kit, metadata: &KitMetadata) -> String {
+    let mut notes = Vec::new();
+    if kit.legacy {
+        notes.push("legacy chemistry support is conservative");
+    }
+    match metadata.support_level {
+        SupportLevel::Full => {
+            notes.push("workflow validation remains separate from registry support")
+        }
+        SupportLevel::BestEffort => {
+            notes.push("best-effort support must not be presented as validated workflow support")
+        }
+        SupportLevel::Partial => notes
+            .push("partial kit model; do not treat as complete trimming or demultiplexing support"),
+        SupportLevel::Experimental => {
+            notes.push("experimental support; review before production use")
+        }
+    }
+    if matches!(
+        metadata.workflow,
+        porkchop::kit::Workflow::PCRcDNASequencing | porkchop::kit::Workflow::PCRcDNABarcoding
+    ) {
+        notes.push("cDNA rescue, UMI-aware barcode handling, and public-dataset validation are separate claims");
+    }
+    notes.join("; ")
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn seq_kind_label(kind: SeqKind) -> &'static str {
+    match kind {
+        SeqKind::AdapterTop => "adapter_top",
+        SeqKind::AdapterBottom => "adapter_bottom",
+        SeqKind::Primer => "primer",
+        SeqKind::Barcode => "barcode",
+        SeqKind::Flank => "flank",
+    }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn motif_family_label(family: MotifFamily) -> &'static str {
+    match family {
+        MotifFamily::Adapter => "adapter",
+        MotifFamily::Primer => "primer",
+        MotifFamily::Barcode => "barcode",
+        MotifFamily::Flank => "flank",
+    }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn motif_source_label(source: porkchop::motif_index::MotifSource) -> &'static str {
+    match source {
+        porkchop::motif_index::MotifSource::AdapterOrPrimer => "adapter_or_primer",
+        porkchop::motif_index::MotifSource::BarcodeOrFlank => "barcode_or_flank",
+    }
+}
+
+#[cfg(feature = "porkchop-integration")]
+fn motif_strand_label(strand: MotifIndexStrand) -> &'static str {
+    match strand {
+        MotifIndexStrand::Forward => "forward",
+        MotifIndexStrand::Reverse => "reverse",
+    }
+}
+
+#[cfg(not(feature = "porkchop-integration"))]
+fn library_porkchop_unavailable_response() -> Robj {
+    library_error_response(
+        "porkchop_unavailable",
+        "Porkchop-backed library-preparation evidence is not compiled into this floundeR build. Reinstall from source with CARGO_FEATURE_ARGS=--features=porkchop-integration and a local ../porkchop checkout, or use a build that links the public Porkchop crate.",
+    )
+}
+
+fn library_error_response(category: &str, message: &str) -> Robj {
+    list!(
+        ok = false,
+        data = r!(()),
+        error = message,
+        category = category
+    )
+    .into()
 }
 
 fn bam_error_category(code: &str) -> &'static str {

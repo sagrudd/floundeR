@@ -19,6 +19,10 @@ extern SEXP flounder_bam_check_index(SEXP path, SEXP require, SEXP prefer_csi);
 extern SEXP flounder_bam_check_map(SEXP path, SEXP sample_records, SEXP prefer_index);
 extern SEXP flounder_bam_check_sort(SEXP path, SEXP sample_records, SEXP strict);
 extern SEXP flounder_bam_check_tag(SEXP path, SEXP tag, SEXP sample_records, SEXP full_scan, SEXP require_type, SEXP count_hits);
+extern SEXP flounder_library_kit_candidates(SEXP reads, SEXP read_ids);
+extern SEXP flounder_library_adapter_primer_evidence(SEXP reads, SEXP read_ids, SEXP kit_id);
+extern SEXP flounder_library_barcode_evidence(SEXP reads, SEXP read_ids, SEXP kit_id);
+extern SEXP flounder_library_cdna_primer_evidence(SEXP reads, SEXP read_ids, SEXP kit_id);
 
 static const R_CallMethodDef CallEntries[] = {
     {"flounder_rust_capabilities", (DL_FUNC) &flounder_rust_capabilities, 0},
@@ -37,6 +41,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"flounder_bam_check_map", (DL_FUNC) &flounder_bam_check_map, 3},
     {"flounder_bam_check_sort", (DL_FUNC) &flounder_bam_check_sort, 3},
     {"flounder_bam_check_tag", (DL_FUNC) &flounder_bam_check_tag, 6},
+    {"flounder_library_kit_candidates", (DL_FUNC) &flounder_library_kit_candidates, 2},
+    {"flounder_library_adapter_primer_evidence", (DL_FUNC) &flounder_library_adapter_primer_evidence, 3},
+    {"flounder_library_barcode_evidence", (DL_FUNC) &flounder_library_barcode_evidence, 3},
+    {"flounder_library_cdna_primer_evidence", (DL_FUNC) &flounder_library_cdna_primer_evidence, 3},
     {NULL, NULL, 0}
 };
 

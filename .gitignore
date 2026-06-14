@@ -7,6 +7,7 @@ inst/doc
 .Rbuildignore
 sequencing_summary_PAG07165_2dfda515.txt
 src/rust/target/
+src/rust-porkchop/target/
 
 # ONT open-data and derived POD5 artifacts are opt-in local data, not source.
 *.pod5
