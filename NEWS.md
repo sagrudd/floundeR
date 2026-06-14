@@ -1,3 +1,9 @@
+# floundeR 0.21.9
+
+* Rewrote the README around the contemporary nanopore QC workflow, covering
+  sequencing-summary contracts, POD5 evidence, BAM QC, library-preparation
+  evidence, Synoptikon handoff, and optional Grammateus reporting boundaries.
+
 # floundeR 0.21.8
 
 * Verified and recorded the current Bioconductor policy posture for optional

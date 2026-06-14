@@ -1,78 +1,266 @@
-
 # floundeR
 
-An R package to simplify the tidy analysis of Nanopore sequence data.
+`floundeR` is an R-native toolbox for Oxford Nanopore sequence-data QC and
+review. It reads the run products analysts already use in R, returns stable
+tidy QC contracts, and uses in-process Rust where the heavy lifting belongs:
+POD5 raw-data inspection through `pod5-tools`, BAM/BGZF/FASTQ evidence through
+`bamana`, and library-preparation evidence through `porkchop`.
 
 <!-- badges: start -->
-[![Build Status](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)
+[![Code size](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)](https://img.shields.io/github/languages/code-size/sagrudd/floundeR)
 [![Releases](https://img.shields.io/github/downloads/sagrudd/floundeR/total)](https://img.shields.io/github/downloads/sagrudd/floundeR/total)
 <!-- badges: end -->
 
-The goal of floundeR is to provide a robust and Tidyverse compliant toolbox
-that can be used to explore Nanopore sequence data. The analytical R code
-contained within has been forked from earlier projects such as nanopoRe. The 
-R code has been deduplicated and reimplemented as R6 objects. 
+The reboot goal is not to mirror every command from the Rust projects. The goal
+is to make `floundeR` the best R interface for nanopore run health, raw-data
+integrity, alignment-level QC, library-preparation evidence, provenance,
+technical reporting, and Synoptikon handoff.
 
-The project goals diverge from earlier versions of nanopoRe and the ambition is
-now to enable abbreviated and simplified data exploration.
+FAST5 support has been retired. Current raw-signal QC is POD5-oriented.
 
-The documentation for the floundeR package can be found at
-[https://sagrudd.github.io/floundeR/](https://sagrudd.github.io/floundeR/)
+## What floundeR Does Now
+
+- Summarises MinKNOW, Guppy, and Dorado sequencing-summary files into
+  schema-versioned tidy QC tables.
+- Builds run-level report cards for yield, read counts, pass fraction, Q-score,
+  read length, channel density, and barcode balance.
+- Discovers, verifies, manifests, compares, and plans demonstration subdivision
+  for POD5 folders without shelling out to a CLI.
+- Uses curated Bamana-backed BAM checks for summaries, verification,
+  validation, EOF/index/map/sort/tag evidence, and BAM report cards.
+- Uses curated Porkchop-backed evidence for ONT kit candidates, adapter and
+  primer motifs, barcode evidence, cDNA primer evidence, and
+  library-preparation report cards.
+- Exports versioned Synoptikon QC payloads.
+- Builds Grammateus-shaped report contracts, governed figures, plot specs, and
+  manifests while keeping the private Grammateus runtime optional.
 
 ## Installation
 
-You can install the released version of floundeR from [github](
-https://github.com/sagrudd) with:
+Install source-build requirements first:
 
-``` r
+- R with the declared CRAN/Bioconductor package dependencies.
+- Cargo and `rustc` matching the `SystemRequirements` floor in `DESCRIPTION`.
+- Platform build tools for compiling an R package with native code.
+
+Then install from GitHub:
+
+```r
 install.packages("devtools")
 devtools::install_github("sagrudd/floundeR")
 ```
 
-FAST5 support has been retired. The reboot direction for raw-signal QC is POD5
-metadata and integrity inspection through Rust-backed package APIs.
+Detailed source-install notes for macOS, Linux, Windows, Docker, and CI are in
+[`DEVELOPMENT.md`](DEVELOPMENT.md#source-install-requirements). Public GitHub
+installation paths and optional private Grammateus runtime setup are documented
+in [`GITHUB_INSTALLATION.md`](GITHUB_INSTALLATION.md).
 
-Report rendering is moving to Grammateus semantic report contracts rather than
-RMarkdown-first production reports. RMarkdown remains only for package
-vignettes and transitional documentation; the boundary is documented in
-[`LEGACY_REPORTING.md`](LEGACY_REPORTING.md).
+Core QC does not require private Grammateus source or runtime assets. Governed
+HTML/PDF rendering can use an optional prebuilt Grammateus runtime when
+authorized and configured through `GRAMMATEUS_HOME`, package options, or the
+runtime cache helpers.
 
-Source installs now build a small embedded Rust extension. Install Cargo and
-rustc first, then install the package from GitHub. Platform-specific source
-install notes for macOS, Linux, Windows, Docker, and CI are recorded in
-[`DEVELOPMENT.md`](DEVELOPMENT.md#source-install-requirements).
+## Contemporary QC Workflow
 
-The detailed GitHub installation paths are recorded in
-[`GITHUB_INSTALLATION.md`](GITHUB_INSTALLATION.md): public users install the
-open-source package without private Grammateus assets, while authorized users
-can configure optional prebuilt Grammateus runtimes for governed HTML/PDF
-report rendering.
+Start with the sequencing-summary file. `floundeR` accepts a path, a
+`SequencingSummary` object, or a normalised data frame/tibble for the core QC
+helpers.
 
-## `floundeR` and a BasicQC analysis to assess a flowcell run
-
-BasicQC was the name of the original Nanopore tutorial that introduced an R
-workflow to question a flowcell's performance on the basis of the 
-`sequencing_summary` file produced by MinKNOW or Guppy (Albacore in the past).
-With the transition to (Python based) [EPI2ME Labs](https://labs.epi2me.io) and
-the deprecation of the original tutorial this workflow is being maintained to
-support the requirements of R-aficionados.
-
-Instead of using the packaged and toy dataset, let's use a slightly more
-robust dataset to show what the tool can really do.
-
-```
-aws.s3::save_object(
-   "/gm24385_2020.11/flowcells/20201026_1645_6B_PAG07165_d42912aa/sequencing_summary_PAG07165_2dfda515.txt", 
-   bucket = "s3://ont-open-data/", 
-   region="eu-west-1")
-```
-
-
-``` r
+```r
 library(floundeR)
-sequencing_summary <- "sequencing_summary_PAG07165_2dfda515.txt"
-seqsum <- SequencingSummary$new(sequencing_summary)
-seqsum$flowcell$density_data$plot
+
+summary_file <- flnDr("sequencing_summary.txt.bz2")
+
+run_summary <- qc_run_summary(summary_file)
+yield_over_time <- qc_yield_over_time(summary_file, resolution_minutes = 15)
+length_distribution <- qc_read_length_distribution(summary_file)
+quality_distribution <- qc_quality_distribution(summary_file)
+channel_density <- qc_channel_density(summary_file)
+barcode_balance <- qc_barcode_composition(summary_file)
+
+run_card <- qc_report_card(
+  run_summary,
+  barcode_composition = barcode_balance
+)
 ```
 
-<img src="https://raw.githubusercontent.com/sagrudd/floundeR/main/docs/articles/figure_1.png" />
+The outputs are ordinary tibbles/data frames with explicit schema versions, so
+they can be inspected interactively, plotted, placed in reports, or exported to
+downstream systems.
+
+## POD5 Raw-Data Evidence
+
+POD5 helpers call the embedded Rust extension and return R-native objects. They
+are intended for raw-data inventory, integrity checks, provenance, and report
+evidence.
+
+```r
+run_dir <- "/path/to/nanopore/run"
+
+pod5_folders <- pod5_find(run_dir)
+pod5_inventory <- pod5_folder_info(run_dir)
+pod5_files <- pod5_manifest(run_dir)
+```
+
+For a single local POD5 file:
+
+```r
+pod5_verify("/path/to/read_batch.pod5")
+pod5_file_info("/path/to/read_batch.pod5")
+```
+
+`floundeR` also records a canonical opt-in real-data source from ONT open data:
+
+```r
+ont_zymo_pod5_dataset()
+ont_zymo_pod5_example_objects()
+```
+
+The selected routine example is
+`PAU85136_pass_279c9095_68316534_8289.pod5` from
+`s3://ont-open-data/zymo_fecal_2025.05/raw/PAU85136/pod5/`. The selected
+fail-state example is `PAU85136_fail_279c9095_68316534_0.pod5`. These files are
+large enough that downloads are always explicit and opt-in:
+
+```r
+if (identical(tolower(Sys.getenv("FLOUNDER_RUN_NETWORK_TESTS")), "true")) {
+  object <- ont_zymo_pod5_example_objects()[1, ]
+  ont_open_data_fetch(
+    key = object$key,
+    cache_dir = tools::R_user_dir("floundeR", "cache")
+  )
+}
+```
+
+Downloaded POD5 files and large derived POD5 artifacts must not be committed to
+this repository. Dataset policy and provenance requirements are documented in
+[`DATASETS.md`](DATASETS.md).
+
+## BAM And Library-Preparation QC
+
+Alignment evidence is handled through curated Bamana-backed functions:
+
+```r
+bam <- bam_summary("/path/to/alignments.bam")
+bam_card <- bam_qc_report_card(
+  summary = bam,
+  eof = bam_check_eof("/path/to/alignments.bam"),
+  index = bam_check_index("/path/to/alignments.bam"),
+  sort = bam_check_sort("/path/to/alignments.bam")
+)
+```
+
+Library-preparation evidence is handled through curated Porkchop-backed
+functions. Scores are heuristic evidence, not calibrated probabilities.
+
+```r
+reads <- c(
+  "AATGTACTTCGTTCAGTTACGTATTGCT",
+  "TTTTTTTTCCTGTACTTCGTTCAGTTACGTATTGCT"
+)
+
+kit_candidates <- library_kit_candidates(reads)
+adapter_evidence <- library_adapter_primer_evidence(reads, kit_id = "LSK114")
+
+library_card <- library_preparation_report_card(
+  kit_candidates = kit_candidates,
+  adapter_primer = adapter_evidence,
+  expected_kit_id = "LSK114"
+)
+```
+
+`floundeR` deliberately exposes only the subset of Bamana and Porkchop behavior
+that improves nanopore QC, review, provenance, reporting, and Synoptikon
+handoff.
+
+## Synoptikon Handoff
+
+Use the Synoptikon payload helpers when a QC result needs to move into the
+Mnemosyne/Synoptikon lifecycle.
+
+```r
+payload <- as_synoptikon_qc(
+  run_summary = run_summary,
+  barcode = barcode_balance,
+  pod5 = pod5_files,
+  bam = bam,
+  library_preparation = kit_candidates,
+  report_cards = list(
+    run = run_card,
+    bam = bam_card,
+    library_preparation = library_card
+  )
+)
+
+write_synoptikon_qc(
+  tempfile(fileext = ".json"),
+  run_summary = run_summary,
+  report_cards = list(run = run_card)
+)
+```
+
+The payload schema is versioned and intended for downstream validation.
+
+## Grammateus Reporting
+
+Production QC reports are moving away from RMarkdown-first workflows and toward
+Grammateus semantic report contracts. Public `floundeR` builds can prepare
+report contracts, figures, plot specs, manifests, and provenance without the
+private Grammateus runtime.
+
+R can hand an existing plot artifact into a governed report:
+
+```r
+plot_spec <- qc_plot_yield_over_time(yield_over_time)
+plot_run <- grammateus_render_plot(
+  plot_spec,
+  execution = "local_rscript",
+  run_root = tempdir()
+)
+figures <- lapply(plot_run$artifacts, `[[`, "figure")
+
+theme <- grammateus_mnemosyne_theme()
+elements <- grammateus_apply_theme(
+  grammateus_qc_report_elements(
+    qc_summary = run_summary,
+    yield_over_time = yield_over_time,
+    quality_distribution = quality_distribution,
+    barcode_balance = barcode_balance,
+    report_card_findings = run_card
+  ),
+  theme
+)
+
+report <- qc_report(
+  elements = elements,
+  figures = figures,
+  output_dir = tempdir(),
+  output = c("html", "pdf")
+)
+```
+
+When the private runtime is absent, `qc_report()` still writes the report
+contract and manifest. Runtime-backed HTML/PDF rendering is enabled only after
+an authorized prebuilt Grammateus runtime has been installed and validated:
+
+```r
+grammateus_runtime_available()
+grammateus_runtime_validate()
+```
+
+The detailed interface is documented in
+[`REPORTING_INTERFACE.md`](REPORTING_INTERFACE.md), and the private-runtime
+distribution boundary is documented in [`DISTRIBUTION.md`](DISTRIBUTION.md).
+
+## Development And Governance
+
+- GitHub Actions are currently disabled during reboot churn; templates live in
+  `.github/disabled-workflows/`.
+- Local dependency and container build guidance is in
+  [`DEVELOPMENT.md`](DEVELOPMENT.md) and [`DEPENDENCIES.md`](DEPENDENCIES.md).
+- Cross-repository boundaries are tracked in [`GOVERNANCE.md`](GOVERNANCE.md).
+- Future Bioconductor submission posture is tracked in
+  [`BIOCONDUCTOR_POLICY.md`](BIOCONDUCTOR_POLICY.md).
+
+The package documentation site is available at
+[https://sagrudd.github.io/floundeR/](https://sagrudd.github.io/floundeR/).

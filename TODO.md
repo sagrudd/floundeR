@@ -291,7 +291,7 @@ current non-FAST5 package surface.
 
 ## Slice 14: Documentation Refresh
 
-- [ ] Rewrite README around the contemporary QC workflow.
+- [x] Rewrite README around the contemporary QC workflow.
 - [ ] Add a "run health in one minute" example.
 - [ ] Replace FAST5 vignette with POD5, BAM, and synoptikon QC vignettes.
 - [ ] Use the ONT Zymo fecal POD5 dataset as the canonical opt-in real-data
