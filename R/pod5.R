@@ -11,6 +11,18 @@
 #'   `path`, `pod5_file_count`, `total_bytes`, `oldest_modified_utc`, and
 #'   `newest_modified_utc`.
 #'
+#' @examples
+#' run_dir <- file.path(tempdir(), "flounder-pod5-find-example")
+#' unlink(run_dir, recursive = TRUE)
+#' dir.create(file.path(run_dir, "sample-a"), recursive = TRUE)
+#' dir.create(file.path(run_dir, "sample-b"), recursive = TRUE)
+#'
+#' writeBin(charToRaw("pod5 placeholder"), file.path(run_dir, "sample-a", "a.pod5"))
+#' writeBin(charToRaw("ignored"), file.path(run_dir, "sample-a", "a.fastq"))
+#' writeBin(charToRaw("pod5 placeholder"), file.path(run_dir, "sample-b", "b.pod5"))
+#'
+#' pod5_find(run_dir)
+#'
 #' @export
 pod5_find <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path)) {

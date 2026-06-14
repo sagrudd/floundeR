@@ -19,3 +19,16 @@ directly contain one or more \code{.pod5} files. Discovery is implemented
 through the in-process Rust extension and the curated \code{pod5-tools} library
 API; it does not invoke an external command-line process.
 }
+\examples{
+run_dir <- file.path(tempdir(), "flounder-pod5-find-example")
+unlink(run_dir, recursive = TRUE)
+dir.create(file.path(run_dir, "sample-a"), recursive = TRUE)
+dir.create(file.path(run_dir, "sample-b"), recursive = TRUE)
+
+writeBin(charToRaw("pod5 placeholder"), file.path(run_dir, "sample-a", "a.pod5"))
+writeBin(charToRaw("ignored"), file.path(run_dir, "sample-a", "a.fastq"))
+writeBin(charToRaw("pod5 placeholder"), file.path(run_dir, "sample-b", "b.pod5"))
+
+pod5_find(run_dir)
+
+}

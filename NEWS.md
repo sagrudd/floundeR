@@ -1,3 +1,9 @@
+# floundeR 0.2.2
+
+* Added an executable offline `pod5_find()` example that demonstrates
+  in-process Rust-backed folder discovery without invoking an external CLI or
+  requiring network/downloaded POD5 data.
+
 # floundeR 0.2.1
 
 * Documented the current `R CMD check` compiled-code warning introduced by

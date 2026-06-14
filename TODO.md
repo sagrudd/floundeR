@@ -129,7 +129,7 @@ current non-FAST5 package surface.
 - [x] Resolve or formally document the release-check compiled-code warning from
       linking the Rust `std`/`pod5-tools` stack before Bioconductor/CRAN-facing
       release work.
-- [ ] Add examples that do not call any external CLI process.
+- [x] Add examples that do not call any external CLI process.
 - [ ] Add an opt-in example that lists the ONT Zymo fecal POD5 S3 prefix after
       explicit user consent/network availability checks.
 
