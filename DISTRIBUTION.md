@@ -168,3 +168,9 @@ fail with actionable messages:
 - platform unsupported;
 - private artifact credentials missing;
 - governed container/R backend unavailable.
+
+This boundary is enforced by package tests that deliberately point Grammateus
+discovery at missing runtime paths while exercising core sequencing-summary QC,
+tidy QC tables, report cards, POD5 discovery, and Synoptikon JSON export.
+Release-style checks must continue to pass without any private Grammateus
+runtime assets present.

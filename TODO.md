@@ -254,7 +254,7 @@ current non-FAST5 package surface.
 - [x] Implement Grammateus runtime discovery helpers such as
       `grammateus_runtime_available()`, `grammateus_runtime_version()`,
       `grammateus_runtime_validate()`, and `grammateus_runtime_install()`.
-- [ ] Ensure core QC APIs and package checks do not require Grammateus runtime
+- [x] Ensure core QC APIs and package checks do not require Grammateus runtime
       assets.
 - [ ] Define Grammateus semantic elements for run metadata, QC summary,
       flowcell density, yield over time, quality distribution, barcode balance,

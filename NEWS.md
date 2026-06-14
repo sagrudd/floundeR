@@ -1,3 +1,8 @@
+# floundeR 0.17.1
+
+* Added regression coverage confirming core QC APIs, Synoptikon export, and
+  package checks remain usable without private Grammateus runtime assets.
+
 # floundeR 0.17.0
 
 * Added Grammateus runtime discovery, manifest parsing, validation, version,
