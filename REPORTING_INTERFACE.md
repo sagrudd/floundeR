@@ -183,6 +183,22 @@ should reference a canonical data artifact with a checksum and row count.
 Reports must use Mnemosyne Biosciences branding through Grammateus templates or
 themes. `floundeR` should not maintain one-off CSS or parallel PDF styling.
 
+Implemented floundeR integration:
+
+```r
+theme <- grammateus_mnemosyne_theme()
+report <- grammateus_apply_theme(grammateus_qc_report_elements(...), theme)
+```
+
+`grammateus_mnemosyne_theme()` records the Mnemosyne Biosciences brand, approved
+Grammateus template reference, approved theme reference, palette/profile,
+status colours, style policy, and provenance. The helper is intentionally
+runtime-free: it does not embed private Grammateus assets, inline CSS, or
+RMarkdown styling. `grammateus_apply_theme()` attaches that descriptor to
+prepared semantic elements so later `qc_report()` and authorized Grammateus
+runtime builds can resolve the private templates/themes through the governed
+runtime manifest.
+
 The standard technical QC report structure should be:
 
 1. Title page and run identity.

@@ -1,3 +1,9 @@
+# floundeR 0.19.0
+
+* Added `grammateus_mnemosyne_theme()` and `grammateus_apply_theme()` to encode
+  Mnemosyne Biosciences Grammateus template/theme metadata, style policy, and
+  themed report assembly without bundling private Grammateus runtime assets.
+
 # floundeR 0.18.0
 
 * Added `grammateus_report_element()` and `grammateus_qc_report_elements()` to

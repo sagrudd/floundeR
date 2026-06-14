@@ -261,7 +261,7 @@ current non-FAST5 package surface.
       POD5 integrity, BAM alignment summaries, BAM validation/index/sort
       evidence, Porkchop kit/library-preparation evidence, report-card
       findings, methods, limitations, and appendices.
-- [ ] Encode Mnemosyne Biosciences branding and styling through Grammateus
+- [x] Encode Mnemosyne Biosciences branding and styling through Grammateus
       templates/themes.
 - [ ] Implement `qc_report()` or equivalent R API that produces HTML/PDF plus a
       report manifest/provenance payload.

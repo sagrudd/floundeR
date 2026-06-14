@@ -799,6 +799,168 @@ grammateus_qc_report_elements <- function(
   bundle
 }
 
+#' Build Mnemosyne Grammateus report theme metadata
+#'
+#' `grammateus_mnemosyne_theme()` returns a runtime-free descriptor for the
+#' Mnemosyne Biosciences Grammateus template and theme expected by floundeR QC
+#' reports. It does not bundle private Grammateus assets or inline CSS; it
+#' records the template, theme, brand, style policy, and provenance that an
+#' authorized Grammateus runtime can resolve during rendering.
+#'
+#' `grammateus_apply_theme()` wraps prepared Grammateus semantic elements with a
+#' theme descriptor so report assembly can pass one coherent themed-report
+#' contract to the rendering layer.
+#'
+#' @param profile Mnemosyne report profile.
+#' @param palette Mnemosyne palette policy.
+#' @param runtime_theme_id Grammateus runtime theme identifier.
+#' @param template_id Grammateus runtime template identifier.
+#' @param produced_by Producing software or service name.
+#' @param producer_version Producing software version.
+#' @param produced_at_utc Production timestamp.
+#' @param run_id Optional upstream run, workflow, or analysis identifier.
+#' @param elements A single Grammateus report element, a
+#'   `flounder_grammateus_report_element_bundle`, or a named list of report
+#'   elements.
+#' @param theme A `flounder_grammateus_theme` object.
+#'
+#' @return `grammateus_mnemosyne_theme()` returns a list with class
+#'   `flounder_grammateus_theme`. `grammateus_apply_theme()` returns a list with
+#'   class `flounder_grammateus_themed_report`.
+#'
+#' @export
+grammateus_mnemosyne_theme <- function(
+    profile = c("technical_qc", "appendix"),
+    palette = c("mnemosyne_qc"),
+    runtime_theme_id = "mnemosyne_biosciences_qc_v1",
+    template_id = "mnemosyne_technical_qc_v1",
+    produced_by = "floundeR",
+    producer_version = NULL,
+    produced_at_utc = Sys.time(),
+    run_id = NULL) {
+  profile <- match.arg(profile)
+  palette <- match.arg(palette)
+  runtime_theme_id <- .grammateus_runtime_identifier(
+    runtime_theme_id,
+    "runtime_theme_id"
+  )
+  template_id <- .grammateus_runtime_identifier(template_id, "template_id")
+  if (is.null(producer_version)) {
+    producer_version <- .grammateus_default_flounder_version()
+  }
+
+  theme <- list(
+    schema_version = "flounder.grammateus_theme.v1",
+    brand = list(
+      name = "Mnemosyne Biosciences",
+      domain = "mnemosyne_biosciences",
+      runtime_brand_asset_ref =
+        "mnemosyne://branding/mnemosyne-biosciences/v1"
+    ),
+    template = list(
+      template_id = template_id,
+      runtime_template_ref = paste0("grammateus://templates/", template_id),
+      required_runtime_capability = "mnemosyne_qc_theme"
+    ),
+    theme = list(
+      theme_id = runtime_theme_id,
+      runtime_theme_ref = paste0("grammateus://themes/", runtime_theme_id),
+      profile = profile,
+      palette = palette,
+      typography = list(
+        body_family = "Inter",
+        mono_family = "IBM Plex Mono",
+        heading_weight = "semibold",
+        base_size_pt = 10.5
+      ),
+      page = list(
+        paper = "A4",
+        orientation = "portrait",
+        margin_mm = c(top = 18, right = 16, bottom = 18, left = 16)
+      ),
+      table = list(
+        density = "technical",
+        zebra_stripes = TRUE,
+        repeat_header = TRUE
+      ),
+      figure = list(
+        caption_position = "below",
+        default_layout = "inline",
+        require_alt_text = TRUE
+      ),
+      status_colours = list(
+        pass = "#237A57",
+        warn = "#B7791F",
+        fail = "#B91C1C",
+        not_checked = "#64748B"
+      )
+    ),
+    style_policy = list(
+      source = "grammateus_runtime_template",
+      no_inline_css = TRUE,
+      no_rmarkdown_css = TRUE,
+      mnemosyne_branding_required = TRUE
+    )
+  )
+  theme$provenance <- .grammateus_provenance(
+    source_hash = .grammateus_value_sha256(theme),
+    produced_by = produced_by,
+    producer_version = producer_version,
+    produced_at_utc = produced_at_utc,
+    run_id = run_id
+  )
+  class(theme) <- c(
+    "flounder_grammateus_theme",
+    "flounder_grammateus_element",
+    "list"
+  )
+  theme
+}
+
+#' @rdname grammateus_mnemosyne_theme
+#' @export
+grammateus_apply_theme <- function(
+    elements,
+    theme = grammateus_mnemosyne_theme(),
+    produced_by = "floundeR",
+    producer_version = NULL,
+    produced_at_utc = Sys.time(),
+    run_id = NULL) {
+  theme <- .grammateus_validate_theme(theme)
+  elements <- .grammateus_report_element_list(elements)
+  if (is.null(producer_version)) {
+    producer_version <- .grammateus_default_flounder_version()
+  }
+  report <- list(
+    schema_version = "flounder.grammateus_themed_report.v1",
+    theme = theme,
+    element_count = length(elements),
+    elements = elements
+  )
+  report$provenance <- .grammateus_provenance(
+    source_hash = .grammateus_value_sha256(list(
+      theme_hash = theme$provenance$source_hash,
+      elements = lapply(elements, function(element) {
+        list(
+          element_id = element$element_id,
+          element_type = element$element_type,
+          source_hash = element$provenance$source_hash
+        )
+      })
+    )),
+    produced_by = produced_by,
+    producer_version = producer_version,
+    produced_at_utc = produced_at_utc,
+    run_id = run_id
+  )
+  class(report) <- c(
+    "flounder_grammateus_themed_report",
+    "flounder_grammateus_element",
+    "list"
+  )
+  report
+}
+
 .grammateus_existing_file <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path) || path == "") {
     stop("path must be a non-empty character scalar.", call. = FALSE)
@@ -1042,6 +1204,77 @@ grammateus_qc_report_elements <- function(
   }
   list(width_px = as.integer(round(width_px)),
        height_px = as.integer(round(height_px)))
+}
+
+.grammateus_runtime_identifier <- function(value, field) {
+  value <- .grammateus_required_text(value, field)
+  if (!grepl("^[a-z0-9_][a-z0-9_.-]*$", value)) {
+    stop(
+      field,
+      " must use a stable Grammateus runtime identifier.",
+      call. = FALSE
+    )
+  }
+  value
+}
+
+.grammateus_validate_theme <- function(theme) {
+  if (!inherits(theme, "flounder_grammateus_theme") ||
+      !is.list(theme) ||
+      !identical(theme$schema_version, "flounder.grammateus_theme.v1")) {
+    stop(
+      "theme must be a flounder_grammateus_theme object.",
+      call. = FALSE
+    )
+  }
+  .grammateus_required_text(theme$brand$name, "theme brand name")
+  .grammateus_required_text(theme$template$template_id, "template_id")
+  .grammateus_required_text(theme$template$runtime_template_ref,
+                            "runtime_template_ref")
+  .grammateus_required_text(theme$theme$theme_id, "theme_id")
+  .grammateus_required_text(theme$theme$runtime_theme_ref,
+                            "runtime_theme_ref")
+  if (!isTRUE(theme$style_policy$no_inline_css) ||
+      !isTRUE(theme$style_policy$mnemosyne_branding_required)) {
+    stop(
+      "theme must require Mnemosyne branding and avoid inline CSS.",
+      call. = FALSE
+    )
+  }
+  invisible(theme)
+}
+
+.grammateus_report_element_list <- function(elements) {
+  if (inherits(elements, "flounder_grammateus_report_element_bundle")) {
+    elements <- elements$elements
+  } else if (inherits(elements, "flounder_grammateus_report_element")) {
+    elements <- stats::setNames(list(elements), elements$element_id)
+  }
+
+  if (!is.list(elements) || length(elements) == 0L) {
+    stop(
+      "elements must be a report element, report element bundle, or non-empty list.",
+      call. = FALSE
+    )
+  }
+  is_element <- vapply(
+    elements,
+    inherits,
+    logical(1),
+    what = "flounder_grammateus_report_element"
+  )
+  if (!all(is_element)) {
+    stop("all elements must be Grammateus report elements.", call. = FALSE)
+  }
+  if (is.null(names(elements)) || anyNA(names(elements)) ||
+      any(names(elements) == "")) {
+    names(elements) <- vapply(
+      elements,
+      function(element) element$element_id,
+      character(1)
+    )
+  }
+  elements
 }
 
 .grammateus_plot_source_data <- function(plot) {
