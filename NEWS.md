@@ -1,3 +1,9 @@
+# floundeR 0.21.0
+
+* Added the first Grammateus QC plot helper set for yield over time, read
+  quality, read length, flowcell density, barcode balance, POD5 integrity, BAM
+  mapping, BAM MAPQ, and BAM flag summaries.
+
 # floundeR 0.20.0
 
 * Added `qc_report()` to assemble Grammateus-backed nanopore QC report

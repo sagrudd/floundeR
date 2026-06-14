@@ -265,7 +265,7 @@ current non-FAST5 package surface.
       templates/themes.
 - [x] Implement `qc_report()` or equivalent R API that produces HTML/PDF plus a
       report manifest/provenance payload.
-- [ ] Add the first QC plot helper set for yield over time, read quality, read
+- [x] Add the first QC plot helper set for yield over time, read quality, read
       length, flowcell density, barcode balance, POD5 integrity, BAM mapping,
       BAM MAPQ, and BAM flag summaries.
 - [ ] Add tests for report element schemas, required captions/alt text,

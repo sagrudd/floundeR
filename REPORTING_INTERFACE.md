@@ -172,6 +172,17 @@ The first floundeR report interface should cover:
 Specialized QC plots can still be supplied as `ggplot2` objects through
 `grammateus_figure_from_ggplot()`.
 
+Implemented floundeR integration:
+
+The first plot-spec helper set is available as
+`qc_plot_yield_over_time()`, `qc_plot_quality_distribution()`,
+`qc_plot_read_length_distribution()`, `qc_plot_flowcell_density()`,
+`qc_plot_barcode_balance()`, `qc_plot_pod5_integrity()`,
+`qc_plot_bam_mapping_summary()`, `qc_plot_bam_mapq_distribution()`, and
+`qc_plot_bam_flag_summary()`. These functions return Grammateus
+`flounder_grammateus_plot_spec` objects rather than rendering directly, so they
+can feed either governed Grammateus plot execution or R-side figure handoff.
+
 ## Element Rules
 
 Every report element produced by floundeR must have:
