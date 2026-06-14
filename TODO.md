@@ -226,7 +226,7 @@ current non-FAST5 package surface.
 - [x] Carry kit provenance, lifecycle status, support level, and validation
       limitations into floundeR return values.
 - [x] Add small FASTQ fixtures or mocked sequence records for offline tests.
-- [ ] Define report-card checks for unexpected library chemistry, adapter
+- [x] Define report-card checks for unexpected library chemistry, adapter
       burden, barcode ambiguity, cDNA partial/unclassified burden, and
       unsupported or partial kit support levels.
 - [ ] Document which Porkchop capabilities are out of scope for floundeR because

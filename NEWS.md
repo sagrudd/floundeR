@@ -1,3 +1,10 @@
+# floundeR 0.13.0
+
+* Added `library_preparation_report_card()` and
+  `library_preparation_report_card_thresholds()` to convert Porkchop-derived
+  kit, adapter/primer, barcode/flank, and cDNA primer evidence into the
+  standard floundeR report-card schema for QC review and reporting.
+
 # floundeR 0.12.0
 
 * Added in-process Porkchop-backed R wrappers for library kit candidates,

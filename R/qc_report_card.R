@@ -37,6 +37,22 @@ bam_qc_report_card_thresholds <- function() {
   )
 }
 
+#' Default library-preparation report-card thresholds
+#'
+#' @return A named list of warn/fail thresholds used by
+#'   `library_preparation_report_card()`.
+#'
+#' @export
+library_preparation_report_card_thresholds <- function() {
+  list(
+    unexpected_kit_max = c(warn = 0, fail = 0),
+    adapter_burden_max = c(warn = 0.20, fail = 0.50),
+    barcode_ambiguity_fraction_max = c(warn = 0.05, fail = 0.20),
+    cdna_incomplete_fraction_max = c(warn = 0.20, fail = 0.50),
+    kit_support_risk_max = c(warn = 0, fail = 1)
+  )
+}
+
 #' Build a run-level QC report card
 #'
 #' `qc_report_card()` evaluates a run summary against pass/warn/fail threshold
@@ -259,6 +275,100 @@ bam_qc_report_card <- function(
       check_label = "BAM provenance anomalies",
       observed_value = .bam_card_provenance_anomaly_count(provenance_anomalies),
       threshold = thresholds$provenance_anomaly_count_max,
+      comparator = "maximum")
+  ))
+}
+
+#' Build a library-preparation QC report card
+#'
+#' `library_preparation_report_card()` evaluates Porkchop-derived
+#' library-preparation evidence against pass/warn/fail checks for reporting and
+#' review. It consumes R-native evidence tables returned by
+#' `library_kit_candidates()`, `library_adapter_primer_evidence()`,
+#' `library_barcode_evidence()`, and `library_cdna_primer_evidence()`; it does
+#' not call Porkchop directly.
+#'
+#' @param kit_candidates Optional `library_kit_candidates()` data frame.
+#' @param adapter_primer Optional `library_adapter_primer_evidence()` data
+#'   frame.
+#' @param barcode Optional `library_barcode_evidence()` data frame.
+#' @param cdna Optional `library_cdna_primer_evidence()` data frame.
+#' @param expected_kit_id Optional scalar expected kit id from run metadata or
+#'   a user-supplied review context.
+#' @param thresholds Named threshold list. Defaults to
+#'   `library_preparation_report_card_thresholds()`.
+#' @param schema_version Schema version label to attach to the returned table.
+#'
+#' @return A tibble using the standard report-card schema:
+#'   `schema_version`, `check_id`, `check_label`, `status`, `observed_value`,
+#'   `warn_threshold`, `fail_threshold`, `comparator`, and `details`.
+#'
+#' @examples
+#' kit_candidates <- data.frame(
+#'   kit_id = "SQK-LSK114",
+#'   normalized_score = 0.9,
+#'   support_level = "supported",
+#'   lifecycle_status = "current"
+#' )
+#' library_preparation_report_card(
+#'   kit_candidates = kit_candidates,
+#'   expected_kit_id = "SQK-LSK114"
+#' )
+#'
+#' @export
+library_preparation_report_card <- function(
+    kit_candidates = NULL,
+    adapter_primer = NULL,
+    barcode = NULL,
+    cdna = NULL,
+    expected_kit_id = NULL,
+    thresholds = library_preparation_report_card_thresholds(),
+    schema_version = "flounder.library_preparation_report_card.v1") {
+  .library_card_validate_optional_frame(kit_candidates, "kit_candidates")
+  .library_card_validate_optional_frame(adapter_primer, "adapter_primer")
+  .library_card_validate_optional_frame(barcode, "barcode")
+  .library_card_validate_optional_frame(cdna, "cdna")
+  expected_kit_id <- .library_card_expected_kit_id(expected_kit_id)
+
+  top_candidate <- .library_card_top_candidate(kit_candidates)
+
+  .qc_bind_rows(list(
+    .qc_threshold_check(
+      schema_version,
+      check_id = "library_unexpected_kit",
+      check_label = "Unexpected library kit",
+      observed_value = .library_card_unexpected_kit(
+        top_candidate, expected_kit_id),
+      threshold = thresholds$unexpected_kit_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "library_adapter_burden",
+      check_label = "Adapter motif burden",
+      observed_value = .library_card_adapter_burden(
+        adapter_primer, barcode, cdna),
+      threshold = thresholds$adapter_burden_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "library_barcode_ambiguity",
+      check_label = "Barcode ambiguity fraction",
+      observed_value = .library_card_barcode_ambiguity(barcode),
+      threshold = thresholds$barcode_ambiguity_fraction_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "library_cdna_incomplete_fraction",
+      check_label = "cDNA partial or unclassified fraction",
+      observed_value = .library_card_cdna_incomplete_fraction(cdna),
+      threshold = thresholds$cdna_incomplete_fraction_max,
+      comparator = "maximum"),
+    .qc_threshold_check(
+      schema_version,
+      check_id = "library_kit_support_risk",
+      check_label = "Unsupported or partial kit support level",
+      observed_value = .library_card_support_level_risk(top_candidate),
+      threshold = thresholds$kit_support_risk_max,
       comparator = "maximum")
   ))
 }
@@ -497,6 +607,215 @@ bam_qc_report_card <- function(
   }
 
   NA
+}
+
+.library_card_validate_optional_frame <- function(data, name) {
+  if (!is.null(data) && !is.data.frame(data)) {
+    stop("`", name, "` must be a data frame or NULL.", call. = FALSE)
+  }
+}
+
+.library_card_expected_kit_id <- function(expected_kit_id) {
+  if (is.null(expected_kit_id)) {
+    return(NULL)
+  }
+  if (!is.character(expected_kit_id) || length(expected_kit_id) != 1L ||
+      is.na(expected_kit_id) || identical(expected_kit_id, "")) {
+    stop("`expected_kit_id` must be a non-empty character scalar.", call. = FALSE)
+  }
+
+  expected_kit_id
+}
+
+.library_card_top_candidate <- function(kit_candidates) {
+  if (is.null(kit_candidates) || nrow(kit_candidates) == 0 ||
+      !"kit_id" %in% names(kit_candidates)) {
+    return(NULL)
+  }
+
+  candidates <- tibble::as_tibble(kit_candidates)
+  order_score <- rep(0, nrow(candidates))
+  if ("normalized_score" %in% names(candidates)) {
+    order_score <- suppressWarnings(as.numeric(candidates$normalized_score))
+  } else if ("score" %in% names(candidates)) {
+    order_score <- suppressWarnings(as.numeric(candidates$score))
+  }
+  order_score[is.na(order_score)] <- -Inf
+
+  candidates[order(order_score, decreasing = TRUE), , drop = FALSE][1, ]
+}
+
+.library_card_unexpected_kit <- function(top_candidate, expected_kit_id) {
+  if (is.null(expected_kit_id)) {
+    return(0)
+  }
+  if (is.null(top_candidate) || !"kit_id" %in% names(top_candidate)) {
+    return(NA_real_)
+  }
+
+  observed_kit <- as.character(top_candidate$kit_id[[1]])
+  if (is.na(observed_kit) || identical(observed_kit, "")) {
+    return(NA_real_)
+  }
+
+  as.numeric(!identical(observed_kit, expected_kit_id))
+}
+
+.library_card_adapter_burden <- function(adapter_primer, barcode, cdna) {
+  if (is.null(adapter_primer) || nrow(adapter_primer) == 0 ||
+      !"read_id" %in% names(adapter_primer)) {
+    return(NA_real_)
+  }
+
+  denominator <- .library_card_read_count(adapter_primer, barcode, cdna)
+  if (is.na(denominator) || denominator == 0) {
+    return(NA_real_)
+  }
+
+  adapter_reads <- unique(adapter_primer$read_id[
+    .library_card_row_matches(adapter_primer, "adapter")
+  ])
+  length(stats::na.omit(adapter_reads)) / denominator
+}
+
+.library_card_barcode_ambiguity <- function(barcode) {
+  if (is.null(barcode) || nrow(barcode) == 0 || !"read_id" %in% names(barcode)) {
+    return(NA_real_)
+  }
+
+  read_ids <- unique(stats::na.omit(barcode$read_id))
+  if (length(read_ids) == 0) {
+    return(NA_real_)
+  }
+
+  ambiguous <- vapply(read_ids, function(read_id) {
+    rows <- barcode[barcode$read_id == read_id, , drop = FALSE]
+    barcode_rows <- .library_card_row_matches(rows, "barcode")
+    flank_rows <- .library_card_row_matches(rows, "flank")
+    barcode_names <- unique(stats::na.omit(.library_card_motif_names(
+      rows[barcode_rows, , drop = FALSE])))
+
+    length(barcode_names) > 1L || (length(barcode_names) == 0L && any(flank_rows))
+  }, logical(1))
+
+  mean(ambiguous)
+}
+
+.library_card_cdna_incomplete_fraction <- function(cdna) {
+  if (is.null(cdna) || nrow(cdna) == 0) {
+    return(NA_real_)
+  }
+
+  classified <- rep(NA, nrow(cdna))
+  if ("classified" %in% names(cdna)) {
+    classified <- .library_card_as_logical(cdna$classified)
+  }
+
+  full_length <- rep(NA, nrow(cdna))
+  if ("full_length" %in% names(cdna)) {
+    full_length <- .library_card_as_logical(cdna$full_length)
+  }
+
+  class_label <- rep(NA_character_, nrow(cdna))
+  if ("class" %in% names(cdna)) {
+    class_label <- tolower(as.character(cdna$class))
+  }
+
+  incomplete <- classified %in% FALSE |
+    full_length %in% FALSE |
+    (!is.na(class_label) & class_label != "full_length")
+
+  if (all(is.na(classified)) && all(is.na(full_length)) &&
+      all(is.na(class_label))) {
+    return(NA_real_)
+  }
+
+  mean(incomplete, na.rm = TRUE)
+}
+
+.library_card_support_level_risk <- function(top_candidate) {
+  if (is.null(top_candidate)) {
+    return(NA_real_)
+  }
+
+  support_level <- .bam_card_first_character(top_candidate, "support_level")
+  lifecycle_status <- .bam_card_first_character(top_candidate, "lifecycle_status")
+  validation_status <- .bam_card_first_character(top_candidate, "validation_status")
+
+  risk <- 0
+  labels <- tolower(stats::na.omit(c(
+    support_level, lifecycle_status, validation_status)))
+  if (length(labels) == 0) {
+    return(NA_real_)
+  }
+
+  warn_labels <- c("partial", "best-effort", "best_effort", "legacy", "retired")
+  fail_labels <- c("experimental", "unknown", "unsupported", "deprecated")
+
+  if (any(labels %in% warn_labels)) {
+    risk <- max(risk, 1)
+  }
+  if (any(labels %in% fail_labels)) {
+    risk <- max(risk, 2)
+  }
+
+  risk
+}
+
+.library_card_read_count <- function(...) {
+  frames <- list(...)
+  read_ids <- unlist(lapply(frames, function(frame) {
+    if (is.null(frame) || !is.data.frame(frame) || !"read_id" %in% names(frame)) {
+      return(character())
+    }
+    as.character(frame$read_id)
+  }), use.names = FALSE)
+  read_ids <- unique(stats::na.omit(read_ids))
+  if (length(read_ids) == 0) {
+    return(NA_real_)
+  }
+
+  length(read_ids)
+}
+
+.library_card_row_matches <- function(data, pattern) {
+  if (is.null(data) || nrow(data) == 0) {
+    return(logical(0))
+  }
+
+  columns <- intersect(
+    c("motif_kind", "motif_family", "motif_name", "motif_source"),
+    names(data))
+  if (length(columns) == 0) {
+    return(rep(FALSE, nrow(data)))
+  }
+
+  Reduce(`|`, lapply(columns, function(column) {
+    grepl(pattern, as.character(data[[column]]), ignore.case = TRUE)
+  }))
+}
+
+.library_card_motif_names <- function(data) {
+  if (is.null(data) || nrow(data) == 0) {
+    return(character())
+  }
+  for (column in c("motif_name", "motif_family", "motif_kind")) {
+    if (column %in% names(data)) {
+      return(as.character(data[[column]]))
+    }
+  }
+
+  character()
+}
+
+.library_card_as_logical <- function(x) {
+  if (is.logical(x)) {
+    return(x)
+  }
+
+  label <- tolower(as.character(x))
+  ifelse(label %in% c("true", "t", "yes", "1"), TRUE,
+    ifelse(label %in% c("false", "f", "no", "0"), FALSE, NA))
 }
 
 .qc_is_run_summary <- function(x) {
