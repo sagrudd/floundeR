@@ -1,6 +1,6 @@
 Package: floundeR
 Title: Toolkit For Nanopore Sequence Analysis
-Version: 0.10.0
+Version: 0.11.0
 Authors@R: 
     person(given = "Stephen",
            family = "Rudd",
@@ -33,6 +33,7 @@ Imports:
     ggplot2,
     ggsci,
     IRanges,
+    jsonlite,
     lubridate,
     magick,
     magrittr,

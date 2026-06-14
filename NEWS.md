@@ -1,3 +1,9 @@
+# floundeR 0.11.0
+
+* Added `as_synoptikon_qc()` and `write_synoptikon_qc()` to assemble existing
+  floundeR QC evidence into the v1 Synoptikon payload contract and write it as
+  JSON for downstream ingestion.
+
 # floundeR 0.10.0
 
 * Defined the first versioned Synoptikon QC payload contract and installed the

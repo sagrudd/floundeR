@@ -410,6 +410,19 @@ flounder_qc_schemas <- list(
     "message",
     "detail",
     "hint"
+  ),
+  synoptikon_qc_payload = c(
+    "schema_version",
+    "payload_id",
+    "generated_at_utc",
+    "producer",
+    "run_identity",
+    "governance_context",
+    "input_provenance",
+    "qc_sections",
+    "report_cards",
+    "limitations",
+    "handoff"
   )
 )
 
