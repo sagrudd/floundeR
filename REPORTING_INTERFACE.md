@@ -41,8 +41,9 @@ figure <- grammateus_figure_from_ggplot(
 )
 
 report <- qc_report(
-  qc = qc,
+  elements = grammateus_qc_report_elements(qc_summary = qc),
   figures = list(figure),
+  output_dir = cache_dir,
   output = c("html", "pdf")
 )
 ```
@@ -57,6 +58,16 @@ The R wrapper should:
   `grammateus_render_element()`, `grammateus_render_figure_html()`, or
   `grammateus_render_figure_pdf()`;
 - return output paths plus a manifest/provenance payload.
+
+Implemented floundeR integration:
+
+`qc_report()` assembles prepared semantic elements and governed figures into a
+`flounder.qc_report_contract.v1` JSON file and a
+`flounder.qc_report_manifest.v1` JSON file. Public builds always produce those
+artifacts without private Grammateus assets. Requested HTML/PDF outputs are
+recorded in the manifest as `runtime_unavailable`, `not_requested`, or
+`pending_runtime_binding` unless an authorized private runtime provides the
+rendering path.
 
 This path is best when an analyst is already working in R and wants to add
 custom exploratory or domain-specific plots to a governed report.

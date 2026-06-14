@@ -263,7 +263,7 @@ current non-FAST5 package surface.
       findings, methods, limitations, and appendices.
 - [x] Encode Mnemosyne Biosciences branding and styling through Grammateus
       templates/themes.
-- [ ] Implement `qc_report()` or equivalent R API that produces HTML/PDF plus a
+- [x] Implement `qc_report()` or equivalent R API that produces HTML/PDF plus a
       report manifest/provenance payload.
 - [ ] Add the first QC plot helper set for yield over time, read quality, read
       length, flowcell density, barcode balance, POD5 integrity, BAM mapping,

@@ -961,6 +961,157 @@ grammateus_apply_theme <- function(
   report
 }
 
+#' Assemble a Grammateus-backed QC report contract
+#'
+#' `qc_report()` is the high-level floundeR report assembly API. It combines
+#' prepared Grammateus semantic report elements, optional governed figures, and
+#' a Mnemosyne Biosciences theme descriptor into a stable report contract and
+#' manifest. The public package always writes the contract and manifest without
+#' requiring private Grammateus assets. HTML/PDF rendering is attempted only
+#' when requested and an authorized Grammateus runtime is available; otherwise
+#' the manifest records an explicit render status.
+#'
+#' @param elements A single Grammateus report element, a
+#'   `flounder_grammateus_report_element_bundle`, or a named list of report
+#'   elements.
+#' @param figures Optional governed figure, figure bundle, or list of governed
+#'   figures prepared by `grammateus_figure_from_file()` or
+#'   `grammateus_figure_from_ggplot()`.
+#' @param output_dir Directory where the report contract and manifest are
+#'   written.
+#' @param output Requested rendered formats. Use any of `html` and `pdf`.
+#' @param render Render policy: `if_available` records unavailable render
+#'   outputs when the private runtime is absent, `never` writes only the
+#'   contract and manifest, and `require` errors unless rendering is available.
+#' @param theme A `flounder_grammateus_theme` object.
+#' @param report_id Stable lower-snake-case report identifier. Must start with
+#'   `report_`.
+#' @param title Human-readable report title.
+#' @param produced_by Producing software or service name.
+#' @param producer_version Producing software version.
+#' @param produced_at_utc Production timestamp.
+#' @param run_id Optional upstream run, workflow, or analysis identifier.
+#' @param overwrite Whether existing report artifact paths may be replaced.
+#'
+#' @return A list with class `flounder_qc_report` containing the themed report
+#'   contract, manifest, contract path, manifest path, requested output status,
+#'   and provenance.
+#'
+#' @export
+qc_report <- function(
+    elements,
+    figures = NULL,
+    output_dir,
+    output = c("html", "pdf"),
+    render = c("if_available", "never", "require"),
+    theme = grammateus_mnemosyne_theme(),
+    report_id = "report_nanopore_qc",
+    title = "Nanopore sequencing QC report",
+    produced_by = "floundeR",
+    producer_version = NULL,
+    produced_at_utc = Sys.time(),
+    run_id = NULL,
+    overwrite = TRUE) {
+  report_id <- .grammateus_report_id(report_id)
+  title <- .grammateus_required_text(title, "title")
+  render <- match.arg(render)
+  output <- .grammateus_report_outputs(output)
+  output_dir <- .grammateus_output_dir(output_dir)
+  theme <- .grammateus_validate_theme(theme)
+  elements <- .grammateus_report_element_list(elements)
+  figures <- .grammateus_figure_list(figures)
+  if (is.null(producer_version)) {
+    producer_version <- .grammateus_default_flounder_version()
+  }
+
+  themed_report <- grammateus_apply_theme(
+    elements = elements,
+    theme = theme,
+    produced_by = produced_by,
+    producer_version = producer_version,
+    produced_at_utc = produced_at_utc,
+    run_id = run_id
+  )
+  contract <- list(
+    schema_version = "flounder.qc_report_contract.v1",
+    report_id = report_id,
+    title = title,
+    themed_report = themed_report,
+    figures = figures,
+    requested_output = output,
+    render_policy = render
+  )
+  contract$provenance <- .grammateus_provenance(
+    source_hash = .grammateus_value_sha256(list(
+      report_id = report_id,
+      title = title,
+      themed_report_hash = themed_report$provenance$source_hash,
+      figures = lapply(figures, .grammateus_report_figure_identity),
+      requested_output = output
+    )),
+    produced_by = produced_by,
+    producer_version = producer_version,
+    produced_at_utc = produced_at_utc,
+    run_id = run_id
+  )
+
+  contract_path <- file.path(output_dir, paste0(report_id, "-contract.json"))
+  manifest_path <- file.path(output_dir, paste0(report_id, "-manifest.json"))
+  .grammateus_prepare_output_path(contract_path, overwrite)
+  .grammateus_prepare_output_path(manifest_path, overwrite)
+  .grammateus_write_json(contract, contract_path)
+  contract_sha256 <- .grammateus_file_sha256(contract_path)
+
+  outputs <- .grammateus_report_render_outputs(
+    report_id = report_id,
+    output_dir = output_dir,
+    formats = output,
+    render = render
+  )
+  manifest <- list(
+    schema_version = "flounder.qc_report_manifest.v1",
+    report_id = report_id,
+    title = title,
+    contract = list(
+      path = normalizePath(contract_path, winslash = "/", mustWork = TRUE),
+      sha256 = contract_sha256,
+      byte_len = as.numeric(file.info(contract_path)$size)
+    ),
+    outputs = outputs,
+    element_count = length(elements),
+    figure_count = length(figures),
+    theme = list(
+      brand = theme$brand$name,
+      template_id = theme$template$template_id,
+      runtime_template_ref = theme$template$runtime_template_ref,
+      theme_id = theme$theme$theme_id,
+      runtime_theme_ref = theme$theme$runtime_theme_ref
+    ),
+    runtime = .grammateus_report_runtime_summary(),
+    provenance = contract$provenance
+  )
+  .grammateus_write_json(manifest, manifest_path)
+  manifest$manifest <- list(
+    path = normalizePath(manifest_path, winslash = "/", mustWork = TRUE),
+    sha256 = .grammateus_file_sha256(manifest_path),
+    byte_len = as.numeric(file.info(manifest_path)$size)
+  )
+
+  report <- list(
+    schema_version = "flounder.qc_report.v1",
+    report_id = report_id,
+    title = title,
+    contract = contract,
+    manifest = manifest,
+    contract_path = manifest$contract$path,
+    manifest_path = manifest$manifest$path,
+    outputs = outputs,
+    provenance = contract$provenance
+  )
+  class(report) <- c("flounder_qc_report", "flounder_grammateus_element", "list")
+  report
+}
+
 .grammateus_existing_file <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path) || path == "") {
     stop("path must be a non-empty character scalar.", call. = FALSE)
@@ -1275,6 +1426,134 @@ grammateus_apply_theme <- function(
     )
   }
   elements
+}
+
+.grammateus_report_id <- function(report_id) {
+  report_id <- .grammateus_required_text(report_id, "report_id")
+  if (!startsWith(report_id, "report_")) {
+    stop("report_id must start with `report_`.", call. = FALSE)
+  }
+  if (!grepl("^[a-z0-9_]+$", report_id)) {
+    stop("report_id must use lower snake case.", call. = FALSE)
+  }
+  report_id
+}
+
+.grammateus_report_outputs <- function(output) {
+  if (!is.character(output) || length(output) == 0L || anyNA(output)) {
+    stop("output must contain at least one report format.", call. = FALSE)
+  }
+  output <- unique(tolower(output))
+  unsupported <- setdiff(output, c("html", "pdf"))
+  if (length(unsupported) > 0L) {
+    stop(
+      "Unsupported qc_report output format(s): ",
+      paste(unsupported, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  output
+}
+
+.grammateus_figure_list <- function(figures) {
+  if (is.null(figures)) {
+    return(list())
+  }
+  if (inherits(figures, "flounder_grammateus_figure")) {
+    figures <- stats::setNames(list(figures), figures$figure_id)
+  } else if (inherits(figures, "flounder_grammateus_figure_bundle")) {
+    figures <- figures$figures
+  }
+  if (!is.list(figures)) {
+    stop("figures must be a governed Grammateus figure or list.", call. = FALSE)
+  }
+  expanded <- list()
+  for (idx in seq_along(figures)) {
+    figure <- figures[[idx]]
+    if (inherits(figure, "flounder_grammateus_figure_bundle")) {
+      expanded <- c(expanded, figure$figures)
+    } else {
+      expanded[[length(expanded) + 1L]] <- .grammateus_validate_figure(figure)
+    }
+  }
+  if (length(expanded) == 0L) {
+    return(list())
+  }
+  names(expanded) <- vapply(expanded, function(figure) {
+    paste0(figure$figure_id, "_", figure$source$format)
+  }, character(1))
+  expanded
+}
+
+.grammateus_report_figure_identity <- function(figure) {
+  list(
+    figure_id = figure$figure_id,
+    format = figure$source$format,
+    checksum = figure$source$checksum,
+    source_hash = figure$provenance$source_hash
+  )
+}
+
+.grammateus_prepare_output_path <- function(path, overwrite) {
+  if (file.exists(path)) {
+    if (!isTRUE(overwrite)) {
+      stop("Report artifact already exists: ", path, call. = FALSE)
+    }
+    unlink(path, force = TRUE)
+  }
+  invisible(path)
+}
+
+.grammateus_report_render_outputs <- function(report_id, output_dir, formats,
+                                              render) {
+  runtime_validation <- grammateus_runtime_validate(
+    required_capabilities = c("render_report_html", "render_report_pdf")
+  )
+  runtime_available <- isTRUE(runtime_validation$valid)
+  if (identical(render, "require") && !isTRUE(runtime_available)) {
+    .grammateus_abort(
+      paste(
+        "Grammateus runtime is required to render qc_report outputs.",
+        "Install or configure an authorized runtime, or use render = 'never'",
+        "to write only the report contract and manifest."
+      ),
+      "flounder_grammateus_runtime_unavailable"
+    )
+  }
+  lapply(formats, function(format) {
+    path <- file.path(output_dir, paste0(report_id, ".", format))
+    planned_path <- file.path(
+      normalizePath(dirname(path), winslash = "/", mustWork = TRUE),
+      basename(path)
+    )
+    status <- if (identical(render, "never")) {
+      "not_requested"
+    } else if (!isTRUE(runtime_available)) {
+      "runtime_unavailable"
+    } else {
+      "pending_runtime_binding"
+    }
+    list(
+      format = format,
+      path = planned_path,
+      status = status,
+      sha256 = NULL,
+      byte_len = NULL
+    )
+  })
+}
+
+.grammateus_report_runtime_summary <- function() {
+  validation <- grammateus_runtime_validate(
+    required_capabilities = c("render_report_html", "render_report_pdf")
+  )
+  manifest <- grammateus_runtime_manifest()
+  list(
+    available = isTRUE(validation$valid),
+    runtime_version = if (is.list(manifest)) manifest$runtime_version else NULL,
+    capabilities = if (is.list(manifest)) manifest$capabilities else NULL,
+    failures = validation$failures
+  )
 }
 
 .grammateus_plot_source_data <- function(plot) {

@@ -1,3 +1,10 @@
+# floundeR 0.20.0
+
+* Added `qc_report()` to assemble Grammateus-backed nanopore QC report
+  contracts, manifests, Mnemosyne theme metadata, governed figures, requested
+  HTML/PDF output status, and provenance while keeping private Grammateus
+  runtime rendering optional.
+
 # floundeR 0.19.0
 
 * Added `grammateus_mnemosyne_theme()` and `grammateus_apply_theme()` to encode
