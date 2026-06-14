@@ -1,4 +1,4 @@
-name: R package check
+name: Public R package check
 
 on:
   push:
@@ -7,8 +7,13 @@ on:
     branches: [main]
 
 jobs:
-  check:
+  public-check:
     runs-on: macos-latest
+    env:
+      GRAMMATEUS_HOME: ""
+      FLOUNDER_GRAMMATEUS_RUNTIME_REQUIRED: "false"
+      FLOUNDER_RUN_GRAMMATEUS_PRIVATE_TESTS: "false"
+      FLOUNDER_RUN_NETWORK_TESTS: "false"
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +26,10 @@ jobs:
 
       - name: Check governance boundaries
         run: Rscript scripts/check-governance-boundaries.R
+
+      - name: Assert public check has no Grammateus runtime
+        run: |
+          Rscript -e 'source("R/grammateus_runtime.R"); stopifnot(!grammateus_runtime_available(tempfile("missing-grammateus-")))'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

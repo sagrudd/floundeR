@@ -113,6 +113,14 @@ GitHub Actions should build and check floundeR without private Grammateus
 access. A separate private or credentialed workflow may verify Grammateus report
 rendering using private runtime assets.
 
+During the active reboot, workflow files remain disabled under
+`.github/disabled-workflows/`. The disabled public workflow is explicitly
+runtime-free and suitable for open-source checks once restored. The disabled
+private workflow is manual-only, credentialed, downloads authorized prebuilt
+Grammateus runtime assets, verifies the archive checksum, validates the runtime
+through floundeR, and then runs the Grammateus report-rendering tests with
+`GRAMMATEUS_HOME` set.
+
 ## Future Bioconductor Posture
 
 If floundeR is submitted to Bioconductor in future, the package must remain

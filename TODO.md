@@ -281,7 +281,7 @@ current non-FAST5 package surface.
       artifacts.
 - [x] Add compatibility checks between floundeR versions and Grammateus runtime
       versions.
-- [ ] Add CI separation: public floundeR checks without Grammateus, credentialed
+- [x] Add CI separation: public floundeR checks without Grammateus, credentialed
       private checks with Grammateus runtime/report rendering.
 - [ ] Document GitHub installation paths for open-source users and authorized
       Grammateus runtime users.

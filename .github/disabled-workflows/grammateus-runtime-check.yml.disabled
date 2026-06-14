@@ -1,0 +1,101 @@
+name: Private Grammateus runtime check
+
+on:
+  workflow_dispatch:
+    inputs:
+      runtime-version:
+        description: Grammateus runtime version to download.
+        required: true
+        type: string
+      runtime-platform:
+        description: Runtime platform asset suffix.
+        required: true
+        default: aarch64-apple-darwin
+        type: string
+
+jobs:
+  private-runtime-check:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    env:
+      FLOUNDER_RUN_GRAMMATEUS_PRIVATE_TESTS: "true"
+      FLOUNDER_RUN_NETWORK_TESTS: "false"
+      GRAMMATEUS_RUNTIME_VERSION: ${{ inputs.runtime-version }}
+      GRAMMATEUS_RUNTIME_PLATFORM: ${{ inputs.runtime-platform }}
+      GRAMMATEUS_RUNTIME_ARCHIVE_URL: ${{ secrets.GRAMMATEUS_RUNTIME_ARCHIVE_URL }}
+      GRAMMATEUS_RUNTIME_SHA256_URL: ${{ secrets.GRAMMATEUS_RUNTIME_SHA256_URL }}
+      GRAMMATEUS_RUNTIME_SIG_URL: ${{ secrets.GRAMMATEUS_RUNTIME_SIG_URL }}
+      GRAMMATEUS_RUNTIME_TOKEN: ${{ secrets.GRAMMATEUS_RUNTIME_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Download private Grammateus runtime assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${GRAMMATEUS_RUNTIME_ARCHIVE_URL}"
+          test -n "${GRAMMATEUS_RUNTIME_SHA256_URL}"
+          test -n "${GRAMMATEUS_RUNTIME_SIG_URL}"
+          test -n "${GRAMMATEUS_RUNTIME_TOKEN}"
+          mkdir -p "${RUNNER_TEMP}/grammateus-runtime"
+          curl --fail --location --silent --show-error \
+            --header "Authorization: Bearer ${GRAMMATEUS_RUNTIME_TOKEN}" \
+            --output "${RUNNER_TEMP}/grammateus-runtime/runtime.tar.gz" \
+            "${GRAMMATEUS_RUNTIME_ARCHIVE_URL}"
+          curl --fail --location --silent --show-error \
+            --header "Authorization: Bearer ${GRAMMATEUS_RUNTIME_TOKEN}" \
+            --output "${RUNNER_TEMP}/grammateus-runtime/runtime.tar.gz.sha256" \
+            "${GRAMMATEUS_RUNTIME_SHA256_URL}"
+          curl --fail --location --silent --show-error \
+            --header "Authorization: Bearer ${GRAMMATEUS_RUNTIME_TOKEN}" \
+            --output "${RUNNER_TEMP}/grammateus-runtime/runtime.tar.gz.sig" \
+            "${GRAMMATEUS_RUNTIME_SIG_URL}"
+
+      - name: Verify and unpack private Grammateus runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${RUNNER_TEMP}/grammateus-runtime"
+          awk '{print $1 "  runtime.tar.gz"}' runtime.tar.gz.sha256 | \
+            shasum -a 256 -c -
+          mkdir -p "${RUNNER_TEMP}/grammateus-home"
+          tar -xzf runtime.tar.gz -C "${RUNNER_TEMP}/grammateus-home"
+
+      - name: Install floundeR for private runtime checks
+        run: R CMD INSTALL .
+
+      - name: Validate Grammateus runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          export GRAMMATEUS_HOME="${RUNNER_TEMP}/grammateus-home"
+          Rscript -e 'validation <- floundeR::grammateus_runtime_validate(); print(validation); stopifnot(isTRUE(validation$valid))'
+
+      - name: Run Grammateus report rendering tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          export GRAMMATEUS_HOME="${RUNNER_TEMP}/grammateus-home"
+          Rscript -e 'testthat::test_file("tests/testthat/test-grammateus-render-bindings.R")'
+          Rscript -e 'testthat::test_file("tests/testthat/test-qc-report.R")'
+
+      - name: Build package with private runtime available
+        uses: r-lib/actions/check-r-package@v2
+        env:
+          GRAMMATEUS_HOME: ${{ runner.temp }}/grammateus-home
+        with:
+          args: 'c("--no-manual", "--no-build-vignettes")'

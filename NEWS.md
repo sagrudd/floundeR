@@ -1,3 +1,9 @@
+# floundeR 0.21.6
+
+* Added disabled GitHub Actions templates that separate public floundeR checks
+  without Grammateus from manual credentialed Grammateus runtime/report-rendering
+  checks, preserving the temporary Actions-disabled posture during code churn.
+
 # floundeR 0.21.5
 
 * Added release-level Grammateus runtime compatibility manifest checks so
