@@ -346,6 +346,9 @@ write_synoptikon_qc <- function(path, ..., pretty = TRUE) {
 }
 
 .synoptikon_scalar <- function(x) {
+  if (is.list(x)) {
+    return(.synoptikon_named_list(x))
+  }
   if (inherits(x, "POSIXt")) {
     return(.synoptikon_timestamp(x))
   }

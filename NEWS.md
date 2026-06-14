@@ -1,3 +1,8 @@
+# floundeR 0.11.2
+
+* Added offline Synoptikon QC payload JSON-schema validation tests and fixed
+  nested provenance metadata plus report-card check schema compatibility.
+
 # floundeR 0.11.1
 
 * Strengthened Synoptikon QC payload section handling so supplied flowcell,

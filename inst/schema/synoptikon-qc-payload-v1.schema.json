@@ -334,6 +334,9 @@
         "details"
       ],
       "properties": {
+        "schema_version": {
+          "type": ["string", "null"]
+        },
         "check_id": {
           "type": "string",
           "minLength": 1

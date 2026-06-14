@@ -116,3 +116,10 @@ storage context, evidence custody, authority keys, and audit policy. Grammateus
 remains the authority for trusted technical report manifests and lifecycle
 state.
 
+## Validation
+
+The floundeR test suite validates emitted JSON payloads against the installed
+v1 JSON schema. It also checks for a canonical schema copy in `../mnemosyne`
+or `../mnemosyne-docs` and compares it with the local schema when present. No
+dedicated floundeR Synoptikon schema file exists in those sibling repositories
+yet, so that sync check skips until the control-plane copy is added.

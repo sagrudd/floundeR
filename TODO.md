@@ -212,7 +212,7 @@ current non-FAST5 package surface.
 - [x] Implement `as_synoptikon_qc()` or `write_synoptikon_qc()`.
 - [x] Include sequencing-summary, flowcell, barcode, POD5 integrity, BAM QC,
       and library-preparation evidence sections.
-- [ ] Add validation tests against the expected `../mnemosyne` schema.
+- [x] Add validation tests against the expected `../mnemosyne` schema.
 - [ ] Add a vignette showing end-to-end handoff.
 
 ## Slice 12A: Porkchop Library-Preparation QC

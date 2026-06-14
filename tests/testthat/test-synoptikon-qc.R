@@ -113,3 +113,85 @@ test_that("as_synoptikon_qc includes all required evidence sections", {
     sections$library_preparation$tables$evidence[[1]]$evidence_kind,
     "porkchop_reserved")
 })
+
+test_that("write_synoptikon_qc output validates against the v1 JSON schema", {
+  summary_path <- fixture_path("sequencing_summary_dorado.tsv")
+  summary <- qc_run_summary(summary_path, source_id = "fixture-run")
+  card <- qc_report_card(
+    summary,
+    thresholds = list(
+      pass_fraction_min = c(warn = 0.50, fail = 0.25),
+      mean_qscore_min = c(warn = 10, fail = 8),
+      n50_read_length_min = c(warn = 30, fail = 20),
+      total_bases_min = c(warn = 80, fail = 50),
+      channel_count_min = c(warn = 3, fail = 2),
+      unclassified_fraction_max = c(warn = 0.25, fail = 0.50),
+      barcode_max_fraction = c(warn = 0.40, fail = 0.80)
+    ))
+  output <- tempfile(fileext = ".json")
+
+  write_synoptikon_qc(
+    output,
+    run_summary = summary,
+    report_cards = card,
+    run_identity = list(
+      run_id = "fixture-run",
+      sample_id = "fixture-sample",
+      flow_cell_id = "fixture-flow-cell"),
+    governance_context = list(
+      tenant_id = "fixture-tenant",
+      governance_domain_id = "fixture-domain",
+      mneion_work_request_id = "fixture-request"),
+    input_provenance = list(
+      input_id = "fixture-sequencing-summary",
+      kind = "sequencing_summary",
+      uri = "tests/testthat/fixtures/sequencing_summary_dorado.tsv",
+      size_bytes = unname(file.info(summary_path)$size),
+      sha256 = paste0(rep("0", 64), collapse = ""),
+      last_modified_utc = "2026-06-14T06:21:36Z",
+      metadata = list(source_id = "fixture-run")),
+    limitations = list(
+      limitation_id = "fixture-no-pod5",
+      severity = "info",
+      section = "pod5",
+      message = "Fixture payload validates handoff shape without POD5 bytes."),
+    payload_id = "fixture-schema-valid",
+    generated_at_utc = "2026-06-14T06:21:36Z")
+
+  payload <- jsonlite::fromJSON(output, simplifyVector = FALSE)
+  expect_synoptikon_schema_valid(payload)
+})
+
+test_that("Synoptikon schema validation rejects incompatible payloads", {
+  payload <- as_synoptikon_qc(
+    payload_id = "fixture-schema-invalid",
+    generated_at_utc = "2026-06-14T06:21:36Z")
+  payload$schema_version <- "flounder.synoptikon_qc_payload.v2"
+
+  schema <- jsonlite::fromJSON(
+    synoptikon_payload_schema_path(),
+    simplifyVector = FALSE)
+  errors <- synoptikon_validate_schema_node(payload, schema, schema, "$")
+
+  expect_true(any(grepl("schema_version expected const", errors, fixed = TRUE)))
+})
+
+test_that("local Synoptikon schema stays aligned with mnemosyne when present", {
+  mnemosyne_schema <- synoptikon_mnemosyne_schema_path()
+  if (is.null(mnemosyne_schema)) {
+    skip(paste(
+      "No canonical floundeR Synoptikon QC schema found in ../mnemosyne;",
+      "checked:",
+      paste(synoptikon_mnemosyne_schema_candidates(), collapse = ", ")
+    ))
+  }
+
+  local_schema <- jsonlite::fromJSON(
+    synoptikon_payload_schema_path(),
+    simplifyVector = FALSE)
+  expected_schema <- jsonlite::fromJSON(
+    mnemosyne_schema,
+    simplifyVector = FALSE)
+
+  expect_equal(local_schema, expected_schema)
+})
