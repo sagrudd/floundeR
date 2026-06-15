@@ -5,8 +5,9 @@ canonical ONT Zymo PAU85136 example without making floundeR a basecaller.
 
 floundeR never provides direct basecalling functionality. The full report
 workflow requires basecalled evidence, but that evidence is produced by
-Mnematikon or another controlled upstream workflow. floundeR then ingests the
-basecalled outputs and creates QC tables, Grammateus plot artifacts, report
+Hermeneia or another controlled upstream workflow. floundeR then ingests BAM or
+FASTQ evidence, Hermeneia artifact manifests, and legacy sequencing summaries
+when needed, then creates QC tables, Grammateus plot artifacts, report
 contracts, manifests, and provenance.
 
 ## Canonical Inputs
@@ -31,7 +32,7 @@ fixtures with reviewed provenance.
 
 The ownership boundary is:
 
-- Mnematikon owns basecalling orchestration, model selection, container use,
+- Hermeneia owns basecalling orchestration, model selection, container use,
   accelerator access, and basecalling provenance.
 - floundeR owns raw-data metadata checks, basecalled-output ingestion, QC
   tables, plot artifacts, report contracts, report manifests, and Synoptikon
@@ -58,35 +59,38 @@ Rscript scripts/build-real-data-qc-evidence.R --dry-run
 
 ## Ingest Basecalled Evidence
 
-After Mnematikon has produced a Dorado sequencing summary for the selected
-POD5, point floundeR at that file:
+After Hermeneia has produced BAM evidence and a machine-readable artifact
+manifest for the selected POD5, point floundeR at those files:
 
 ```sh
 FLOUNDER_REAL_DATA_QC=true \
-FLOUNDER_REAL_DATA_QC_SEQUENCE_SUMMARY=/path/to/sequencing_summary.tsv \
+FLOUNDER_REAL_DATA_QC_BAM=/path/to/basecalled.bam \
+FLOUNDER_REAL_DATA_QC_ARTIFACT_MANIFEST=/path/to/hermeneia-artifact-manifest.json \
 Rscript scripts/build-real-data-qc-evidence.R
 ```
 
 Alternatively, point floundeR at a basecalled output directory and the script
-will search for a sequencing-summary file:
+will search for a BAM and Hermeneia artifact manifest:
 
 ```sh
 FLOUNDER_REAL_DATA_QC=true \
-FLOUNDER_REAL_DATA_QC_BASECALLED_DIR=/path/to/mnematikon/basecalled-output \
+FLOUNDER_REAL_DATA_QC_BASECALLED_DIR=/path/to/hermeneia/basecalled-output \
 Rscript scripts/build-real-data-qc-evidence.R
 ```
 
-When a sequencing summary is available, the workflow writes:
+When BAM evidence is available, the workflow writes:
 
 - `qc-tables/*.tsv`
 - `plots/<plot_id>/*.png`
 - `plots/<plot_id>/*.svg`
-- `report/report_ont_zymo_pau85136_qc-contract.json`
-- `report/report_ont_zymo_pau85136_qc-manifest.json`
+- `report/report_ont_zymo_pau85136_bam_qc-contract.json`
+- `report/report_ont_zymo_pau85136_bam_qc-manifest.json`
 - `workflow-manifest.json`
 
-The report contract includes the generated figures and tables, but records that
-basecalling provenance must come from the upstream Mnematikon artifact manifest.
+The report contract includes generated BAM figures and tables, but records that
+basecalling provenance comes from the upstream Hermeneia artifact manifest.
+Legacy sequencing-summary ingestion remains available for older upstream runs,
+but is no longer the preferred evidence path.
 
 ## DGX And Mnematikon Notes
 
@@ -95,8 +99,7 @@ environment-specific. The handoff table records optional hints through
 environment variables such as `FLOUNDER_DGX_HOST`, but those values are not
 package contracts and should not be hard-coded into floundeR.
 
-The current development environment may refer to `../mnematikon` and use
-available Mnematikon containers for upstream basecalling. That remains an
+The current development environment may refer to `../hermeneia` and use
+available Hermeneia containers for upstream basecalling. That remains an
 operational dependency for producing complete example evidence, not a floundeR
 runtime feature.
-

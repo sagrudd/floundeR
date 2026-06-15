@@ -110,18 +110,20 @@ The maintained ingestion workflow is:
 Rscript scripts/build-real-data-qc-evidence.R --dry-run
 ```
 
-After upstream basecalling has produced a sequencing summary:
+After Hermeneia has produced BAM evidence and an artifact manifest:
 
 ```sh
 FLOUNDER_REAL_DATA_QC=true \
-FLOUNDER_REAL_DATA_QC_SEQUENCE_SUMMARY=/path/to/sequencing_summary.tsv \
+FLOUNDER_REAL_DATA_QC_BAM=/path/to/basecalled.bam \
+FLOUNDER_REAL_DATA_QC_ARTIFACT_MANIFEST=/path/to/hermeneia-artifact-manifest.json \
 Rscript scripts/build-real-data-qc-evidence.R
 ```
 
 The workflow writes metadata, QC tables, Grammateus plot artifacts, and
 runtime-free report contracts outside the repository by default. It also writes
-a Mnematikon handoff table documenting that basecalling provenance is supplied
-by the upstream workflow, not by floundeR.
+a Hermeneia handoff table documenting that basecalling provenance is supplied by
+the upstream workflow, not by floundeR. Sequencing-summary input remains a
+legacy fallback for older basecalled outputs.
 
 ## Access From R
 

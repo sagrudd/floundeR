@@ -22,15 +22,15 @@ test_that("real-data QC evidence script dry-runs without network or basecalling"
   expect_true(file.exists(file.path(output_dir, "analysis-status.tsv")))
   expect_true(file.exists(file.path(output_dir, "metadata", "source-metadata.tsv")))
   expect_true(file.exists(file.path(
-    output_dir, "mnematikon-handoff", "mnematikon-handoff.tsv")))
+    output_dir, "hermeneia-handoff", "hermeneia-handoff.tsv")))
 
   status <- read.delim(file.path(output_dir, "analysis-status.tsv"))
   expect_equal(status$status[[1]], "dry-run")
-  expect_match(status$detail[[1]], "floundeR does not perform basecalling")
+  expect_match(status$detail[[1]], "FLOUNDER_REAL_DATA_QC_BAM")
 
   handoff <- read.delim(file.path(
-    output_dir, "mnematikon-handoff", "mnematikon-handoff.tsv"))
-  expect_true(any(handoff$value == "Mnematikon, not floundeR"))
+    output_dir, "hermeneia-handoff", "hermeneia-handoff.tsv"))
+  expect_true(any(handoff$value == "Hermeneia, not floundeR"))
   expect_true(any(grepl("never provides direct basecalling", handoff$value)))
   expect_true(any(handoff$value == "test-dgx-host"))
 })

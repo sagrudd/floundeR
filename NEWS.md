@@ -1,3 +1,11 @@
+# floundeR 0.21.21
+
+* Updated the ONT Zymo PAU85136 real-data QC workflow to prefer
+  Hermeneia-produced BAM evidence and artifact manifests, generating Bamana
+  QC tables, BAM plot artifacts, and report contracts without requiring Dorado
+  sequencing summaries. Sequencing-summary input remains a legacy fallback for
+  older upstream outputs.
+
 # floundeR 0.21.20
 
 * Added an opt-in real-data QC evidence workflow for the ONT Zymo PAU85136
