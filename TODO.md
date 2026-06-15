@@ -314,3 +314,26 @@ current non-FAST5 package surface.
 - [x] Commit and push changes after explicit prompt or as required by the active
       agent instructions.
 - [x] Defer tagging/release until explicit approval.
+
+## Slice 16: Real Example Evidence And Report Outputs
+
+- [x] Add an opt-in workflow that uses the canonical ONT Zymo PAU85136 pass
+      POD5 as the source metadata anchor without committing raw data.
+- [x] Encode the basecalling boundary clearly: floundeR never provides direct
+      basecalling functionality, while Mnematikon may provide upstream
+      basecalled evidence.
+- [x] Add a Mnematikon handoff table for environment-specific DGX/container
+      details without hard-coding office-specific addresses into package
+      behavior.
+- [x] Add dry-run coverage proving the evidence workflow writes metadata,
+      handoff, manifest, and waiting-for-basecalled-data status without network
+      or DGX access.
+- [ ] Produce an actual evidence bundle from the agreed pass POD5 after
+      Mnematikon has generated a Dorado sequencing summary.
+- [ ] Resolve or document the upstream Mnematikon Dorado asset-context
+      preflight on the DGX before rerunning the agreed-file basecalling handoff.
+- [ ] Commit a reviewed, small artifact manifest summarising the actual QC
+      tables, plot artifact paths, checksums, and report contract locations
+      without committing POD5, BAM, FASTQ, or large derived outputs.
+- [ ] Add a vignette or README section that shows the real ONT example figures
+      generated from the basecalled evidence bundle.

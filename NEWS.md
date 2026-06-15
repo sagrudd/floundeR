@@ -1,3 +1,11 @@
+# floundeR 0.21.20
+
+* Added an opt-in real-data QC evidence workflow for the ONT Zymo PAU85136
+  pass POD5 example that ingests upstream Mnematikon/basecalled sequencing
+  summaries, writes QC tables, renders Grammateus PNG/SVG plot artifacts, and
+  emits report contracts while explicitly keeping basecalling outside
+  floundeR.
+
 # floundeR 0.21.19
 
 * Added `scales` to the dependency bootstrap inventory so clean development

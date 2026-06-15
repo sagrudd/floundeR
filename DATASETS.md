@@ -96,6 +96,33 @@ FLOUNDER_DERIVE_POD5_DEMO_DOWNLOAD=true \
 Rscript scripts/derive-pod5-demo-workflow.R
 ```
 
+## Real-Data Report Evidence
+
+The selected POD5 source is raw signal evidence. Complete QC reports also need
+basecalled outputs, but floundeR does not provide direct basecalling
+functionality. Use Mnematikon or another controlled upstream workflow to
+basecall the selected source, then ingest the resulting Dorado sequencing
+summary, BAM/FASTQ summaries, and provenance with floundeR.
+
+The maintained ingestion workflow is:
+
+```sh
+Rscript scripts/build-real-data-qc-evidence.R --dry-run
+```
+
+After upstream basecalling has produced a sequencing summary:
+
+```sh
+FLOUNDER_REAL_DATA_QC=true \
+FLOUNDER_REAL_DATA_QC_SEQUENCE_SUMMARY=/path/to/sequencing_summary.tsv \
+Rscript scripts/build-real-data-qc-evidence.R
+```
+
+The workflow writes metadata, QC tables, Grammateus plot artifacts, and
+runtime-free report contracts outside the repository by default. It also writes
+a Mnematikon handoff table documenting that basecalling provenance is supplied
+by the upstream workflow, not by floundeR.
+
 ## Access From R
 
 `floundeR` wraps the canonical ONT Zymo POD5 source in small helpers so S3

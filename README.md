@@ -181,6 +181,15 @@ this repository. Dataset policy and provenance requirements are documented in
 documented in [`DERIVED_POD5_DEMOS.md`](DERIVED_POD5_DEMOS.md), with
 `scripts/derive-pod5-demo-workflow.R` as the maintained opt-in workflow.
 
+Report-grade examples also need basecalled evidence, but floundeR does not
+provide direct basecalling functionality. Use Mnematikon or another controlled
+upstream workflow to produce Dorado sequencing summaries, BAM/FASTQ outputs,
+and basecalling provenance, then ingest those artifacts with
+`scripts/build-real-data-qc-evidence.R`. The ingestion workflow writes QC
+tables, Grammateus PNG/SVG plot artifacts, runtime-free report contracts, and a
+Mnematikon handoff manifest into a cache outside the repository. See
+[`REAL_DATA_EVIDENCE.md`](REAL_DATA_EVIDENCE.md) for the full boundary.
+
 ## BAM And Library-Preparation QC
 
 Alignment evidence is handled through curated Bamana-backed functions:
